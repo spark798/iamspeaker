@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 0-8 Job Queue 완료** (큐+워커+SSE+크래시복구, 테스트 42개 통과) |
+| 현재 단계 | **Phase 0-9 UI shell 완료** (셸 실제 기동 검증: /, /upload, /api/health 200) |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | Phase 0-9: Base UI shell — 루트 레이아웃·디자인 토큰·`(session)` 스테퍼·헬스 라우트 |
+| 다음 액션 | Phase 0-10(마지막): Docker Compose(app+ollama) + GitHub Actions CI |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -43,8 +43,8 @@
 6. [x] `lib/storage/` 경로 빌더(safeResolve/assertSafeSegment/safeFilename, uploadPath/recordingPath) — DATA_DIR 하위 정규화 + path-traversal 방어 ✅
 7. [x] `lib/ai/types.ts`(Script/Tts/Stt/Qa/SlideCritic 인터페이스 + Adapters) + `factory.ts`(getter들, 현재 stub) + `lib/ai/stub/`(결정적 구현) + 재사용 계약 테스트(`test/contract/`) ✅
 8. [x] Job Queue(`lib/jobs/queue.ts` JobQueue) + Worker(`worker.ts`, concurrency/폴링/핸들러레지스트리) + `GET /api/jobs/[id]/stream`(SSE) + 크래시 복구(recoverStalled) + instrumentation 워커 기동 ✅
-9. [ ] **Base UI shell** — 루트 레이아웃·디자인 토큰·`(session)` 스테퍼·헬스 라우트  ← 다음
-10. [ ] `scripts/setup-models.ts` + Docker Compose(app+ollama) + GitHub Actions CI  ·  [x] `.env.example`
+9. [x] **Base UI shell** — `(session)` 레이아웃 + 스테퍼(SCR-01~08, 현재단계 aria-current) + `/upload` 자리표시자 + `/api/health`(DB+엔진) + 홈 CTA. 시작 시 자동 마이그레이션(D14). 실서버 기동 검증 ✅
+10. [ ] `scripts/setup-models.ts` + Docker Compose(app+ollama) + GitHub Actions CI  ·  [x] `.env.example`  ← 다음(Phase 0 마지막)
 - **Phase 0 완료 조건**: 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
 
 ### 대기 ⏳ (Milestone M1 — Walking Skeleton)
@@ -75,6 +75,7 @@
 | D11 | **Config는 `lib/config.ts`**(Zod, fail-fast) + 시작 시 외부 바이너리 preflight | 잘못된 env로 늦게 깨지는 것 방지 | 06-13 |
 | D12 | **도메인 타입은 `lib/domain/` 단일 진실원**, 어댑터/DB/분석이 공유 | 타입 중복·드리프트 방지 | 06-13 |
 | D13 | **Node 20 → Node 22 LTS 상향** | pnpm 11이 node:sqlite(22.13+) 요구, Next 15도 22 권장 | 06-13 |
+| D14 | **시작 시 마이그레이션 자동 적용**(instrumentation, 멱등) + init 실패 격리 | "클론 후 바로 동작" — 수동 db:migrate 없이 기동, 워커 크래시가 전 라우트 죽이지 않게 | 06-14 |
 
 ### 미해결/추후 결정 ❓
 - next-intl vs 자체 경량 i18n (UI 다국어) — Phase 1 SCR 작업 시 확정
@@ -108,6 +109,13 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — Phase 0-9 Base UI shell
+- `components/stepper.tsx`(client, usePathname): SCR-01~08 진행 스테퍼, 현재 단계 aria-current. `app/(session)/layout.tsx`: 헤더+스테퍼+본문 셸. `app/(session)/upload/page.tsx`: SCR-01 자리표시자.
+- `app/api/health/route.ts`: DB(select 1) + 활성 엔진 보고(200/503). 홈에 "시작하기" CTA.
+- 🐞 발견·수정: 실 DB에 마이그레이션 미적용 → instrumentation 워커가 `no such table: jobs`로 크래시 → 전 라우트 500. **시작 시 자동 마이그레이션 + try/catch 격리**로 해결(D14).
+- 검증: 테스트 44개(stepper 2) + 실서버 기동 — `/`(CTA)·`/upload`(스테퍼)·`/api/health`({status:ok,db:ok,engines}) 모두 200.
+- **다음**: Phase 0-10 Docker + CI(Phase 0 마지막).
 
 ### 2026-06-14 — Phase 0-8 Job Queue/Worker + SSE
 - `lib/jobs/queue.ts`(JobQueue): enqueue/get/claimNext(트랜잭션 원자적 FIFO)/setProgress/complete/fail/recoverStalled(크래시 복구).
