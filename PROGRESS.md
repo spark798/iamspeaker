@@ -31,17 +31,24 @@
 ### 진행 중 🚧
 - (없음)
 
-### 대기 ⏳ (Phase 0 백로그)
-- [ ] Next.js + Tailwind + pnpm 초기화, Biome/Vitest/Playwright 설정
-- [ ] Drizzle 스키마 + 초기 마이그레이션 (`lib/db/`)
-- [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터**
-- [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream` (SSE)
-- [ ] `lib/storage/` 경로 빌더(검증), `DATA_DIR` 구성
-- [ ] `scripts/setup-models.ts` (Piper/Whisper 다운로드), pino 로깅
-- [ ] Docker Compose(app+ollama) + GitHub Actions CI
-- **Phase 0 완료 조건**: `docker compose up` 또는 네이티브 절차로 빈 화면이 뜨고 CI 초록.
+### 대기 ⏳ (Phase 0 백로그 — 의존성 순, 위→아래)
+1. [ ] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright
+2. [ ] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + preflight(ffmpeg/libreoffice/ollama)
+3. [ ] **로깅/에러 토대** — pino + API 에러 헬퍼 + React Error Boundary
+4. [ ] **도메인 타입**(`lib/domain/`) — SlideContent/Script/TranscriptResult/GenOptions 등 공유
+5. [ ] Drizzle 스키마 + 초기 마이그레이션 (`lib/db/`)
+6. [ ] `lib/storage/` 경로 빌더(검증), `DATA_DIR`
+7. [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **계약 테스트**
+8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream` (SSE) + 크래시 복구
+9. [ ] **Base UI shell** — 루트 레이아웃·디자인 토큰·`(session)` 스테퍼·헬스 라우트
+10. [ ] `scripts/setup-models.ts` + Docker Compose(app+ollama) + GitHub Actions CI  ·  [x] `.env.example`
+- **Phase 0 완료 조건**: 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
 
-> Phase 1~3 백로그는 `DEVELOPMENT.md` §14 참조.
+### 대기 ⏳ (Milestone M1 — Walking Skeleton)
+- [ ] stub 어댑터로 업로드→데모→녹음→리포트→개선 **전 구간 1회 관통** + Playwright E2E 골격
+- 실제 AI 붙이기 전에 Job/SSE/Storage/DB 통합 검증.
+
+> Phase 1(실제 엔진)·2·3 백로그는 `DEVELOPMENT.md` §14 참조. **주의: ko.json은 분석보다 먼저, i18n/fixture는 Phase 1 맨 앞.**
 
 ---
 
@@ -60,6 +67,9 @@
 | D7 | 린트/포맷 **Biome**, 로깅 **pino** | 단일 툴·경량 | 06-13 |
 | D8 | 슬라이드: PDF.js 렌더, PPTX는 LibreOffice headless→PDF | 의존 최소화 | 06-13 |
 | D9 | **헤르메스는 개발 보조 + 로컬 검증 베드로만**, 제품 런타임은 `OLLAMA_HOST` HTTP 어댑터 사용 (MCP 의존성 런타임 배제) | 셀프호스팅 "클론 후 바로 동작" 원칙 보호 | 06-13 |
+| D10 | **Walking-skeleton-first** — stub로 전 구간 관통(M1) 후 화면별 실제 엔진 | 통합 리스크 조기 발견, 중단·재개 강건 | 06-13 |
+| D11 | **Config는 `lib/config.ts`**(Zod, fail-fast) + 시작 시 외부 바이너리 preflight | 잘못된 env로 늦게 깨지는 것 방지 | 06-13 |
+| D12 | **도메인 타입은 `lib/domain/` 단일 진실원**, 어댑터/DB/분석이 공유 | 타입 중복·드리프트 방지 | 06-13 |
 
 ### 미해결/추후 결정 ❓
 - next-intl vs 자체 경량 i18n (UI 다국어) — Phase 1 SCR 작업 시 확정
@@ -93,6 +103,13 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-13 — 로드맵 재검증 & 보강
+- 의존성 관점으로 순서 재검증. 순서 오류 수정: `ko.json`을 분석 *앞*으로, 오디오 파이프라인+STT를 분석에서 분리·선행, Phase 0의 config/로깅을 앞으로.
+- 빠진 토대 작업 추가: Config 모듈(+preflight), 도메인 타입(`lib/domain/`), 에러 프리미티브, Base UI shell, 슬라이드 렌더 파이프라인, UI i18n+fixture, 어댑터 계약 테스트, a11y 패스.
+- **Walking Skeleton(M1)** 마일스톤 신설 — stub로 전 구간 관통 후 실제 엔진.
+- 결정 D10~D12 추가. DEVELOPMENT.md §3/§9/§12/§14, PROGRESS.md 갱신.
+- **다음**: Phase 0 1번(Next.js 초기화)부터.
 
 ### 2026-06-13 — 기반 정비
 - 라이선스 **MIT** 확정. git init(main 브랜치).

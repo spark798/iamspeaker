@@ -97,6 +97,10 @@ iamspeaker/
 │  │  └─ progress/          # SCR-07
 │  └─ api/                  # thin route handlers → lib 호출
 ├─ lib/
+│  ├─ config.ts            # Zod 기반 env 파싱(fail-fast) + 외부 바이너리 preflight
+│  ├─ logger.ts            # pino 인스턴스 (상관키: req/job/session id)
+│  ├─ domain/              # 공유 도메인 타입(SlideContent, Script, TranscriptResult, GenOptions …) — 단일 진실원
+│  ├─ errors/              # API 에러 형태 헬퍼({code,message}), 에러 매핑
 │  ├─ ai/
 │  │  ├─ types.ts           # 어댑터 인터페이스 (단일 진실원)
 │  │  ├─ factory.ts         # 환경변수 기반 어댑터 선택
@@ -113,8 +117,11 @@ iamspeaker/
 │  ├─ jobs/                 # queue, worker, job 타입
 │  ├─ db/                   # drizzle 스키마, 마이그레이션, 쿼리
 │  └─ storage/              # 파일 경로 관리, 검증(path traversal 방지)
+├─ messages/                # UI i18n 사전 (ko.json 기본, en.json 폴백)
 ├─ scripts/
 │  ├─ setup-models.ts       # Piper voice / Whisper 모델 다운로드
+│  ├─ preflight.ts          # ffmpeg/libreoffice/ollama 가용성 점검
+│  ├─ eval-prompts.ts       # 어댑터 프롬프트를 로컬 모델(Hermes/Ollama)로 검증·스냅샷
 │  └─ seed.ts               # 예제 슬라이드/세션 시드
 ├─ docs/
 │  ├─ storyboard.md
@@ -221,6 +228,7 @@ Job {
 | 레벨 | 도구 | 대상 |
 |------|------|------|
 | 단위 | Vitest | 분석 함수(WPM/필러/발음), 어댑터 순수 로직, Zod 스키마, L1 규칙 매칭 |
+| 계약 | Vitest | **모든 어댑터 구현(local/cloud/stub)이 동일 인터페이스 계약을 통과** — 출력 스키마·필수 필드·폴백 동작 일관성 보장 |
 | 통합 | Vitest | API 핸들러 ↔ Job ↔ DB(인메모리 SQLite), 파서(pptx/pdf fixture) |
 | E2E | Playwright | 전체 루프 1회 완주(업로드→데모→편집→녹음→리포트→개선→Q&A), 모델은 **stub 어댑터**로 대체 |
 | 픽스처 | `test/fixtures/` | 예제 슬라이드, Whisper 출력 JSON, 오디오 샘플 |
@@ -256,6 +264,11 @@ Job {
 - 경량 사전(`messages/ko.json`, `messages/en.json`) + 서버 컴포넌트 친화 i18n(예: `next-intl`). 기본 `ko`, 폴백 `en`.
 - 문자열 하드코딩 금지. 새 화면 추가 시 키를 함께 등록.
 
+### 12.1 접근성 (a11y)
+- 시맨틱 마크업 + 키보드 내비게이션(녹음 컨트롤·스테퍼 포함), 포커스 표시, 충분한 색 대비(WCAG AA 목표).
+- 오디오 기반 앱이므로 **재생/녹음 상태를 시각 + 텍스트로 동시 전달**, 리포트 차트는 텍스트 대안 제공.
+- Phase 1 마지막에 a11y 패스(§14)로 일괄 점검, 신규 화면은 추가 시 라벨/aria 함께 작성.
+
 ---
 
 ## 13. 배포 / Docker / CI (신규)
@@ -269,28 +282,41 @@ Job {
 
 ## 14. 개발 로드맵
 
-### Phase 0 — 프로젝트 셋업
-- [ ] Next.js + Tailwind + pnpm 초기화, Biome/Vitest/Playwright 설정
-- [ ] Drizzle 스키마(§4) + 초기 마이그레이션
-- [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` 골격 + **stub 어댑터**
-- [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream`(SSE)
-- [ ] `lib/storage/` 경로 빌더(검증 포함), `DATA_DIR` 구성
-- [ ] `scripts/setup-models.ts`, `.env.example`(완료), pino 로깅
-- [ ] Docker Compose(app+ollama) + GitHub Actions CI
-- **완료 조건**: `docker compose up` 또는 네이티브 절차로 빈 화면이 뜨고 CI가 초록.
+> **순서 원칙**: 의존성 역순으로 토대부터 쌓고(Phase 0), stub로 전 구간을 먼저 관통시킨 뒤(M1 Walking Skeleton), 화면별로 실제 엔진을 채운다(Phase 1). 각 항목은 앞 항목에 의존하므로 위→아래 순서로 진행한다.
 
-### Phase 1 — MVP (Epic 0,1,2,3,6,7)
-- [ ] SCR-01: 업로드 + PPTX/PDF 파싱 + 모국어 선택
-- [ ] SCR-01b: Slide Critic(규칙 1차 + LLM 자연어 피드백, LLM 없이도 동작)
-- [ ] SCR-02: AI 데모(Script Gen + TTS, 슬라이드 동기화 재생)
-- [ ] SCR-03: 스크립트 편집기(데모 참조 토글, 예상 시간)
-- [ ] SCR-04: 녹음(MediaRecorder, 슬라이드 전환 타임스탬프 기록)
-- [ ] 오디오 파이프라인(ffmpeg 정규화) + STT + 분석(WPM/필러/발음/시간배분) + L1 매칭
-- [ ] SCR-05: 리포트 UI
-- [ ] SCR-06: 개선 스크립트(diff 비교, L1 표현 교정)
-- [ ] SCR-08: Q&A 생성 + 답변 녹음/분석
-- [ ] L1 언어팩 `ko.json` (종성·강세 / 관사·전치사)
-- [ ] E2E: 전체 루프 1회 완주(stub 어댑터)
+### Phase 0 — 기반 인프라 (의존성 순)
+1. [ ] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright 설정
+2. [ ] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + 외부 바이너리 **preflight**(ffmpeg/libreoffice/ollama)
+3. [ ] **로깅/에러 토대** — pino(`lib/logger.ts`) + API 에러 형태 헬퍼(`lib/errors/`) + React Error Boundary
+4. [ ] **도메인 타입**(`lib/domain/`) — SlideContent, Script, SlideScript, TranscriptResult, GenOptions, FillerWordResult 등 공유 타입
+5. [ ] Drizzle 스키마(§4) + 초기 마이그레이션(`lib/db/`)
+6. [ ] `lib/storage/` 경로 빌더(검증 포함), `DATA_DIR` 구성
+7. [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **어댑터 계약 테스트**
+8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream`(SSE) + 크래시 복구(running→queued)
+9. [ ] **Base UI shell** — 루트 레이아웃, 디자인 토큰, `(session)` 라우트 그룹 + 단계 스테퍼, 헬스 라우트
+10. [x] `.env.example` (완료) · [ ] `scripts/setup-models.ts` · [ ] Docker Compose(app+ollama) · [ ] GitHub Actions CI
+- **완료 조건**: `docker compose up`/네이티브로 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
+
+### Milestone M1 — Walking Skeleton (수직 슬라이스, stub 전용)
+- [ ] 업로드 → (stub)데모 → (stub)녹음 → (stub)리포트 → (stub)개선까지 **stub 어댑터로 전 구간 1회 관통**
+- [ ] Job/SSE/Storage/DB 통합을 실제 AI 전에 검증, **Playwright E2E 골격** 작성(이후 회귀 가드)
+- **완료 조건**: 모델 없이도 전체 화면 전환·Job 진행률·데이터 영속이 끊김 없이 동작.
+
+### Phase 1 — MVP 실제 엔진 (Epic 0,1,2,3,6,7)
+1. [ ] **UI i18n 셋업**(ko 기본/en 폴백) + **예제 슬라이드 fixture/seed** — 이후 모든 화면 작업의 토대
+2. [ ] **슬라이드 파이프라인** — LibreOffice PPTX→PDF + PDF.js 렌더 + 파서(텍스트/노트). SCR-02/03/04 공용
+3. [ ] SCR-01: 업로드 + 모국어 선택 (실제 파서 연결)
+4. [ ] SCR-01b: Slide Critic(규칙 1차 → LLM 피드백, LLM 없이도 동작)
+5. [ ] SCR-02: AI 데모(Script Gen + **TTS Piper**, 슬라이드 동기화 재생)
+6. [ ] SCR-03: 스크립트 편집기(데모 참조 토글, 예상 시간)
+7. [ ] SCR-04: 녹음(MediaRecorder, 슬라이드 전환 타임스탬프 기록)
+8. [ ] **오디오 파이프라인**(ffmpeg→16k mono WAV) + **STT(Whisper.cpp)** — 분석 선행조건
+9. [ ] **L1 언어팩 `ko.json`**(종성·강세 / 관사·전치사) — *분석보다 먼저* (분석이 이를 참조)
+10. [ ] **분석 엔진**(WPM/필러/발음/시간배분) + L1 매칭
+11. [ ] SCR-05: 리포트 UI
+12. [ ] SCR-06: 개선 스크립트(diff 비교, L1 표현 교정)
+13. [ ] SCR-08: Q&A 생성 + 답변 녹음/분석
+14. [ ] **a11y 패스**(키보드 내비/라벨/대비) + E2E를 실제 루프로 확장
 - **완료 조건**: 로컬 모델(Ollama+Piper+Whisper.cpp)만으로 업로드→…→Q&A 전체 루프 완주.
 
 ### Phase 2 — 확장 (Epic 4,5)
