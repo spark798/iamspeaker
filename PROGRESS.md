@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — SCR-02 AI 데모(생성·동기 표시) 실서버 검증 완료 |
+| 현재 단계 | **Phase 1 진행 중** — SCR-03 편집기 완료, 전체 리뷰 단계 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | (택1) ① SCR-03 편집기(스크립트 편집·저장 version 1+) ② 오디오(ffmpeg/Whisper/Piper) → 녹음/분석 ③ SCR-01b 슬라이드 분석(critique 잡 연결) |
+| 다음 액션 | 전체 리뷰(iamspeaker-reviewer) → ② SCR-01b 슬라이드 분석(critique 잡 연결) → ③ 오디오(ffmpeg/Whisper/Piper) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -55,6 +55,7 @@
 - [x] 슬라이드 **파서**: `lib/slides/`(parsePdf=unpdf, parsePptx=fflate+XML 노트추출, parseSlides 디스패치) + `parse` 잡 핸들러(파일→슬라이드 추출·교체). 단위 4 + 통합(실 PDF) 통과. (LibreOffice PPTX→PDF 렌더 변환은 SCR-02 뷰어 때)
 - [x] **SCR-01 업로드 폼**: `POST /api/sessions/upload`(멀티파트) + `lib/upload/validate.ts`(확장자+크기+매직바이트) → storage 저장 → parse 잡. `components/upload-form.tsx`(SSE 진행률→슬라이드), `GET /api/sessions/[id]/slides`. WalkingSkeletonDemo 제거. 실서버 업로드→파싱→슬라이드 + 415 거부 확인.
 - [x] **SCR-02 AI 데모**: `app/(session)/demo?session=` + `components/demo-view.tsx`(데모 잡→SSE→슬라이드별 스크립트 동기 표시, 기존 스크립트 로드/재생성), 업로드 폼에서 데모 링크. 실서버 실 LLM 생성 확인. (슬라이드 시각 렌더는 LibreOffice 설치 후 추후)
+- [x] **SCR-03 편집기**: `app/(session)/editor?session=` + `components/script-editor.tsx`(슬라이드별 편집, 예상시간 `lib/script/estimate.ts`, AI 데모 참조 토글) + `POST /api/sessions/[id]/scripts`(새 user 버전) + `GET .../script?version=N`. 실서버 저장 v1→v2 + 렌더 확인.
 
 ### Milestone M1 — Walking Skeleton ✅ 완료
 - [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
@@ -119,6 +120,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — SCR-03 편집기
+- `POST /api/sessions/[id]/scripts`(편집본을 새 user 버전으로 저장, version=latest+1) + `GET .../script?version=N`(특정 버전).
+- `lib/script/estimate.ts`(countWords/estimateSpeakingSec, 130WPM) + 단위 3. `components/script-editor.tsx`(슬라이드별 textarea, 실시간 예상시간, AI 데모 참조 토글), `app/(session)/editor` 페이지, demo→editor 링크.
+- 검증: 테스트 57(+5 skip)/build. 실서버: 저장 v1→v2(source user) + /editor 렌더 확인.
+- 다음: 전체 리뷰 → SCR-01b/오디오.
 
 ### 2026-06-14 — SCR-02 AI 데모
 - `app/(session)/demo/page.tsx`(server, `?session=` 읽기, getTranslations) + `components/demo-view.tsx`(client): 슬라이드/기존 스크립트 로드, 데모 잡 생성→SSE 진행률→슬라이드별 스크립트 동기 표시, 재생성.

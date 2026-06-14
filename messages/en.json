@@ -48,6 +48,19 @@
     "regenerate": "Regenerate",
     "slide": "Slide",
     "script": "AI script",
-    "empty": "No script yet. Click 'Generate AI demo' to start."
+    "empty": "No script yet. Click 'Generate AI demo' to start.",
+    "toEditor": "Edit script →"
+  },
+  "editor": {
+    "title": "Edit script",
+    "noSession": "No session. Please upload first.",
+    "estimatedTime": "Estimated time",
+    "showReference": "Show AI demo",
+    "reference": "AI demo (original)",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved (version {version})",
+    "slide": "Slide",
+    "placeholder": "Write the spoken script for this slide"
   }
 }

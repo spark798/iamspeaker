@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 interface Slide {
@@ -90,6 +91,14 @@ export function DemoView({ sessionId }: { sessionId: string }) {
           <div className="h-2 flex-1 overflow-hidden rounded bg-neutral-200 dark:bg-neutral-800">
             <div className="h-full bg-brand transition-all" style={{ width: `${progress}%` }} />
           </div>
+        )}
+        {hasScript && !busy && (
+          <Link
+            href={`/editor?session=${sessionId}`}
+            className="ml-auto text-sm font-medium text-brand hover:underline"
+          >
+            {t("toEditor")}
+          </Link>
         )}
       </div>
 
