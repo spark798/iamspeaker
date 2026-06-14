@@ -29,6 +29,7 @@
 - [x] 헤르메스(로컬 Ollama `hermes3:8b`) 활용 방안 정의 + 동작 검증
 - [x] 빠져 있던 엔지니어링 영역 계획 추가 (Job Queue, 오디오 파이프라인, 테스트, 보안, 관측성, i18n, CI)
 - [x] **기반 정비**: git init(main), `LICENSE`(MIT), `.gitignore`, `README.md` 초안, `data/.gitkeep`, 초기 커밋
+- [x] **리뷰 가드레일**: `.claude/agents/iamspeaker-reviewer.md` — 프로젝트 고유 규칙 검사 서브에이전트(범용 /code-review·/security-review 보완). 작업 청크 후 커밋 전 실행 권장
 
 ### 진행 중 🚧
 - (없음)
@@ -106,6 +107,10 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-13 — 리뷰 가드레일 추가
+- `.claude/agents/iamspeaker-reviewer.md` 신설(read-only, model sonnet). 어댑터 패턴/로컬 우선/config 경유/도메인 타입/비동기 잡/보안 경계/마이그레이션 동반/stub·계약 테스트/i18n·a11y/커밋 태그를 검사. 범용 /code-review(버그)·/security-review를 대체하지 않고 보완. 매 작업 청크 후 커밋 전 실행 권장.
+- 사용법: 작업 후 이 에이전트로 diff 리뷰 → 지적사항 반영 → 커밋.
 
 ### 2026-06-13 — Phase 0-2 Config 모듈
 - `lib/config.ts`: Zod 스키마로 `.env.example` 전 항목 파싱. 기본값 우선(로컬 우선), 빈 문자열("KEY=")→미설정, 잘못된 값만 fail-fast(throw). `deriveEngines()`로 클라우드 키 유무에 따라 활성 엔진(script/tts/stt) 자동 선택. `config`/`engines` 싱글턴 export.
