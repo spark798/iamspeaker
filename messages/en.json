@@ -22,5 +22,21 @@
     "title": "Upload slides",
     "desc": "Upload PPTX/PDF + presentation settings (target time, tone, language, native language).",
     "phaseNote": "SCR-01 — coming in Phase 1."
+  },
+  "uploadForm": {
+    "file": "Slide file (PPTX/PDF)",
+    "targetMinutes": "Target time (minutes)",
+    "tone": "Tone",
+    "toneFormal": "Formal",
+    "toneCasual": "Casual",
+    "language": "Presentation language",
+    "nativeLanguage": "Native language",
+    "submit": "Upload & analyze",
+    "uploading": "Uploading…",
+    "parsing": "Analyzing slides…",
+    "done": "Analysis complete",
+    "slidesHeading": "Extracted slides",
+    "notes": "Notes",
+    "empty": "No text"
   }
 }

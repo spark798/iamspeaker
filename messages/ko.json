@@ -22,5 +22,21 @@
     "title": "슬라이드 업로드",
     "desc": "PPTX/PDF 업로드 + 발표 설정(목표 시간·톤·언어·모국어).",
     "phaseNote": "SCR-01 — Phase 1에서 구현됩니다."
+  },
+  "uploadForm": {
+    "file": "슬라이드 파일 (PPTX/PDF)",
+    "targetMinutes": "목표 발표 시간(분)",
+    "tone": "톤",
+    "toneFormal": "격식",
+    "toneCasual": "캐주얼",
+    "language": "발표 언어",
+    "nativeLanguage": "모국어",
+    "submit": "업로드 & 분석",
+    "uploading": "업로드 중…",
+    "parsing": "슬라이드 분석 중…",
+    "done": "분석 완료",
+    "slidesHeading": "추출된 슬라이드",
+    "notes": "노트",
+    "empty": "텍스트 없음"
   }
 }

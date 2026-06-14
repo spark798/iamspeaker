@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — 슬라이드 파서(PDF/PPTX) + parse 잡 완료 |
+| 현재 단계 | **Phase 1 진행 중** — SCR-01 업로드 폼(업로드→파싱→슬라이드) 실서버 검증 완료 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | (택1) ① SCR-01 실제 업로드 폼(파일→storage→parse 잡) ② SCR-02 뷰어(LibreOffice PPTX→PDF + PDF.js 렌더) ③ 오디오(ffmpeg/Whisper/Piper) |
+| 다음 액션 | (택1) ① SCR-02 AI 데모(데모 잡 연결 + 스크립트 표시; 슬라이드 시각 렌더는 LibreOffice 설치 시) ② SCR-03 편집기 ③ 오디오(ffmpeg/Whisper/Piper) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -53,6 +53,7 @@
 - [ ] 오디오 경로(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → analyze/improve(녹음) 핸들러.
 - [x] UI i18n(ko 기본/en 폴백, next-intl 비라우팅) + `messages/{ko,en}.json` + 공유 샘플(`lib/samples.ts`) + `pnpm db:seed`. 홈/업로드/스테퍼 키 기반, 실서버 렌더 확인.
 - [x] 슬라이드 **파서**: `lib/slides/`(parsePdf=unpdf, parsePptx=fflate+XML 노트추출, parseSlides 디스패치) + `parse` 잡 핸들러(파일→슬라이드 추출·교체). 단위 4 + 통합(실 PDF) 통과. (LibreOffice PPTX→PDF 렌더 변환은 SCR-02 뷰어 때)
+- [x] **SCR-01 업로드 폼**: `POST /api/sessions/upload`(멀티파트) + `lib/upload/validate.ts`(확장자+크기+매직바이트) → storage 저장 → parse 잡. `components/upload-form.tsx`(SSE 진행률→슬라이드), `GET /api/sessions/[id]/slides`. WalkingSkeletonDemo 제거. 실서버 업로드→파싱→슬라이드 + 415 거부 확인.
 
 ### Milestone M1 — Walking Skeleton ✅ 완료
 - [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
@@ -117,6 +118,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — SCR-01 업로드 폼
+- `POST /api/sessions/upload`(멀티파트 formData): 파일 검증(`lib/upload/validate.ts` — 확장자 화이트리스트+크기+매직바이트) → `lib/storage`로 저장 → 세션 생성 → parse 잡 적재. `GET /api/sessions/[id]/slides` 추가.
+- `components/upload-form.tsx`(client): 파일+설정 폼 → 업로드 → parse SSE 진행률 → 추출 슬라이드 표시. /upload 페이지 연결, i18n(uploadForm) 키. WalkingSkeletonDemo 제거(역할 흡수).
+- 테스트: validate 단위 4 추가(전체 54, +5 skip), build OK. 실서버: 멀티파트 업로드→파싱→슬라이드 2장 + 잘못된 형식 415 확인.
+- 다음: SCR-02 AI 데모.
 
 ### 2026-06-14 — 슬라이드 파서 파이프라인
 - `lib/slides/`: `parsePdf`(unpdf, 페이지별 텍스트), `parsePptx`(fflate unzip + `<a:t>` 추출 + rels 통한 노트 매칭), `parseSlides` 확장자 디스패치(미지원 throw).
