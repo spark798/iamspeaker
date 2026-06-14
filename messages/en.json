@@ -1,0 +1,26 @@
+{
+  "app": {
+    "name": "iamspeaker",
+    "tagline": "Open-source presentation practice — upload slides, get an AI demo talk, then record and get feedback."
+  },
+  "home": {
+    "cta": "Get started",
+    "phase": "Project setup (Phase 0) in progress"
+  },
+  "stepper": {
+    "upload": "Upload",
+    "critique": "Slide review",
+    "demo": "AI demo",
+    "editor": "Edit",
+    "record": "Record",
+    "report": "Report",
+    "improve": "Improve",
+    "qa": "Q&A",
+    "progress": "History"
+  },
+  "upload": {
+    "title": "Upload slides",
+    "desc": "Upload PPTX/PDF + presentation settings (target time, tone, language, native language).",
+    "phaseNote": "SCR-01 — coming in Phase 1."
+  }
+}

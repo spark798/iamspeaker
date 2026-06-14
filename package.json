@@ -22,12 +22,14 @@
     "preflight": "tsx scripts/preflight.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx lib/db/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "better-sqlite3": "^12.10.0",
     "drizzle-orm": "^0.45.2",
     "next": "^15.1.0",
+    "next-intl": "^4.13.0",
     "pino": "^9.14.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

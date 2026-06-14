@@ -1,14 +1,10 @@
 "use client";
 
+import { SAMPLE_SLIDES } from "@/lib/samples";
 import { useState } from "react";
 
-// Walking Skeleton: 실제 모델 없이 stub 어댑터로 전 구간(세션→데모 작업→SSE→스크립트)을 관통한다.
-// Phase 1에서 실제 업로드/파서/엔진으로 대체된다.
-const SAMPLE_SLIDES = [
-  { textContent: "Problem: 고객 이탈률이 높습니다." },
-  { textContent: "Solution: 예측 ML로 이탈을 30% 줄입니다." },
-  { textContent: "Traction: MRR $40K, 월 15% 성장." },
-];
+// Walking Skeleton: 실제 모델 없이/실 LLM으로 전 구간(세션→데모 작업→SSE→스크립트)을 관통한다.
+// Phase 1에서 실제 업로드/파서 UI로 대체된다.
 
 interface SlideScript {
   slideIndex: number;

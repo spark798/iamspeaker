@@ -1,22 +1,24 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 
-/** 발표 연습 플로우 단계 (스토리보드 순서). id = 라우트 세그먼트. */
+/** 발표 연습 플로우 단계 (스토리보드 순서). id = 라우트 세그먼트 + i18n 키. */
 export const STEPS = [
-  { id: "upload", scr: "SCR-01", label: "업로드" },
-  { id: "critique", scr: "SCR-01b", label: "슬라이드 분석" },
-  { id: "demo", scr: "SCR-02", label: "AI 데모" },
-  { id: "editor", scr: "SCR-03", label: "편집" },
-  { id: "record", scr: "SCR-04", label: "녹음" },
-  { id: "report", scr: "SCR-05", label: "리포트" },
-  { id: "improve", scr: "SCR-06", label: "개선" },
-  { id: "qa", scr: "SCR-08", label: "Q&A" },
-  { id: "progress", scr: "SCR-07", label: "기록" },
+  { id: "upload", scr: "SCR-01" },
+  { id: "critique", scr: "SCR-01b" },
+  { id: "demo", scr: "SCR-02" },
+  { id: "editor", scr: "SCR-03" },
+  { id: "record", scr: "SCR-04" },
+  { id: "report", scr: "SCR-05" },
+  { id: "improve", scr: "SCR-06" },
+  { id: "qa", scr: "SCR-08" },
+  { id: "progress", scr: "SCR-07" },
 ] as const;
 
 /** 현재 라우트에 해당하는 단계를 강조하는 진행 스테퍼(표시 전용, 접근성 라벨 포함). */
 export function Stepper() {
+  const t = useTranslations("stepper");
   const pathname = usePathname();
   const currentIndex = STEPS.findIndex((s) => pathname.startsWith(`/${s.id}`));
 
@@ -50,7 +52,7 @@ export function Stepper() {
                     : "text-neutral-500"
                 }
               >
-                {step.label}
+                {t(step.id)}
               </span>
             </li>
           );

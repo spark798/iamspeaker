@@ -1,0 +1,26 @@
+{
+  "app": {
+    "name": "iamspeaker",
+    "tagline": "오픈소스 발표 연습 웹앱 — 슬라이드를 올리면 AI가 시범 발표를 만들고, 연습 녹음을 분석해 피드백합니다."
+  },
+  "home": {
+    "cta": "시작하기",
+    "phase": "프로젝트 셋업(Phase 0) 진행 중"
+  },
+  "stepper": {
+    "upload": "업로드",
+    "critique": "슬라이드 분석",
+    "demo": "AI 데모",
+    "editor": "편집",
+    "record": "녹음",
+    "report": "리포트",
+    "improve": "개선",
+    "qa": "Q&A",
+    "progress": "기록"
+  },
+  "upload": {
+    "title": "슬라이드 업로드",
+    "desc": "PPTX/PDF 업로드 + 발표 설정(목표 시간·톤·언어·모국어).",
+    "phaseNote": "SCR-01 — Phase 1에서 구현됩니다."
+  }
+}
