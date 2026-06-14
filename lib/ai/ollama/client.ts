@@ -5,6 +5,8 @@ export interface OllamaChatOptions {
   prompt: string;
   timeoutMs?: number;
   temperature?: number;
+  /** Ollama 구조화 출력: "json"(기본) 또는 JSON 스키마 객체. */
+  format?: unknown;
 }
 
 /**
@@ -25,7 +27,7 @@ export async function ollamaChatJson(opts: OllamaChatOptions): Promise<unknown> 
       body: JSON.stringify({
         model: config.OLLAMA_MODEL,
         stream: false,
-        format: "json",
+        format: opts.format ?? "json",
         messages,
         options: { temperature: opts.temperature ?? 0.4 },
       }),

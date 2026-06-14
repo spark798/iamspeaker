@@ -23,7 +23,7 @@ export function generateScriptPrompt(slides: SlideContent[], o: GenOptions): Pro
   return {
     system:
       "You are an expert presentation coach for non-native English speakers. Write a natural spoken script, one segment per slide. Output STRICT JSON only, no prose.",
-    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}", paced for about ${o.targetDurationSec} seconds total.\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]} with exactly one entry per input slide, reusing the same slideIndex values.`,
+    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}", paced for about ${o.targetDurationSec} seconds total.\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]}.\nIMPORTANT: produce EXACTLY ${slides.length} entries — one per input slide, reusing the same slideIndex values (${slides.map((s) => s.index).join(", ")}). Do NOT add extra intro or conclusion segments; fold any opening/closing remarks into the first/last slide.`,
   };
 }
 

@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 현재 단계 | **Phase 1 진행 중** — 실제 Ollama LLM 어댑터(script/critique/qa) 완료, 실서버에서 실 LLM 데모 검증 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | (택1) ① 프롬프트 정합성 개선(슬라이드당 1세그먼트) ② UI i18n+fixture/seed ③ 오디오(ffmpeg/Whisper/Piper 설치+어댑터) ④ 슬라이드 파이프라인(LibreOffice+PDF.js) |
+| 다음 액션 | (택1) ① UI i18n+fixture/seed ② 오디오(ffmpeg/Whisper/Piper 설치+어댑터) ③ 슬라이드 파이프라인(LibreOffice+PDF.js) ④ 평가/진화 루프(eval-prompts, 로컬 Hermes 활용) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -49,7 +49,7 @@
 
 ### Phase 1 진행 ⏳
 - [x] 실제 Ollama LLM 어댑터: OllamaScriptGenerator(generate/improve)·OllamaSlideCritic·OllamaQaGenerator. 프롬프트 `lib/ai/prompts/`, 출력 Zod 검증 `lib/ai/ollama/schemas.ts`. factory가 LLM은 Ollama 반환(audio는 아직 stub). 계약 테스트 재사용(live gated). 실서버에서 실 LLM 데모 생성 확인.
-- [ ] 프롬프트 정합성: 모델이 슬라이드 수보다 많은 세그먼트 반환 경향 → "슬라이드당 1개" 강제(매핑/후처리 or format 스키마).
+- [x] 프롬프트 정합성: format 스키마 + 프롬프트 강화 + `alignSegmentsToSlides()`(결정적 1:1 정렬, 여분 버림/누락 폴백). 단위테스트 5케이스 + 실서버(3슬라이드→3세그먼트) 확인.
 - [ ] 오디오 경로(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → analyze/improve(녹음) 핸들러.
 - [ ] UI i18n(ko/en) + 예제 fixture/seed, 슬라이드 파이프라인(LibreOffice+PDF.js+파서).
 

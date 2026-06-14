@@ -21,9 +21,47 @@ import type {
   ScriptDiff,
   SlideContent,
   SlideCritique,
+  SlideScript,
   TranscriptResult,
 } from "@/lib/domain";
 import { ollamaChatJson } from "./client";
+
+/** Ollama 구조화 출력 스키마 — 스크립트 형태를 강제. */
+const SCRIPT_FORMAT = {
+  type: "object",
+  properties: {
+    slides: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: { slideIndex: { type: "integer" }, text: { type: "string" } },
+        required: ["slideIndex", "text"],
+      },
+    },
+  },
+  required: ["slides"],
+} as const;
+
+/**
+ * LLM이 반환한 세그먼트를 입력 슬라이드에 1:1로 정렬한다(결정적 보장).
+ * - slideIndex가 일치하는 첫 세그먼트를 사용(중복은 첫 것)
+ * - 없으면 위치(positional) 폴백, 그래도 없으면 빈 문자열
+ * - 항상 입력 슬라이드 수만큼, 올바른 slideIndex로 반환(여분 세그먼트는 버림)
+ */
+export function alignSegmentsToSlides(
+  slides: SlideContent[],
+  segments: { slideIndex: number; text: string }[],
+): SlideScript[] {
+  const byIndex = new Map<number, string>();
+  for (const seg of segments) {
+    if (!byIndex.has(seg.slideIndex)) byIndex.set(seg.slideIndex, seg.text);
+  }
+  return slides.map((slide, i) => {
+    const exact = byIndex.get(slide.index);
+    const text = exact ?? segments[i]?.text ?? "";
+    return { slideIndex: slide.index, text };
+  });
+}
 import {
   AnswerEvalSchema,
   CritiqueSchema,
@@ -39,12 +77,11 @@ import {
 export class OllamaScriptGenerator implements ScriptGeneratorAdapter {
   async generate(slides: SlideContent[], options: GenOptions): Promise<Script> {
     const { system, prompt } = generateScriptPrompt(slides, options);
-    const parsed = ScriptContentSchema.parse(await ollamaChatJson({ system, prompt }));
-    return {
-      version: 0,
-      source: "ai_demo",
-      content: parsed.slides.map((s) => ({ slideIndex: s.slideIndex, text: s.text })),
-    };
+    const parsed = ScriptContentSchema.parse(
+      await ollamaChatJson({ system, prompt, format: SCRIPT_FORMAT }),
+    );
+    // 모델이 인트로/결론 등 여분을 추가하거나 누락해도 입력 슬라이드에 1:1 정렬(결정적).
+    return { version: 0, source: "ai_demo", content: alignSegmentsToSlides(slides, parsed.slides) };
   }
 
   async improve(script: Script, analysis: AnalysisResult, l1?: L1Profile): Promise<ScriptDiff> {
