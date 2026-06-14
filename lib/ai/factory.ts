@@ -1,10 +1,5 @@
-import {
-  StubQaGenerator,
-  StubScriptGenerator,
-  StubSlideCritic,
-  StubStt,
-  StubTts,
-} from "@/lib/ai/stub";
+import { OllamaQaGenerator, OllamaScriptGenerator, OllamaSlideCritic } from "@/lib/ai/ollama";
+import { StubStt, StubTts } from "@/lib/ai/stub";
 import type {
   Adapters,
   QaGeneratorAdapter,
@@ -17,29 +12,29 @@ import type {
 /**
  * 어댑터 팩토리 — 항상 인터페이스/팩토리 경유로 어댑터를 얻는다(직접 호출 금지).
  *
- * Phase 0: 실제 로컬/클라우드 구현 전까지 stub을 반환(Walking Skeleton·CI).
- * Phase 1: `engines`(lib/config의 deriveEngines)에 따라 실제 구현 선택 + 로컬 폴백으로 교체.
- *   각 케이스의 반환만 바뀌고 인터페이스/계약(test/contract)은 동일하게 유지된다.
+ * LLM(script/qa/slideCritic): 로컬 Ollama 기본.
+ *   Phase 2에서 ANTHROPIC_API_KEY/OPENAI_API_KEY가 있으면 클라우드 구현으로 교체(engines 참조).
+ * 오디오(tts/stt): 아직 stub. Phase 1 오디오 단계에서 Piper/Whisper.cpp로 교체.
+ * 테스트/CI는 stub을 명시 주입(`stubAdapters()`)해 모델 없이 통과한다.
  */
-
 export function getScriptGenerator(): ScriptGeneratorAdapter {
-  return new StubScriptGenerator();
-}
-
-export function getTts(): TtsAdapter {
-  return new StubTts();
-}
-
-export function getStt(): SttAdapter {
-  return new StubStt();
+  return new OllamaScriptGenerator();
 }
 
 export function getQaGenerator(): QaGeneratorAdapter {
-  return new StubQaGenerator();
+  return new OllamaQaGenerator();
 }
 
 export function getSlideCritic(): SlideCriticAdapter {
-  return new StubSlideCritic();
+  return new OllamaSlideCritic();
+}
+
+export function getTts(): TtsAdapter {
+  return new StubTts(); // TODO(Phase 1 audio): PiperTts
+}
+
+export function getStt(): SttAdapter {
+  return new StubStt(); // TODO(Phase 1 audio): WhisperCppStt
 }
 
 export function getAdapters(): Adapters {

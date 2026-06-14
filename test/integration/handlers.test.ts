@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { getAdapters } from "@/lib/ai/factory";
+import { stubAdapters } from "@/lib/ai/stub";
 import { type Db, createDb } from "@/lib/db/client";
 import { qaItems, scripts, sessions, slideCritiques, slides } from "@/lib/db/schema";
 import { createHandlers } from "@/lib/jobs/handlers";
@@ -18,7 +18,7 @@ beforeEach(() => {
   db = createDb(":memory:");
   migrate(db, { migrationsFolder: "./lib/db/migrations" });
   queue = new JobQueue(db);
-  worker = new Worker(queue, createHandlers(db, getAdapters()));
+  worker = new Worker(queue, createHandlers(db, stubAdapters()));
 
   sessionId = randomUUID();
   db.insert(sessions)

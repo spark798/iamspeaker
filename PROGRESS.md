@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **🎉 Milestone M1 완료** — Walking Skeleton 전 구간 관통(실서버 검증) |
+| 현재 단계 | **Phase 1 진행 중** — 실제 Ollama LLM 어댑터(script/critique/qa) 완료, 실서버에서 실 LLM 데모 검증 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | **Phase 1 시작**: ① UI i18n(ko/en) + 예제 fixture/seed → ② 슬라이드 파이프라인(LibreOffice+PDF.js+파서). (DEVELOPMENT §14) |
+| 다음 액션 | (택1) ① 프롬프트 정합성 개선(슬라이드당 1세그먼트) ② UI i18n+fixture/seed ③ 오디오(ffmpeg/Whisper/Piper 설치+어댑터) ④ 슬라이드 파이프라인(LibreOffice+PDF.js) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -46,6 +46,12 @@
 9. [x] **Base UI shell** — `(session)` 레이아웃 + 스테퍼(SCR-01~08, 현재단계 aria-current) + `/upload` 자리표시자 + `/api/health`(DB+엔진) + 홈 CTA. 시작 시 자동 마이그레이션(D14). 실서버 기동 검증 ✅
 10. [x] `scripts/setup-models.ts`(Whisper/Piper 멱등 다운로드) + `Dockerfile`(멀티스테이지, ffmpeg+libreoffice) + `docker-compose.yml`(app+ollama) + `.dockerignore` + `.github/workflows/ci.yml`(lint/typecheck/test/build) ✅
 - **Phase 0 완료 조건 충족**: 셸 실서버 기동 확인(0-9), 자동 마이그레이션, CI 워크플로 작성. (docker/CI 런타임 검증은 사용자 환경/푸시 시)
+
+### Phase 1 진행 ⏳
+- [x] 실제 Ollama LLM 어댑터: OllamaScriptGenerator(generate/improve)·OllamaSlideCritic·OllamaQaGenerator. 프롬프트 `lib/ai/prompts/`, 출력 Zod 검증 `lib/ai/ollama/schemas.ts`. factory가 LLM은 Ollama 반환(audio는 아직 stub). 계약 테스트 재사용(live gated). 실서버에서 실 LLM 데모 생성 확인.
+- [ ] 프롬프트 정합성: 모델이 슬라이드 수보다 많은 세그먼트 반환 경향 → "슬라이드당 1개" 강제(매핑/후처리 or format 스키마).
+- [ ] 오디오 경로(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → analyze/improve(녹음) 핸들러.
+- [ ] UI i18n(ko/en) + 예제 fixture/seed, 슬라이드 파이프라인(LibreOffice+PDF.js+파서).
 
 ### Milestone M1 — Walking Skeleton ✅ 완료
 - [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
@@ -110,6 +116,13 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — Phase 1: 실제 Ollama LLM 어댑터
+- `lib/ai/ollama/`(client+schemas+adapters) + `lib/ai/prompts/`(generate/improve/critique/qa generate/evaluate). 출력은 Zod로 검증(미신뢰 경계, coerce).
+- factory: script/qa/slideCritic → Ollama, tts/stt → stub(오디오 단계까지). 테스트는 `stubAdapters()` 명시 주입으로 무모델 통과. 계약 스위트 재사용 + `ollama.live.test.ts`(OLLAMA_LIVE=1 게이트).
+- 검증: 일반 테스트 40 통과(+live 5 skip). **live**(hermes3:8b): 어댑터 계약 5개 통과(~48s). **실서버**: 데모 작업이 실제 LLM 발표 원고 생성 확인.
+- 결정: 제품 런타임은 MCP 아닌 OLLAMA_HOST HTTP(D9 준수). 헤르메스는 동일 Ollama라 검증 베드로 활용.
+- 다음: 프롬프트 정합성/오디오/슬라이드 파이프라인.
 
 ### 2026-06-14 — Milestone M1 Walking Skeleton 🎉
 - 핸들러(`lib/jobs/handlers.ts`, `createHandlers(db, adapters)` 주입형): demo(슬라이드→스크립트v0), critique(비평 저장), qa_generate(최신 스크립트→질문). index.ts에서 getDb()+getAdapters()로 등록.

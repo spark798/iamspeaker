@@ -1,4 +1,5 @@
 import type {
+  Adapters,
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
@@ -135,4 +136,15 @@ export class StubSlideCritic implements SlideCriticAdapter {
       };
     });
   }
+}
+
+/** 전체 stub 어댑터 묶음 — 테스트/CI에서 모델 없이 주입. */
+export function stubAdapters(): Adapters {
+  return {
+    script: new StubScriptGenerator(),
+    tts: new StubTts(),
+    stt: new StubStt(),
+    qa: new StubQaGenerator(),
+    slideCritic: new StubSlideCritic(),
+  };
 }
