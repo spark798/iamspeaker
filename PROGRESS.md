@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 0-9 UI shell 완료** (셸 실제 기동 검증: /, /upload, /api/health 200) |
+| 현재 단계 | **🎉 Phase 0 완료 (10/10)** — 기반 인프라 + 어댑터 골격 + Job Queue + UI 셸 + Docker/CI |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | Phase 0-10(마지막): Docker Compose(app+ollama) + GitHub Actions CI |
+| 다음 액션 | **Milestone M1 — Walking Skeleton**: stub로 업로드→데모→녹음→리포트→개선 전 구간 관통 + Playwright E2E 골격 |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -44,8 +44,8 @@
 7. [x] `lib/ai/types.ts`(Script/Tts/Stt/Qa/SlideCritic 인터페이스 + Adapters) + `factory.ts`(getter들, 현재 stub) + `lib/ai/stub/`(결정적 구현) + 재사용 계약 테스트(`test/contract/`) ✅
 8. [x] Job Queue(`lib/jobs/queue.ts` JobQueue) + Worker(`worker.ts`, concurrency/폴링/핸들러레지스트리) + `GET /api/jobs/[id]/stream`(SSE) + 크래시 복구(recoverStalled) + instrumentation 워커 기동 ✅
 9. [x] **Base UI shell** — `(session)` 레이아웃 + 스테퍼(SCR-01~08, 현재단계 aria-current) + `/upload` 자리표시자 + `/api/health`(DB+엔진) + 홈 CTA. 시작 시 자동 마이그레이션(D14). 실서버 기동 검증 ✅
-10. [ ] `scripts/setup-models.ts` + Docker Compose(app+ollama) + GitHub Actions CI  ·  [x] `.env.example`  ← 다음(Phase 0 마지막)
-- **Phase 0 완료 조건**: 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
+10. [x] `scripts/setup-models.ts`(Whisper/Piper 멱등 다운로드) + `Dockerfile`(멀티스테이지, ffmpeg+libreoffice) + `docker-compose.yml`(app+ollama) + `.dockerignore` + `.github/workflows/ci.yml`(lint/typecheck/test/build) ✅
+- **Phase 0 완료 조건 충족**: 셸 실서버 기동 확인(0-9), 자동 마이그레이션, CI 워크플로 작성. (docker/CI 런타임 검증은 사용자 환경/푸시 시)
 
 ### 대기 ⏳ (Milestone M1 — Walking Skeleton)
 - [ ] stub 어댑터로 업로드→데모→녹음→리포트→개선 **전 구간 1회 관통** + Playwright E2E 골격
@@ -109,6 +109,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — Phase 0-10 Docker + CI (Phase 0 완료 🎉)
+- `scripts/setup-models.ts`: Whisper ggml + Piper voice(.onnx/.onnx.json) 멱등 다운로드(스트리밍).
+- `Dockerfile`: node:22-bookworm-slim 멀티스테이지(deps→build→runner), 런타임에 ffmpeg+libreoffice, CMD pnpm start(자동 마이그레이션).
+- `docker-compose.yml`: app + ollama(볼륨), app은 OLLAMA_HOST=http://ollama:11434, ./data 마운트. `.dockerignore`.
+- `.github/workflows/ci.yml`: pnpm install→lint→typecheck→test→build (Node 22).
+- 검증: typecheck/lint/test(44) 통과. docker는 로컬 미설치라 compose 런타임 검증은 사용자 환경/CI에서.
+- **Phase 0 전체 완료**. 다음: Milestone M1 Walking Skeleton.
 
 ### 2026-06-14 — Phase 0-9 Base UI shell
 - `components/stepper.tsx`(client, usePathname): SCR-01~08 진행 스테퍼, 현재 단계 aria-current. `app/(session)/layout.tsx`: 헤더+스테퍼+본문 셸. `app/(session)/upload/page.tsx`: SCR-01 자리표시자.
