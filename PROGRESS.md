@@ -117,6 +117,11 @@
 
 새 항목은 위에 추가 (최신 우선).
 
+### 2026-06-14 — 프롬프트 정합성 + 진화 루프 방향 기록
+- 정합성: `alignSegmentsToSlides()`로 LLM 출력을 입력 슬라이드에 결정적 1:1 정렬(여분 버림/누락 폴백) + format 스키마 + 프롬프트 강화. 실서버 3→3 확인. (커밋 b2a1075)
+- **헤르메스 "self-evolving" 결론**: 해당 기능 없음(고정 가중치, 무상태 MCP). "진화"는 우리가 만드는 eval+피드백 루프로 — DEVELOPMENT §8.1에 정리. **보류**: ① eval-prompts는 프롬프트 성숙 후, ② 피드백 캡처는 SCR-05/06 생긴 뒤. 제품 런타임 자동탑재 X(D9).
+- 다음: 화면 작업(i18n+fixture/seed → 슬라이드 파이프라인).
+
 ### 2026-06-14 — Phase 1: 실제 Ollama LLM 어댑터
 - `lib/ai/ollama/`(client+schemas+adapters) + `lib/ai/prompts/`(generate/improve/critique/qa generate/evaluate). 출력은 Zod로 검증(미신뢰 경계, coerce).
 - factory: script/qa/slideCritic → Ollama, tts/stt → stub(오디오 단계까지). 테스트는 `stubAdapters()` 명시 주입으로 무모델 통과. 계약 스위트 재사용 + `ollama.live.test.ts`(OLLAMA_LIVE=1 게이트).
