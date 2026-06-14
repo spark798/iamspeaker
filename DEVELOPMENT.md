@@ -59,7 +59,7 @@
 
 | 영역 | 결정 | 사유 |
 |------|------|------|
-| 런타임 | **Node 20 LTS** | Next.js 14+ / better-sqlite3 호환 |
+| 런타임 | **Node 22 LTS** | pnpm 11(node:sqlite) / Next 15 요구. (당초 Node 20 → 22로 상향) |
 | 프레임워크 | **Next.js (App Router) + React** | SSR + Server Actions로 백엔드 일원화 |
 | 패키지 매니저 | **pnpm** | 디스크 효율, 빠른 설치, 워크스페이스 |
 | 스타일 | **TailwindCSS** | 디자인 토큰 일관성 (`/mnt/skills/public/frontend-design` 참고) |

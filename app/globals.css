@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+/* 디자인 토큰 (Base UI shell에서 확장) */
+@theme {
+  --color-brand: #2563eb;
+  --color-brand-fg: #ffffff;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply antialiased;
+}

@@ -18,7 +18,7 @@
 화면·기능 명세는 [`docs/storyboard.md`](docs/storyboard.md), 설계는 [`DEVELOPMENT.md`](DEVELOPMENT.md) 참고.
 
 ## 요구 사항
-- Node 20 LTS, pnpm
+- Node 22 LTS, pnpm (corepack)
 - ffmpeg, LibreOffice(headless) — 오디오 변환 / PPTX→PDF
 - 로컬 모델 구동 기준 **RAM 8GB 이상 권장**
 - 로컬 AI 엔진: [Ollama](https://ollama.com) (LLM) · [Piper](https://github.com/rhasspy/piper) (TTS) · [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) (STT)

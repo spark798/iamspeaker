@@ -10,9 +10,11 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **기반 정비 완료 / 코드 0줄** (Phase 0 스캐폴딩 직전) |
+| 현재 단계 | **Phase 0-1 스캐폴딩 완료** (Next.js 토대 동작: typecheck/lint/test/build ✓) |
 | 최근 갱신 | 2026-06-13 |
-| 다음 액션 | Phase 0 스캐폴딩 시작 (§4 참조) |
+| 다음 액션 | Phase 0-2: Config 모듈(`lib/config.ts`, Zod+preflight) (§4 참조) |
+| 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
+| 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
 | 코드 위치 | 아직 없음 (현재 폴더 = 기획 문서만) |
 
@@ -32,7 +34,7 @@
 - (없음)
 
 ### 대기 ⏳ (Phase 0 백로그 — 의존성 순, 위→아래)
-1. [ ] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright
+1. [x] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright ✅ (typecheck/lint/test/build 통과)
 2. [ ] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + preflight(ffmpeg/libreoffice/ollama)
 3. [ ] **로깅/에러 토대** — pino + API 에러 헬퍼 + React Error Boundary
 4. [ ] **도메인 타입**(`lib/domain/`) — SlideContent/Script/TranscriptResult/GenOptions 등 공유
@@ -70,6 +72,7 @@
 | D10 | **Walking-skeleton-first** — stub로 전 구간 관통(M1) 후 화면별 실제 엔진 | 통합 리스크 조기 발견, 중단·재개 강건 | 06-13 |
 | D11 | **Config는 `lib/config.ts`**(Zod, fail-fast) + 시작 시 외부 바이너리 preflight | 잘못된 env로 늦게 깨지는 것 방지 | 06-13 |
 | D12 | **도메인 타입은 `lib/domain/` 단일 진실원**, 어댑터/DB/분석이 공유 | 타입 중복·드리프트 방지 | 06-13 |
+| D13 | **Node 20 → Node 22 LTS 상향** | pnpm 11이 node:sqlite(22.13+) 요구, Next 15도 22 권장 | 06-13 |
 
 ### 미해결/추후 결정 ❓
 - next-intl vs 자체 경량 i18n (UI 다국어) — Phase 1 SCR 작업 시 확정
@@ -103,6 +106,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-13 — Phase 0-1 스캐폴딩
+- Node 미설치 → nvm 설치 후 Node 22 LTS(v22.22.3) + corepack pnpm 11.6.0. (D13: Node 20→22 상향)
+- Next 15(App Router) + React 19 + TS strict + Tailwind v4 + Biome + Vitest + Playwright 수동 스캐폴딩 (기존 문서 폴더라 create-next-app 불가).
+- 생성: package.json, tsconfig, next.config, postcss, app/{layout,page,globals.css}, biome.json, vitest.config+test/setup+smoke test, playwright.config, .nvmrc, pnpm-workspace.yaml(allowBuilds).
+- 검증 통과: `pnpm typecheck` / `pnpm lint` / `pnpm test`(smoke) / `pnpm build` 모두 ✓.
+- ⚠️ 셸마다 nvm 소싱 필요: `. "$HOME/.nvm/nvm.sh"; nvm use default`.
+- **다음**: Phase 0-2 Config 모듈(`lib/config.ts`, Zod env 파싱 + preflight).
 
 ### 2026-06-13 — 로드맵 재검증 & 보강
 - 의존성 관점으로 순서 재검증. 순서 오류 수정: `ko.json`을 분석 *앞*으로, 오디오 파이프라인+STT를 분석에서 분리·선행, Phase 0의 config/로깅을 앞으로.
