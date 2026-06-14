@@ -37,6 +37,17 @@
     "done": "Analysis complete",
     "slidesHeading": "Extracted slides",
     "notes": "Notes",
-    "empty": "No text"
+    "empty": "No text",
+    "toDemo": "View AI demo →"
+  },
+  "demo": {
+    "title": "AI demo talk",
+    "noSession": "No session. Please upload slides first.",
+    "generate": "Generate AI demo",
+    "generating": "Generating…",
+    "regenerate": "Regenerate",
+    "slide": "Slide",
+    "script": "AI script",
+    "empty": "No script yet. Click 'Generate AI demo' to start."
   }
 }

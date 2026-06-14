@@ -37,6 +37,17 @@
     "done": "분석 완료",
     "slidesHeading": "추출된 슬라이드",
     "notes": "노트",
-    "empty": "텍스트 없음"
+    "empty": "텍스트 없음",
+    "toDemo": "AI 데모 보기 →"
+  },
+  "demo": {
+    "title": "AI 데모 발표",
+    "noSession": "세션이 없습니다. 먼저 슬라이드를 업로드하세요.",
+    "generate": "AI 데모 생성",
+    "generating": "생성 중…",
+    "regenerate": "다시 생성",
+    "slide": "슬라이드",
+    "script": "AI 스크립트",
+    "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요."
   }
 }

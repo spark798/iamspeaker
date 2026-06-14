@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { type FormEvent, useState } from "react";
 
 interface Slide {
@@ -16,6 +17,7 @@ export function UploadForm() {
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
   const [slides, setSlides] = useState<Slide[] | null>(null);
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -39,7 +41,11 @@ export function UploadForm() {
         } | null;
         throw new Error(body?.error?.message ?? "업로드 실패");
       }
-      const { sessionId, jobId } = (await res.json()) as { sessionId: string; jobId: string };
+      const { sessionId: sid, jobId } = (await res.json()) as {
+        sessionId: string;
+        jobId: string;
+      };
+      setSessionId(sid);
 
       setPhase("parsing");
       const es = new EventSource(`/api/jobs/${jobId}/stream`);
@@ -52,7 +58,7 @@ export function UploadForm() {
         setProgress(d.progress);
         if (d.status === "succeeded") {
           es.close();
-          const sres = await fetch(`/api/sessions/${sessionId}/slides`);
+          const sres = await fetch(`/api/sessions/${sid}/slides`);
           const body = (await sres.json()) as { slides: Slide[] };
           setSlides(body.slides);
           setPhase("done");
@@ -143,9 +149,19 @@ export function UploadForm() {
 
       {slides && (
         <div>
-          <h2 className="mb-2 font-medium">
-            {t("done")} — {t("slidesHeading")} ({slides.length})
-          </h2>
+          <div className="mb-2 flex items-center justify-between">
+            <h2 className="font-medium">
+              {t("done")} — {t("slidesHeading")} ({slides.length})
+            </h2>
+            {sessionId && (
+              <Link
+                href={`/demo?session=${sessionId}`}
+                className="text-sm font-medium text-brand hover:underline"
+              >
+                {t("toDemo")}
+              </Link>
+            )}
+          </div>
           <ol className="space-y-2">
             {slides.map((s) => (
               <li key={s.index} className="rounded bg-neutral-50 p-3 text-sm dark:bg-neutral-900">

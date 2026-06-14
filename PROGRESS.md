@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — SCR-01 업로드 폼(업로드→파싱→슬라이드) 실서버 검증 완료 |
+| 현재 단계 | **Phase 1 진행 중** — SCR-02 AI 데모(생성·동기 표시) 실서버 검증 완료 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | (택1) ① SCR-02 AI 데모(데모 잡 연결 + 스크립트 표시; 슬라이드 시각 렌더는 LibreOffice 설치 시) ② SCR-03 편집기 ③ 오디오(ffmpeg/Whisper/Piper) |
+| 다음 액션 | (택1) ① SCR-03 편집기(스크립트 편집·저장 version 1+) ② 오디오(ffmpeg/Whisper/Piper) → 녹음/분석 ③ SCR-01b 슬라이드 분석(critique 잡 연결) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -54,6 +54,7 @@
 - [x] UI i18n(ko 기본/en 폴백, next-intl 비라우팅) + `messages/{ko,en}.json` + 공유 샘플(`lib/samples.ts`) + `pnpm db:seed`. 홈/업로드/스테퍼 키 기반, 실서버 렌더 확인.
 - [x] 슬라이드 **파서**: `lib/slides/`(parsePdf=unpdf, parsePptx=fflate+XML 노트추출, parseSlides 디스패치) + `parse` 잡 핸들러(파일→슬라이드 추출·교체). 단위 4 + 통합(실 PDF) 통과. (LibreOffice PPTX→PDF 렌더 변환은 SCR-02 뷰어 때)
 - [x] **SCR-01 업로드 폼**: `POST /api/sessions/upload`(멀티파트) + `lib/upload/validate.ts`(확장자+크기+매직바이트) → storage 저장 → parse 잡. `components/upload-form.tsx`(SSE 진행률→슬라이드), `GET /api/sessions/[id]/slides`. WalkingSkeletonDemo 제거. 실서버 업로드→파싱→슬라이드 + 415 거부 확인.
+- [x] **SCR-02 AI 데모**: `app/(session)/demo?session=` + `components/demo-view.tsx`(데모 잡→SSE→슬라이드별 스크립트 동기 표시, 기존 스크립트 로드/재생성), 업로드 폼에서 데모 링크. 실서버 실 LLM 생성 확인. (슬라이드 시각 렌더는 LibreOffice 설치 후 추후)
 
 ### Milestone M1 — Walking Skeleton ✅ 완료
 - [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
@@ -118,6 +119,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — SCR-02 AI 데모
+- `app/(session)/demo/page.tsx`(server, `?session=` 읽기, getTranslations) + `components/demo-view.tsx`(client): 슬라이드/기존 스크립트 로드, 데모 잡 생성→SSE 진행률→슬라이드별 스크립트 동기 표시, 재생성.
+- 업로드 폼 완료 후 `/demo?session=` 링크. i18n(demo) 키.
+- 검증: 테스트 54(+5 skip)/build OK. 실서버(hermes3:8b): 업로드→데모페이지→실 LLM 데모 2슬라이드→2세그먼트(casual 톤) 확인.
+- 다음: SCR-03 편집기 또는 오디오 경로.
 
 ### 2026-06-14 — SCR-01 업로드 폼
 - `POST /api/sessions/upload`(멀티파트 formData): 파일 검증(`lib/upload/validate.ts` — 확장자 화이트리스트+크기+매직바이트) → `lib/storage`로 저장 → 세션 생성 → parse 잡 적재. `GET /api/sessions/[id]/slides` 추가.
