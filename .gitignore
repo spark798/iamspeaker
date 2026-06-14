@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next.js
+.next/
+out/
+build/
+dist/
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# runtime data (로컬 저장 — 커밋 금지)
+data/
+!data/.gitkeep
+
+# AI 모델 가중치 (setup:models로 다운로드)
+*.bin
+*.onnx
+*.gguf
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# test / coverage
+coverage/
+playwright-report/
+test-results/
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
