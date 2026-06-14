@@ -1,4 +1,7 @@
 import { randomUUID } from "node:crypto";
+import { writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { stubAdapters } from "@/lib/ai/stub";
 import { type Db, createDb } from "@/lib/db/client";
 import { qaItems, scripts, sessions, slideCritiques, slides } from "@/lib/db/schema";
@@ -7,6 +10,7 @@ import { JobQueue } from "@/lib/jobs/queue";
 import { Worker } from "@/lib/jobs/worker";
 import { eq } from "drizzle-orm";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { beforeEach, describe, expect, it } from "vitest";
 
 let db: Db;
@@ -45,6 +49,28 @@ describe("walking skeleton 핸들러 (전 체인: 큐→워커→어댑터→DB)
     expect(script?.version).toBe(0);
     expect(script?.source).toBe("ai_demo");
     expect(script?.content).toHaveLength(2);
+  });
+
+  it("parse: 업로드 PDF → 슬라이드 추출·교체", async () => {
+    const doc = await PDFDocument.create();
+    const font = await doc.embedFont(StandardFonts.Helvetica);
+    for (const line of ["Slide A content", "Slide B content"]) {
+      doc.addPage([300, 200]).drawText(line, { x: 20, y: 150, size: 16, font });
+    }
+    const filePath = join(tmpdir(), `iamspeaker-test-${randomUUID()}.pdf`);
+    writeFileSync(filePath, await doc.save());
+
+    queue.enqueue("parse", { sessionId, filePath }, sessionId);
+    await worker.processOnce();
+
+    const rows = db
+      .select()
+      .from(slides)
+      .where(eq(slides.sessionId, sessionId))
+      .orderBy(slides.slideIndex)
+      .all();
+    expect(rows).toHaveLength(2); // 기존 시드 2장 → PDF 2장으로 교체
+    expect(rows[0]?.textContent).toContain("Slide A");
   });
 
   it("critique: 슬라이드 수만큼 비평 저장", async () => {

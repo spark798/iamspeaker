@@ -1,13 +1,16 @@
 import { randomUUID } from "node:crypto";
+import { readFileSync } from "node:fs";
 import type { Adapters } from "@/lib/ai/types";
 import type { Db } from "@/lib/db/client";
 import { qaItems, qaSessions, scripts, sessions, slideCritiques, slides } from "@/lib/db/schema";
 import type { SlideContent } from "@/lib/domain";
+import { parseSlides } from "@/lib/slides";
 import { asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { JobHandlers } from "./worker";
 
 const SessionPayload = z.object({ sessionId: z.string().min(1) });
+const ParsePayload = z.object({ sessionId: z.string().min(1), filePath: z.string().min(1) });
 const QaPayload = z.object({
   sessionId: z.string().min(1),
   count: z.number().int().positive().optional(),
@@ -34,6 +37,31 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
   };
 
   return {
+    // 업로드 파일(PPTX/PDF) → 슬라이드 본문/노트 추출·저장
+    parse: async (job, ctx) => {
+      const { sessionId, filePath } = ParsePayload.parse(job.payload);
+      requireSession(sessionId);
+      ctx.setProgress(20);
+      const bytes = new Uint8Array(readFileSync(filePath));
+      const parsed = await parseSlides(filePath, bytes);
+      if (parsed.length === 0) throw new Error("슬라이드를 추출하지 못했습니다");
+      ctx.setProgress(70);
+      db.delete(slides).where(eq(slides.sessionId, sessionId)).run();
+      for (const s of parsed) {
+        db.insert(slides)
+          .values({
+            id: randomUUID(),
+            sessionId,
+            slideIndex: s.index,
+            textContent: s.textContent,
+            notes: s.notes,
+          })
+          .run();
+      }
+      db.update(sessions).set({ slideFilePath: filePath }).where(eq(sessions.id, sessionId)).run();
+      return { slides: parsed.length };
+    },
+
     // 슬라이드 → AI 데모 스크립트(version 0) 생성·저장
     demo: async (job, ctx) => {
       const { sessionId } = SessionPayload.parse(job.payload);

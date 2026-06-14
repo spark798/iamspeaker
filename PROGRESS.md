@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — Ollama LLM 어댑터 + 프롬프트 정합성 + UI i18n(ko/en) + 샘플/seed 완료 |
+| 현재 단계 | **Phase 1 진행 중** — 슬라이드 파서(PDF/PPTX) + parse 잡 완료 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | (택1) ① 슬라이드 파이프라인(LibreOffice+PDF.js+파서) ② 오디오(ffmpeg/Whisper/Piper 설치+어댑터) ③ SCR-01 실제 업로드 폼 |
+| 다음 액션 | (택1) ① SCR-01 실제 업로드 폼(파일→storage→parse 잡) ② SCR-02 뷰어(LibreOffice PPTX→PDF + PDF.js 렌더) ③ 오디오(ffmpeg/Whisper/Piper) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -52,7 +52,7 @@
 - [x] 프롬프트 정합성: format 스키마 + 프롬프트 강화 + `alignSegmentsToSlides()`(결정적 1:1 정렬, 여분 버림/누락 폴백). 단위테스트 5케이스 + 실서버(3슬라이드→3세그먼트) 확인.
 - [ ] 오디오 경로(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → analyze/improve(녹음) 핸들러.
 - [x] UI i18n(ko 기본/en 폴백, next-intl 비라우팅) + `messages/{ko,en}.json` + 공유 샘플(`lib/samples.ts`) + `pnpm db:seed`. 홈/업로드/스테퍼 키 기반, 실서버 렌더 확인.
-- [ ] 슬라이드 파이프라인(LibreOffice+PDF.js+파서) — SCR-02/03/04 공용.
+- [x] 슬라이드 **파서**: `lib/slides/`(parsePdf=unpdf, parsePptx=fflate+XML 노트추출, parseSlides 디스패치) + `parse` 잡 핸들러(파일→슬라이드 추출·교체). 단위 4 + 통합(실 PDF) 통과. (LibreOffice PPTX→PDF 렌더 변환은 SCR-02 뷰어 때)
 
 ### Milestone M1 — Walking Skeleton ✅ 완료
 - [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
@@ -117,6 +117,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — 슬라이드 파서 파이프라인
+- `lib/slides/`: `parsePdf`(unpdf, 페이지별 텍스트), `parsePptx`(fflate unzip + `<a:t>` 추출 + rels 통한 노트 매칭), `parseSlides` 확장자 디스패치(미지원 throw).
+- `parse` 잡 핸들러: 업로드 파일 경로 → 파싱 → 슬라이드 교체 + session.slideFilePath 갱신.
+- deps: unpdf/fflate(런타임), pdf-lib(테스트). next.config serverExternalPackages에 unpdf 추가(번들 경고 제거).
+- 테스트: 파서 단위 4(인메모리 pptx zip + pdf-lib 생성 PDF + 디스패치) + 핸들러 통합 1(실 PDF). 전체 50 통과(+5 skip), build 성공.
+- 보류: LibreOffice PPTX→PDF 렌더 변환은 SCR-02 뷰어와 함께.
+- 다음: SCR-01 업로드 폼 또는 SCR-02 뷰어.
 
 ### 2026-06-14 — UI i18n + 공유 샘플/seed
 - next-intl(4.x) 비라우팅 설정: `i18n/request.ts`(기본 ko/폴백 en), next.config 플러그인, 루트 레이아웃 `<html lang>` + NextIntlClientProvider. `messages/{ko,en}.json`.
