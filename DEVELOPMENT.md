@@ -303,6 +303,11 @@ Job {
 - **완료 조건**: 모델 없이도 전체 화면 전환·Job 진행률·데이터 영속이 끊김 없이 동작.
 
 ### Phase 1 — MVP 실제 엔진 (Epic 0,1,2,3,6,7)
+> **UX 리서치(화면 설계 직전 1회)**: 인프라 아님. SCR-02/05/08 같은 UX 비중 큰 화면을 만들기 직전에 경쟁 제품을 짧게 스터디해 디자인을 끌어올린다. 상시 에이전트 대신 그 시점에 인라인 WebSearch/WebFetch 또는 경량 리서치 에이전트로 수행.
+> - SCR-02 AI 데모 재생: Gamma, Tome, Pitch (AI 슬라이드/내레이션)
+> - SCR-05 리포트 시각화: Yoodli, Poised, Orai, Speeko (스피치 코칭 피드백 UX)
+> - SCR-08 Q&A 대비: Google Interview Warmup, Yoodli Q&A
+
 1. [ ] **UI i18n 셋업**(ko 기본/en 폴백) + **예제 슬라이드 fixture/seed** — 이후 모든 화면 작업의 토대
 2. [ ] **슬라이드 파이프라인** — LibreOffice PPTX→PDF + PDF.js 렌더 + 파서(텍스트/노트). SCR-02/03/04 공용
 3. [ ] SCR-01: 업로드 + 모국어 선택 (실제 파서 연결)
