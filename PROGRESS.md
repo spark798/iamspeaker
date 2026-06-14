@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 0-4 도메인 타입 완료** (`lib/domain/` 단일 진실원, 테스트 12개 통과) |
+| 현재 단계 | **Phase 0-5 DB 완료** (Drizzle 스키마 10테이블 + 초기 마이그레이션, 테스트 14개 통과) |
 | 최근 갱신 | 2026-06-13 |
-| 다음 액션 | Phase 0-5: DB — Drizzle 스키마(`lib/db/`) + 초기 마이그레이션 (데이터 모델 §4) |
+| 다음 액션 | Phase 0-6: `lib/storage/` 경로 빌더(검증, path-traversal 방지) + `DATA_DIR` 구성 |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -39,8 +39,8 @@
 2. [x] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast, 빈문자열→미설정, 엔진 자동선택) + `scripts/preflight.ts`(ffmpeg/libreoffice/ollama/piper/whisper 점검) ✅
 3. [x] **로깅/에러 토대** — pino(`lib/logger.ts`, 상관키 child) + 에러 헬퍼(`lib/errors/`, AppError·toApiError) + Error Boundary(`app/error.tsx`·`global-error.tsx`) ✅
 4. [x] **도메인 타입**(`lib/domain/`) — slides/script/transcript/analysis/l1/qa + 배럴(index.ts, `export type *`) ✅
-5. [ ] Drizzle 스키마 + 초기 마이그레이션 (`lib/db/`)  ← 다음
-6. [ ] `lib/storage/` 경로 빌더(검증), `DATA_DIR`
+5. [x] Drizzle 스키마(10테이블) + 초기 마이그레이션(`lib/db/migrations/0000_*.sql`) + better-sqlite3 연결(`client.ts`/`index.ts`) + 마이그레이션 스크립트 ✅
+6. [ ] `lib/storage/` 경로 빌더(검증), `DATA_DIR`  ← 다음
 7. [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **계약 테스트**
 8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream` (SSE) + 크래시 복구
 9. [ ] **Base UI shell** — 루트 레이아웃·디자인 토큰·`(session)` 스테퍼·헬스 라우트
@@ -107,6 +107,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-13 — Phase 0-5 DB (Drizzle)
+- `lib/db/schema.ts`: 10테이블(sessions/slides/scripts/recordings/analysis_results/slide_critiques/qa_sessions/qa_items/qa_answers/jobs). JSON 컬럼은 도메인 타입(`../domain`) 재사용, FK onDelete cascade, createdAt=timestamp_ms 기본값.
+- `lib/db/client.ts`(createDb/resolveDbFile, WAL+foreign_keys=ON) + `index.ts`(db 싱글턴) + `migrate.ts`(`pnpm db:migrate`).
+- `drizzle.config.ts` + `pnpm db:generate`로 초기 마이그레이션 `0000_*.sql` 생성·커밋. 스크립트: db:generate/migrate/studio.
+- `lib/domain/job.ts`(JobType/JobStatus) 추가, 배럴 반영. better-sqlite3 allowBuilds 등록.
+- 통합 테스트(test/integration/db.test.ts): 인메모리 마이그레이션 → 삽입/조회/JSON 왕복/기본값/FK 거부 검증. typecheck/lint/test(14개)/build 통과.
+- **다음**: Phase 0-6 storage 경로 빌더.
 
 ### 2026-06-13 — Phase 0-4 도메인 타입
 - `lib/domain/` 신설: slides(SlideContent/SlideCritique/TextDensity), script(Script/SlideScript/GenOptions/ScriptDiff/Tone/ScriptSource), transcript(TranscriptResult/TranscriptWord/FillerWordResult), analysis(AnalysisResult/PronunciationIssue/SlideTimeBreakdown), l1(L1Profile/PhonemeRule/ExpressionRule), qa(QAItem/QAFeedback/Difficulty/QACategory).
