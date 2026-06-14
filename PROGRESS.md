@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **🎉 Phase 0 완료 (10/10)** — 기반 인프라 + 어댑터 골격 + Job Queue + UI 셸 + Docker/CI |
+| 현재 단계 | **🎉 Milestone M1 완료** — Walking Skeleton 전 구간 관통(실서버 검증) |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | **Milestone M1 — Walking Skeleton**: stub로 업로드→데모→녹음→리포트→개선 전 구간 관통 + Playwright E2E 골격 |
+| 다음 액션 | **Phase 1 시작**: ① UI i18n(ko/en) + 예제 fixture/seed → ② 슬라이드 파이프라인(LibreOffice+PDF.js+파서). (DEVELOPMENT §14) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -47,9 +47,10 @@
 10. [x] `scripts/setup-models.ts`(Whisper/Piper 멱등 다운로드) + `Dockerfile`(멀티스테이지, ffmpeg+libreoffice) + `docker-compose.yml`(app+ollama) + `.dockerignore` + `.github/workflows/ci.yml`(lint/typecheck/test/build) ✅
 - **Phase 0 완료 조건 충족**: 셸 실서버 기동 확인(0-9), 자동 마이그레이션, CI 워크플로 작성. (docker/CI 런타임 검증은 사용자 환경/푸시 시)
 
-### 대기 ⏳ (Milestone M1 — Walking Skeleton)
-- [ ] stub 어댑터로 업로드→데모→녹음→리포트→개선 **전 구간 1회 관통** + Playwright E2E 골격
-- 실제 AI 붙이기 전에 Job/SSE/Storage/DB 통합 검증.
+### Milestone M1 — Walking Skeleton ✅ 완료
+- [x] stub 어댑터로 세션 생성 → 데모 작업 → 워커 처리 → 스크립트 저장 **전 구간 관통** (실서버 라이브 검증)
+- [x] 핸들러 demo/critique/qa_generate(오디오 불요 슬라이스), 통합 테스트 + Playwright E2E 골격(API 구동)
+- 비고: analyze/improve는 오디오 파이프라인(Phase 1) 이후. UI는 /upload의 WalkingSkeletonDemo 패널(임시).
 
 > Phase 1(실제 엔진)·2·3 백로그는 `DEVELOPMENT.md` §14 참조. **주의: ko.json은 분석보다 먼저, i18n/fixture는 Phase 1 맨 앞.**
 > 📌 메모(보류): 경쟁사 UX 리서치는 **Phase 1 화면 설계 직전 1회**만(상시 에이전트 X). 타겟·세부는 DEVELOPMENT §14 Phase 1 상단 참조.
@@ -109,6 +110,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — Milestone M1 Walking Skeleton 🎉
+- 핸들러(`lib/jobs/handlers.ts`, `createHandlers(db, adapters)` 주입형): demo(슬라이드→스크립트v0), critique(비평 저장), qa_generate(최신 스크립트→질문). index.ts에서 getDb()+getAdapters()로 등록.
+- API: `POST /api/sessions`(Zod, 슬라이드 인라인), `POST /api/sessions/[id]/demo`(작업 적재 202), `GET /api/sessions/[id]/script`, `GET /api/jobs/[id]`(폴링).
+- UI: `components/walking-skeleton-demo.tsx`(세션→데모→EventSource 진행률→스크립트 표시), /upload에 패널.
+- 테스트: 통합(`handlers.test.ts`, 큐→워커→어댑터→DB 결정적) 47개 통과. E2E 골격(`test/e2e/walking-skeleton.spec.ts`, API 구동, `pnpm e2e`로 실행).
+- **실서버 라이브 검증**: 세션 생성→데모 트리거→워커 succeeded(100)→스크립트 3장 반환 전 구간 확인.
+- **다음**: Phase 1 시작(i18n+fixture → 슬라이드 파이프라인).
 
 ### 2026-06-14 — Phase 0-10 Docker + CI (Phase 0 완료 🎉)
 - `scripts/setup-models.ts`: Whisper ggml + Piper voice(.onnx/.onnx.json) 멱등 다운로드(스트리밍).
