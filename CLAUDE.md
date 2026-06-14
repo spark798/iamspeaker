@@ -35,8 +35,8 @@ interface ScriptGeneratorAdapter {
   generate(slides: SlideContent[], options: GenOptions): Promise<Script>;
   improve(script: Script, analysis: AnalysisResult, l1Profile?: L1Profile): Promise<ScriptDiff>;
 }
-interface TTSAdapter { synthesize(text: string, lang: string): Promise<AudioBuffer>; }
-interface STTAdapter { transcribe(audio: AudioBuffer): Promise<TranscriptResult>; } // word-level timestamps 포함
+interface TtsAdapter { synthesize(text: string, lang: string): Promise<TtsResult>; } // TtsResult = { audio: Uint8Array; format; sampleRate? }
+interface SttAdapter { transcribe(input: SttInput): Promise<TranscriptResult>; } // SttInput = { wavFilePath } (16kHz mono WAV), 결과에 word-level timestamps
 
 // L1Profile: 모국어 기반 발음/표현 오류 패턴
 interface L1Profile {

@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 0-6 storage 완료** (경로 빌더 + path-traversal 방어, 테스트 20개 통과) |
-| 최근 갱신 | 2026-06-13 |
-| 다음 액션 | Phase 0-7: 어댑터 인터페이스(`lib/ai/types.ts`) + factory + stub + 계약 테스트 |
+| 현재 단계 | **Phase 0-7 어댑터 골격 완료** (types+stub+factory+계약테스트, 테스트 35개 통과) |
+| 최근 갱신 | 2026-06-14 |
+| 다음 액션 | Phase 0-8: Job Queue/Worker 골격 + `GET /api/jobs/:id/stream`(SSE) + 크래시 복구 |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -41,8 +41,8 @@
 4. [x] **도메인 타입**(`lib/domain/`) — slides/script/transcript/analysis/l1/qa + 배럴(index.ts, `export type *`) ✅
 5. [x] Drizzle 스키마(10테이블) + 초기 마이그레이션(`lib/db/migrations/0000_*.sql`) + better-sqlite3 연결(`client.ts`/`index.ts`) + 마이그레이션 스크립트 ✅
 6. [x] `lib/storage/` 경로 빌더(safeResolve/assertSafeSegment/safeFilename, uploadPath/recordingPath) — DATA_DIR 하위 정규화 + path-traversal 방어 ✅
-7. [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **계약 테스트**  ← 다음
-8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream` (SSE) + 크래시 복구
+7. [x] `lib/ai/types.ts`(Script/Tts/Stt/Qa/SlideCritic 인터페이스 + Adapters) + `factory.ts`(getter들, 현재 stub) + `lib/ai/stub/`(결정적 구현) + 재사용 계약 테스트(`test/contract/`) ✅
+8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream` (SSE) + 크래시 복구  ← 다음
 9. [ ] **Base UI shell** — 루트 레이아웃·디자인 토큰·`(session)` 스테퍼·헬스 라우트
 10. [ ] `scripts/setup-models.ts` + Docker Compose(app+ollama) + GitHub Actions CI  ·  [x] `.env.example`
 - **Phase 0 완료 조건**: 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
@@ -107,6 +107,14 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — Phase 0-7 어댑터 골격
+- `lib/ai/types.ts`: ScriptGenerator/Tts/Stt/QaGenerator/SlideCritic 어댑터 인터페이스(도메인 타입 기반) + `Adapters` 묶음. CLAUDE.md의 AudioBuffer를 서버용 `TtsResult`(Uint8Array)/`SttInput`(wavFilePath)으로 정정(문서도 갱신).
+- `lib/ai/stub/`: 모델 없이 결정적 출력 내는 stub 5종(무음 WAV 생성 포함). Walking Skeleton·CI·계약 테스트용.
+- `lib/ai/factory.ts`: getter들 — 현재 stub 반환, Phase 1에서 engines 기반 실제 구현으로 교체(인터페이스/계약 유지).
+- `test/contract/adapter-contracts.ts`: 재사용 계약 스위트. stub+factory 양쪽에 적용. 실제 구현도 이걸 재사용.
+- 테스트 35개 통과(계약 stub/factory 각 5 + getAdapters). typecheck/lint OK.
+- **다음**: Phase 0-8 Job Queue/Worker + SSE.
 
 ### 2026-06-13 — Phase 0-6 storage 경로 빌더
 - `lib/storage/index.ts`: `safeResolve()`(base 이탈 시 throw), `assertSafeSegment()`(구분자·`..`·널바이트 거부), `safeFilename()`(basename 정화), `uploadDir/uploadPath/recordingDir/recordingPath`, `ensureDir`, `StorageDirs`. 모두 DATA_DIR 하위로 정규화.
