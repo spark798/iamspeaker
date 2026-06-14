@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 0-1 스캐폴딩 완료** (Next.js 토대 동작: typecheck/lint/test/build ✓) |
+| 현재 단계 | **Phase 0-2 Config 완료** (`lib/config.ts` + `scripts/preflight.ts`, 테스트 7개 통과) |
 | 최근 갱신 | 2026-06-13 |
-| 다음 액션 | Phase 0-2: Config 모듈(`lib/config.ts`, Zod+preflight) (§4 참조) |
+| 다음 액션 | Phase 0-3: 로깅/에러 토대 (pino `lib/logger.ts` + `lib/errors/` + Error Boundary) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -35,8 +35,8 @@
 
 ### 대기 ⏳ (Phase 0 백로그 — 의존성 순, 위→아래)
 1. [x] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright ✅ (typecheck/lint/test/build 통과)
-2. [ ] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + preflight(ffmpeg/libreoffice/ollama)
-3. [ ] **로깅/에러 토대** — pino + API 에러 헬퍼 + React Error Boundary
+2. [x] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast, 빈문자열→미설정, 엔진 자동선택) + `scripts/preflight.ts`(ffmpeg/libreoffice/ollama/piper/whisper 점검) ✅
+3. [ ] **로깅/에러 토대** — pino + API 에러 헬퍼 + React Error Boundary  ← 다음
 4. [ ] **도메인 타입**(`lib/domain/`) — SlideContent/Script/TranscriptResult/GenOptions 등 공유
 5. [ ] Drizzle 스키마 + 초기 마이그레이션 (`lib/db/`)
 6. [ ] `lib/storage/` 경로 빌더(검증), `DATA_DIR`
@@ -106,6 +106,13 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-13 — Phase 0-2 Config 모듈
+- `lib/config.ts`: Zod 스키마로 `.env.example` 전 항목 파싱. 기본값 우선(로컬 우선), 빈 문자열("KEY=")→미설정, 잘못된 값만 fail-fast(throw). `deriveEngines()`로 클라우드 키 유무에 따라 활성 엔진(script/tts/stt) 자동 선택. `config`/`engines` 싱글턴 export.
+- `scripts/preflight.ts`: 활성 엔진 기준으로 ffmpeg(필수)/LibreOffice(권장)/Ollama·Piper·Whisper(엔진별 필수) 점검, 미충족 시 exit 1. zod 추가(zod@3).
+- `package.json`에 `lint:fix` 스크립트 추가.
+- 검증: typecheck/lint/test(7개) 통과. `pnpm preflight` 실측 — Ollama+hermes3:8b 감지, 오디오 바이너리는 미설치(예상, Phase 1에서 설치).
+- **다음**: Phase 0-3 로깅/에러 토대.
 
 ### 2026-06-13 — Phase 0-1 스캐폴딩
 - Node 미설치 → nvm 설치 후 Node 22 LTS(v22.22.3) + corepack pnpm 11.6.0. (D13: Node 20→22 상향)
