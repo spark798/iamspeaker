@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — 전체 리뷰 완료 + 싼 수정 반영 |
-| 최근 갱신 | 2026-06-14 |
-| 다음 액션 | ② SCR-01b 슬라이드 분석(critique 잡 연결 + **Slide Critic 규칙 폴백** 리뷰#1 포함) → ③ 오디오(ffmpeg/Whisper/Piper) |
+| 현재 단계 | **Phase 1 진행 중** — SCR-01b 슬라이드 분석 + Slide Critic 규칙 폴백(리뷰#1) 완료 |
+| 최근 갱신 | 2026-06-15 |
+| 다음 액션 | ③ 오디오(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → 녹음(SCR-04)·분석(SCR-05) / 또는 SCR-06 개선(improve 잡 연결, 무설치) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -48,6 +48,7 @@
 - **Phase 0 완료 조건 충족**: 셸 실서버 기동 확인(0-9), 자동 마이그레이션, CI 워크플로 작성. (docker/CI 런타임 검증은 사용자 환경/푸시 시)
 
 ### Phase 1 진행 ⏳
+- [x] **SCR-01b 슬라이드 분석** + **리뷰#1 해결**: `lib/analysis/critique.ts`(ruleBasedCritique 규칙 폴백, 단위 4) → OllamaSlideCritic이 규칙 1차 + LLM 보강, 실패 시 폴백(무LLM 동작). `POST /api/sessions/[id]/critique` + `GET .../critiques`, `components/critique-view.tsx`, `app/(session)/critique` 페이지, critique 핸들러 재실행 시 기존 삭제. 실서버: 모델 미설치에도 critique succeeded(규칙 폴백) 확인.
 - [x] 실제 Ollama LLM 어댑터: OllamaScriptGenerator(generate/improve)·OllamaSlideCritic·OllamaQaGenerator. 프롬프트 `lib/ai/prompts/`, 출력 Zod 검증 `lib/ai/ollama/schemas.ts`. factory가 LLM은 Ollama 반환(audio는 아직 stub). 계약 테스트 재사용(live gated). 실서버에서 실 LLM 데모 생성 확인.
 - [x] 프롬프트 정합성: format 스키마 + 프롬프트 강화 + `alignSegmentsToSlides()`(결정적 1:1 정렬, 여분 버림/누락 폴백). 단위테스트 5케이스 + 실서버(3슬라이드→3세그먼트) 확인.
 - [ ] 오디오 경로(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → analyze/improve(녹음) 핸들러.
@@ -120,6 +121,13 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-15 — SCR-01b 슬라이드 분석 + Slide Critic 폴백(리뷰#1)
+- `lib/analysis/critique.ts` ruleBasedCritique(밀도=글자수, 분량 대비 시간 지적) + 단위 4. OllamaSlideCritic: 규칙 baseline + LLM 보강, LLM 실패 시 baseline 폴백(never-throw) → 리뷰#1(무LLM 동작) 해결.
+- `POST /api/sessions/[id]/critique`(잡 적재) + `GET .../critiques`(목록). critique 핸들러 재실행 시 기존 삭제.
+- `components/critique-view.tsx`(밀도 배지/소요/이슈/제안 + SSE) + `app/(session)/critique` 페이지. 업로드 폼에 분석/데모 링크.
+- 검증: 테스트 62(+5 skip)/build. 실서버: 모델 미설치에도 critique 잡 succeeded(규칙 폴백) 확인.
+- 다음: 오디오(SCR-04/05) 또는 SCR-06 개선.
 
 ### 2026-06-14 — 전체 리뷰 + 싼 수정
 - iamspeaker-reviewer로 누적 코드 리뷰. 핵심 규칙(어댑터 경계·path-traversal·Zod·도메인 단일진실원·secret 비노출·thin 라우트) 양호.

@@ -155,12 +155,20 @@ export function UploadForm() {
               {t("done")} — {t("slidesHeading")} ({slides.length})
             </h2>
             {sessionId && (
-              <Link
-                href={`/demo?session=${sessionId}`}
-                className="text-sm font-medium text-brand hover:underline"
-              >
-                {t("toDemo")}
-              </Link>
+              <span className="flex gap-3">
+                <Link
+                  href={`/critique?session=${sessionId}`}
+                  className="text-sm font-medium text-brand hover:underline"
+                >
+                  {t("toCritique")}
+                </Link>
+                <Link
+                  href={`/demo?session=${sessionId}`}
+                  className="text-sm font-medium text-brand hover:underline"
+                >
+                  {t("toDemo")}
+                </Link>
+              </span>
             )}
           </div>
           <ol className="space-y-2">

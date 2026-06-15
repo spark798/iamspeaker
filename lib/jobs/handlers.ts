@@ -100,6 +100,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         session.targetDurationSec,
       );
       ctx.setProgress(80);
+      db.delete(slideCritiques).where(eq(slideCritiques.sessionId, sessionId)).run();
       for (const c of critiques) {
         db.insert(slideCritiques)
           .values({

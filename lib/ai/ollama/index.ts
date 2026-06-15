@@ -11,6 +11,7 @@ import type {
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
 } from "@/lib/ai/types";
+import { ruleBasedCritique } from "@/lib/analysis/critique";
 import type {
   AnalysisResult,
   GenOptions,
@@ -93,8 +94,16 @@ export class OllamaScriptGenerator implements ScriptGeneratorAdapter {
 
 export class OllamaSlideCritic implements SlideCriticAdapter {
   async analyze(slides: SlideContent[], targetDurationSec: number): Promise<SlideCritique[]> {
-    const { system, prompt } = critiqueSlidesPrompt(slides, targetDurationSec);
-    return CritiqueSchema.parse(await ollamaChatJson({ system, prompt })).critiques;
+    // 규칙 기반 1차 결과(LLM 없이도 동작). LLM 성공 시 자연어 피드백으로 대체, 실패 시 폴백.
+    const baseline = ruleBasedCritique(slides, targetDurationSec);
+    try {
+      const { system, prompt } = critiqueSlidesPrompt(slides, targetDurationSec);
+      const parsed = CritiqueSchema.parse(await ollamaChatJson({ system, prompt }));
+      const byIndex = new Map(parsed.critiques.map((c) => [c.slideIndex, c]));
+      return baseline.map((b) => byIndex.get(b.slideIndex) ?? b);
+    } catch {
+      return baseline;
+    }
   }
 }
 

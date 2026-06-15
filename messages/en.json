@@ -46,7 +46,26 @@
     "slidesHeading": "Extracted slides",
     "notes": "Notes",
     "empty": "No text",
+    "toCritique": "Analyze slides →",
     "toDemo": "View AI demo →"
+  },
+  "critique": {
+    "title": "Slide review",
+    "noSession": "No session. Please upload first.",
+    "analyze": "Analyze slides",
+    "analyzing": "Analyzing…",
+    "reanalyze": "Re-analyze",
+    "empty": "No analysis yet. Click 'Analyze slides' to start.",
+    "slide": "Slide",
+    "density": "Density",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "readTime": "Est. time (s)",
+    "issues": "Issues",
+    "suggestions": "Suggestions",
+    "noIssues": "No issues found",
+    "toDemo": "AI demo →"
   },
   "demo": {
     "title": "AI demo talk",
