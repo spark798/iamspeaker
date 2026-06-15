@@ -81,4 +81,17 @@ describe("Worker", () => {
   it("빈 큐 → processOnce는 false", async () => {
     expect(await new Worker(queue, {}).processOnce()).toBe(false);
   });
+
+  it("핸들러 타임아웃 → failed + 타임아웃 메시지", async () => {
+    const id = queue.enqueue("parse", {});
+    const worker = new Worker(
+      queue,
+      { parse: () => new Promise<never>(() => {}) },
+      { timeoutSec: 1 },
+    );
+    await worker.processOnce();
+    const job = queue.get(id);
+    expect(job?.status).toBe("failed");
+    expect(job?.error).toContain("타임아웃");
+  });
 });

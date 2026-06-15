@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 // 도메인 타입(단일 진실원)을 JSON 컬럼 타입으로 재사용. drizzle-kit 친화 위해 상대 경로 import.
 import type {
+  Difficulty,
   FillerWordResult,
   JobStatus,
   JobType,
@@ -100,7 +101,7 @@ export const qaItems = sqliteTable("qa_items", {
     .references(() => qaSessions.id, { onDelete: "cascade" }),
   question: text("question").notNull(),
   relatedSlideIndex: integer("related_slide_index").notNull(),
-  difficulty: text("difficulty").$type<"easy" | "tough">().notNull(),
+  difficulty: text("difficulty").$type<Difficulty>().notNull(),
   category: text("category").$type<QACategory>().notNull(),
 });
 

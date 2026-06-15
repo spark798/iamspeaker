@@ -66,8 +66,11 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
     demo: async (job, ctx) => {
       const { sessionId } = SessionPayload.parse(job.payload);
       const session = requireSession(sessionId);
+      const slideContents = loadSlides(sessionId);
+      if (slideContents.length === 0)
+        throw new Error("슬라이드가 없습니다. 먼저 업로드/파싱하세요.");
       ctx.setProgress(20);
-      const script = await adapters.script.generate(loadSlides(sessionId), {
+      const script = await adapters.script.generate(slideContents, {
         targetDurationSec: session.targetDurationSec,
         tone: session.tone,
         language: session.language,

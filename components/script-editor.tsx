@@ -22,6 +22,7 @@ function toMap(content: SlideScript[]): Record<number, string> {
 
 export function ScriptEditor({ sessionId }: { sessionId: string }) {
   const t = useTranslations("editor");
+  const te = useTranslations("errors");
   const [slides, setSlides] = useState<Slide[]>([]);
   const [texts, setTexts] = useState<Record<number, string>>({});
   const [demoRef, setDemoRef] = useState<Record<number, string>>({});
@@ -60,7 +61,7 @@ export function ScriptEditor({ sessionId }: { sessionId: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
       });
-      if (!res.ok) throw new Error("저장 실패");
+      if (!res.ok) throw new Error(te("saveFailed"));
       const { version } = (await res.json()) as { version: number };
       setSavedVersion(version);
     } catch (e) {

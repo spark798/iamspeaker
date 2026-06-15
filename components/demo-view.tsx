@@ -16,6 +16,7 @@ interface SlideScript {
 
 export function DemoView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("demo");
+  const te = useTranslations("errors");
   const [slides, setSlides] = useState<Slide[]>([]);
   const [script, setScript] = useState<SlideScript[]>([]);
   const [progress, setProgress] = useState(0);
@@ -26,12 +27,12 @@ export function DemoView({ sessionId }: { sessionId: string }) {
     fetch(`/api/sessions/${sessionId}/slides`)
       .then((r) => r.json())
       .then((b: { slides: Slide[] }) => setSlides(b.slides))
-      .catch(() => setError("슬라이드를 불러오지 못했습니다"));
+      .catch(() => setError(te("loadFailed")));
     fetch(`/api/sessions/${sessionId}/script`)
       .then((r) => (r.ok ? r.json() : null))
       .then((b: { content: SlideScript[] } | null) => b && setScript(b.content))
       .catch(() => {});
-  }, [sessionId]);
+  }, [sessionId, te]);
 
   const generate = useCallback(async () => {
     setBusy(true);
@@ -39,7 +40,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
     setProgress(0);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/demo`, { method: "POST" });
-      if (!res.ok) throw new Error("데모 요청 실패");
+      if (!res.ok) throw new Error(te("demoFailed"));
       const { jobId } = (await res.json()) as { jobId: string };
       const es = new EventSource(`/api/jobs/${jobId}/stream`);
       es.onmessage = async (ev) => {
@@ -58,20 +59,20 @@ export function DemoView({ sessionId }: { sessionId: string }) {
           setBusy(false);
         } else if (d.status === "failed") {
           es.close();
-          setError(d.error ?? "생성 실패");
+          setError(d.error ?? te("demoFailed"));
           setBusy(false);
         }
       };
       es.onerror = () => {
         es.close();
-        setError("연결 오류");
+        setError(te("connection"));
         setBusy(false);
       };
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
       setBusy(false);
     }
-  }, [sessionId]);
+  }, [sessionId, te]);
 
   const scriptByIndex = new Map(script.map((s) => [s.slideIndex, s.text]));
   const hasScript = script.length > 0;

@@ -14,6 +14,7 @@ type Phase = "idle" | "uploading" | "parsing" | "done" | "error";
 
 export function UploadForm() {
   const t = useTranslations("uploadForm");
+  const te = useTranslations("errors");
   const [phase, setPhase] = useState<Phase>("idle");
   const [progress, setProgress] = useState(0);
   const [slides, setSlides] = useState<Slide[] | null>(null);
@@ -39,7 +40,7 @@ export function UploadForm() {
         const body = (await res.json().catch(() => null)) as {
           error?: { message?: string };
         } | null;
-        throw new Error(body?.error?.message ?? "업로드 실패");
+        throw new Error(body?.error?.message ?? te("uploadFailed"));
       }
       const { sessionId: sid, jobId } = (await res.json()) as {
         sessionId: string;
@@ -64,13 +65,13 @@ export function UploadForm() {
           setPhase("done");
         } else if (d.status === "failed") {
           es.close();
-          setError(d.error ?? "분석 실패");
+          setError(d.error ?? te("parseFailed"));
           setPhase("error");
         }
       };
       es.onerror = () => {
         es.close();
-        setError("연결 오류");
+        setError(te("connection"));
         setPhase("error");
       };
     } catch (err) {

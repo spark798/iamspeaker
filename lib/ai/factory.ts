@@ -8,6 +8,7 @@ import type {
   SttAdapter,
   TtsAdapter,
 } from "@/lib/ai/types";
+import { engines } from "@/lib/config";
 
 /**
  * 어댑터 팩토리 — 항상 인터페이스/팩토리 경유로 어댑터를 얻는다(직접 호출 금지).
@@ -18,15 +19,27 @@ import type {
  * 테스트/CI는 stub을 명시 주입(`stubAdapters()`)해 모델 없이 통과한다.
  */
 export function getScriptGenerator(): ScriptGeneratorAdapter {
-  return new OllamaScriptGenerator();
+  switch (engines.script) {
+    // TODO(Phase 2): case "claude" → ClaudeScriptGenerator, case "openai" → OpenAIScriptGenerator
+    default:
+      return new OllamaScriptGenerator();
+  }
 }
 
 export function getQaGenerator(): QaGeneratorAdapter {
-  return new OllamaQaGenerator();
+  switch (engines.script) {
+    // TODO(Phase 2): 클라우드 LLM 구현
+    default:
+      return new OllamaQaGenerator();
+  }
 }
 
 export function getSlideCritic(): SlideCriticAdapter {
-  return new OllamaSlideCritic();
+  switch (engines.script) {
+    // TODO(Phase 2): 클라우드 LLM 구현
+    default:
+      return new OllamaSlideCritic();
+  }
 }
 
 export function getTts(): TtsAdapter {

@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — SCR-03 편집기 완료, 전체 리뷰 단계 |
+| 현재 단계 | **Phase 1 진행 중** — 전체 리뷰 완료 + 싼 수정 반영 |
 | 최근 갱신 | 2026-06-14 |
-| 다음 액션 | 전체 리뷰(iamspeaker-reviewer) → ② SCR-01b 슬라이드 분석(critique 잡 연결) → ③ 오디오(ffmpeg/Whisper/Piper) |
+| 다음 액션 | ② SCR-01b 슬라이드 분석(critique 잡 연결 + **Slide Critic 규칙 폴백** 리뷰#1 포함) → ③ 오디오(ffmpeg/Whisper/Piper) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -120,6 +120,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-14 — 전체 리뷰 + 싼 수정
+- iamspeaker-reviewer로 누적 코드 리뷰. 핵심 규칙(어댑터 경계·path-traversal·Zod·도메인 단일진실원·secret 비노출·thin 라우트) 양호.
+- 반영(싼 수정): 클라이언트 에러 메시지 i18n화(`messages.errors`, upload-form/demo-view/script-editor), factory가 `engines.script` 분기(클라우드는 TODO Phase 2), `qaItems.difficulty`→`Difficulty` 타입, demo 핸들러 빈 슬라이드 가드, **워커 잡 타임아웃**(`JOB_TIMEOUT_SEC`, Promise.race) + 테스트.
+- **남은 리뷰 항목**: #1 Slide Critic 규칙 폴백 → SCR-01b 작업 시 포함(필수). 잡 **재시도(지수 백오프)**는 jobs.attempt 컬럼 마이그레이션 필요 → 추후(보류). 기본 모델 llama3.1:8b vs 실사용 hermes3:8b는 README 안내로 추후.
+- 검증: lint/typecheck/test 58(+5 skip)/build 통과.
 
 ### 2026-06-14 — SCR-03 편집기
 - `POST /api/sessions/[id]/scripts`(편집본을 새 user 버전으로 저장, version=latest+1) + `GET .../script?version=N`(특정 버전).

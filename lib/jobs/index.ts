@@ -23,7 +23,10 @@ export function getQueue(): JobQueue {
 export function startAppWorker(): Worker {
   if (!appWorker) {
     const handlers = createHandlers(getDb(), getAdapters());
-    appWorker = new Worker(getQueue(), handlers, { concurrency: config.JOB_CONCURRENCY });
+    appWorker = new Worker(getQueue(), handlers, {
+      concurrency: config.JOB_CONCURRENCY,
+      timeoutSec: config.JOB_TIMEOUT_SEC,
+    });
     appWorker.start();
   }
   return appWorker;

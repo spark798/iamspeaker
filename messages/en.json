@@ -7,6 +7,14 @@
     "cta": "Get started",
     "phase": "Project setup (Phase 0) in progress"
   },
+  "errors": {
+    "uploadFailed": "Upload failed",
+    "parseFailed": "Analysis failed",
+    "demoFailed": "Demo generation failed",
+    "loadFailed": "Failed to load",
+    "saveFailed": "Save failed",
+    "connection": "Connection error"
+  },
   "stepper": {
     "upload": "Upload",
     "critique": "Slide review",

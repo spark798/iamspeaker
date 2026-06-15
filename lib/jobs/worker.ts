@@ -12,6 +12,8 @@ export type JobHandlers = Partial<Record<JobType, JobHandler>>;
 export interface WorkerOptions {
   concurrency?: number;
   pollMs?: number;
+  /** 핸들러 1건당 최대 실행 시간(초). 초과 시 작업 failed 처리. */
+  timeoutSec?: number;
 }
 
 /**
@@ -23,6 +25,7 @@ export class Worker {
   private timer: NodeJS.Timeout | null = null;
   private readonly concurrency: number;
   private readonly pollMs: number;
+  private readonly timeoutMs: number;
 
   constructor(
     private readonly queue: JobQueue,
@@ -31,6 +34,7 @@ export class Worker {
   ) {
     this.concurrency = Math.max(1, opts.concurrency ?? 1);
     this.pollMs = Math.max(50, opts.pollMs ?? 250);
+    this.timeoutMs = Math.max(1, opts.timeoutSec ?? 600) * 1000;
   }
 
   /** 큐에서 1건을 꺼내 처리. 처리할 작업이 없으면 false. (테스트/수동 구동용) */
@@ -80,14 +84,27 @@ export class Worker {
       this.queue.fail(job.id, `핸들러 없음: ${job.type}`);
       return;
     }
+    let timer: NodeJS.Timeout | undefined;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new Error(`작업 타임아웃 (${this.timeoutMs / 1000}s)`)),
+        this.timeoutMs,
+      );
+      timer.unref?.();
+    });
     try {
-      const result = await handler(job, { setProgress: (p) => this.queue.setProgress(job.id, p) });
+      const result = await Promise.race([
+        handler(job, { setProgress: (p) => this.queue.setProgress(job.id, p) }),
+        timeout,
+      ]);
       this.queue.complete(job.id, result ?? null);
       log.info("작업 완료");
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       log.error({ err }, "작업 실패");
       this.queue.fail(job.id, message);
+    } finally {
+      clearTimeout(timer);
     }
   }
 }
