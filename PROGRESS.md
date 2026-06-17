@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **Phase 1 진행 중** — SCR-01/01b/02/03 + LLM·파서·i18n 완료 |
-| 다음 액션 | **오디오 경로**: `lib/audio`(ffmpeg 정규화) + WhisperCpp STT 어댑터 + 분석 엔진(WPM/필러) → SCR-04 녹음·SCR-05 리포트 (§4) |
+| 다음 액션 | **오디오 경로(STT ✅)**: 다음 = 분석 엔진(`lib/analysis` WPM/필러/시간배분) → SCR-04 녹음·SCR-05 리포트 (§4) |
 | 최근 갱신 | 2026-06-17 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -37,7 +37,8 @@
 | SCR-01b 슬라이드 분석 (critique 잡 + **규칙 기반 폴백**, 무LLM 동작) | ✅ |
 | SCR-02 AI 데모 (데모 잡 → SSE → 슬라이드별 스크립트) | ✅ |
 | SCR-03 편집기 (편집·버전 저장 + 예상시간 + 데모 참조) | ✅ |
-| **오디오 경로** (STT·분석·SCR-04 녹음·SCR-05 리포트) | ⏳ 다음 |
+| 오디오 정규화(`lib/audio` ffmpeg→16kHz mono WAV) + **WhisperCpp STT 어댑터** | ✅ (실 음성 전사 검증) |
+| **분석 엔진**(WPM/필러/시간배분) · SCR-04 녹음 · SCR-05 리포트 | ⏳ 다음 |
 | SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
 
 > 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
@@ -87,16 +88,17 @@
 
 > 도구 설치 완료(ffmpeg/whisper). 아래는 무설치 코드 작업. 착수 전 `CLAUDE.md` §6 체크리스트, 청크 후 `iamspeaker-reviewer`.
 
-1. **`lib/audio/`** — ffmpeg로 업로드 녹음 → 16kHz mono WAV 정규화 (+무음 트림/길이). 순수 로직은 단위 테스트, ffmpeg 호출은 배열 spawn.
-2. **WhisperCpp STT 어댑터** (`lib/ai/whispercpp`) — whisper-cli 호출 → word-level `TranscriptResult`. `pnpm setup:models`로 `ggml-base.en` 다운로드. factory `getStt()` 교체(+계약 테스트 재사용).
-3. **분석 엔진** (`lib/analysis/`) — WPM / 필러워드(언어별 사전) / 슬라이드 시간배분. 순수 함수 + Whisper 출력 fixture 테스트.
-4. **SCR-04 녹음** (MediaRecorder) → `POST /recordings`(storage) → `analyze` 잡 → **SCR-05 리포트** UI.
+1. ✅ `lib/audio/`(normalizeToWav, readWavDurationSec) + WhisperCpp STT 어댑터(`lib/ai/whispercpp`, parse+spawn). 모델 `data/models/whisper/ggml-base.en.bin` 다운로드. 실 음성(say→ffmpeg→whisper) 전사 검증.
+2. **분석 엔진** (`lib/analysis/`) — WPM / 필러워드(언어별 사전) / 슬라이드 시간배분. 순수 함수 + Whisper 출력 fixture 테스트. **WPM 분모는 `readWavDurationSec`(실제 오디오 길이)** 사용 — transcript.durationSec는 `-ml 1`에서 부정확.
+3. **`analyze` 잡 핸들러** — recording wav → normalize → STT → 분석 → `analysis_results` 저장.
+4. **SCR-04 녹음** (MediaRecorder) → `POST /recordings`(storage) + 슬라이드 전환 타임스탬프 → analyze 잡 → **SCR-05 리포트** UI.
 5. 이어서 **SCR-06 개선** (`improve` 잡 + L1 프로필).
 
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
 
+- **2026-06-17** — 오디오 STT: `lib/audio`(ffmpeg normalizeToWav + readWavDurationSec) + `lib/ai/whispercpp`(parse+WhisperCppStt), factory getStt 교체(stub 가드). ggml-base.en 다운로드. 실 음성(say→ffmpeg→whisper) 전사 검증. 단위 +4(파서/wav 길이). ⚠️ WPM은 readWavDurationSec 사용(transcript durationSec 부정확).
 - **2026-06-17** — 리뷰#2 보완: API 라우트 8개 5xx 로깅 통일(`errorResponse`), SSE 라우트 try/catch, i18n 고아키(`upload.phaseNote`) 제거·`home.phase` 현행화. PROGRESS 정리.
 - **2026-06-16** — 오디오 도구 설치(ffmpeg 6·whisper.cpp 빌드·cmake; piper 릴리스 깨져 보류). GitHub 연동(gh 설치·인증·private 레포·push). **CI 그린** — `data/` 디렉토리 미추적으로 인한 E2E 500 수정(`createDb` 부모 mkdir + `.gitignore data/*`). Playwright E2E 활성화(`USE_STUB_ADAPTERS`) + `next dev` 500 수정(instrumentation 제거→지연 기동, D15/D16).
 - **2026-06-15** — SCR-01b 슬라이드 분석 + Slide Critic 규칙 폴백(리뷰#1).

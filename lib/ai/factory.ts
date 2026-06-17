@@ -8,6 +8,7 @@ import type {
   SttAdapter,
   TtsAdapter,
 } from "@/lib/ai/types";
+import { WhisperCppStt } from "@/lib/ai/whispercpp";
 import { config, engines } from "@/lib/config";
 
 /**
@@ -15,8 +16,8 @@ import { config, engines } from "@/lib/config";
  *
  * LLM(script/qa/slideCritic): 로컬 Ollama 기본.
  *   Phase 2에서 ANTHROPIC_API_KEY/OPENAI_API_KEY가 있으면 클라우드 구현으로 교체(engines 참조).
- * 오디오(tts/stt): 아직 stub. Phase 1 오디오 단계에서 Piper/Whisper.cpp로 교체.
- * 테스트/CI는 stub을 명시 주입(`stubAdapters()`)해 모델 없이 통과한다.
+ * STT: 로컬 Whisper.cpp. TTS: 아직 stub(piper 보류).
+ * 테스트/CI/E2E는 `USE_STUB_ADAPTERS=1`로 stub 강제 → 모델 없이 결정적 통과.
  */
 export function getScriptGenerator(): ScriptGeneratorAdapter {
   switch (engines.script) {
@@ -47,7 +48,8 @@ export function getTts(): TtsAdapter {
 }
 
 export function getStt(): SttAdapter {
-  return new StubStt(); // TODO(Phase 1 audio): WhisperCppStt
+  if (config.USE_STUB_ADAPTERS) return new StubStt();
+  return new WhisperCppStt();
 }
 
 export function getAdapters(): Adapters {
