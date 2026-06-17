@@ -53,3 +53,16 @@ export function toApiError(err: unknown): { status: number; body: ApiErrorBody }
   }
   return { status: 500, body: { error: { code: "INTERNAL", message: GENERIC_INTERNAL } } };
 }
+
+/**
+ * 라우트 catch 표준 처리: 5xx(또는 비-AppError)는 서버에 원본 에러를 로깅하고 표준 응답 반환.
+ * (스택은 로그에만, 클라이언트에는 일반 메시지)
+ */
+export async function errorResponse(err: unknown): Promise<Response> {
+  const { status, body } = toApiError(err);
+  if (status >= 500) {
+    const { logger } = await import("@/lib/logger");
+    logger.error({ err }, "API 5xx");
+  }
+  return Response.json(body, { status });
+}

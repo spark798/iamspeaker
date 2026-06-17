@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { getDb } from "@/lib/db";
 import { sessions, slides } from "@/lib/db/schema";
-import { Errors, toApiError } from "@/lib/errors";
+import { Errors, errorResponse } from "@/lib/errors";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -44,7 +44,6 @@ export async function POST(req: Request) {
     return Response.json({ id }, { status: 201 });
   } catch (err) {
     const mapped = err instanceof z.ZodError ? Errors.badRequest("입력이 올바르지 않습니다") : err;
-    const { status, body } = toApiError(mapped);
-    return Response.json(body, { status });
+    return errorResponse(mapped);
   }
 }
