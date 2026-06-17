@@ -10,8 +10,9 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 현재 단계 | **Phase 1 진행 중** — SCR-01b 슬라이드 분석 + Slide Critic 규칙 폴백(리뷰#1) 완료 |
-| 최근 갱신 | 2026-06-15 |
+| 현재 단계 | **Phase 1 진행 중** — GitHub 연동 완료(CI 가동), SCR-01b까지 완료 |
+| 최근 갱신 | 2026-06-16 |
+| GitHub | **spark798/iamspeaker (private)** — gh CLI(`~/.local/bin/gh`), origin 연결, CI(Actions) 가동. 셸에서 gh 쓰려면 `export PATH="$HOME/.local/bin:$PATH"` |
 | 다음 액션 | ③ 오디오(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → 녹음(SCR-04)·분석(SCR-05) / 또는 SCR-06 개선(improve 잡 연결, 무설치) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
@@ -123,6 +124,10 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-16 — GitHub 연동
+- gh CLI 2.94 user-local 설치(`~/.local/bin/gh`), 사용자 인증(spark798) + workflow 스코프. private 레포 `spark798/iamspeaker` 생성, origin 연결, `gh auth setup-git` 후 main 푸시.
+- CI(GitHub Actions) 가동 시작. Linear/Playwright MCP는 보류.
 
 ### 2026-06-16 — 도구: Playwright E2E 활성화 + dev 모드 수정
 - `USE_STUB_ADAPTERS` 플래그(config) → factory가 stub 강제. playwright.config webServer env + CI e2e 스텝 추가. Playwright chromium 설치.
