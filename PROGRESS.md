@@ -13,7 +13,8 @@
 | 현재 단계 | **Phase 1 진행 중** — GitHub 연동 완료(CI 가동), SCR-01b까지 완료 |
 | 최근 갱신 | 2026-06-16 |
 | GitHub | **spark798/iamspeaker (private)** — gh CLI(`~/.local/bin/gh`), origin 연결, **CI 그린(lint/typecheck/test/build/E2E)**. 셸에서 gh 쓰려면 `export PATH="$HOME/.local/bin:$PATH"` |
-| 다음 액션 | ③ 오디오(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → 녹음(SCR-04)·분석(SCR-05) / 또는 SCR-06 개선(improve 잡 연결, 무설치) |
+| 다음 액션 | 오디오 어댑터/파이프라인: WhisperCpp STT 어댑터 + ffmpeg 정규화(`lib/audio/`) + 분석 엔진(WPM/필러) → SCR-04 녹음·SCR-05 리포트 |
+| 로컬 도구 | ffmpeg 6.0·whisper-cli·cmake 4.3.3 → `~/.local/bin`(+`~/.local/whisper`,`~/.local/cmake`). piper는 보류(릴리스 깨짐). 셸: `export PATH="$HOME/.local/bin:$PATH"` |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
 | 읽을 문서 순서 | `PROGRESS.md`(본 문서) → `CLAUDE.md` → `DEVELOPMENT.md` → `docs/storyboard.md` |
@@ -124,6 +125,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-16 — 오디오 도구 설치 (ffmpeg/whisper, piper 보류)
+- ffmpeg 6.0 정적 arm64 → `~/.local/bin/ffmpeg`. cmake 4.3.3(`~/.local/cmake`) → whisper.cpp 클론+빌드 → `~/.local/whisper`(dylib 번들+rpath @loader_path) → `~/.local/bin/whisper-cli`. 둘 다 동작 검증.
+- 🚫 piper: rhasspy/piper 2023 macOS aarch64 tarball에 실제 dylib 없음(.dSYM만) → 깨짐. 소스 빌드는 onnxruntime 필요로 과중 → **보류**(TTS는 데모 음성용, 분석 경로엔 불필요; factory는 계속 StubTts).
+- preflight: ffmpeg/Ollama(hermes)/whisper ✅, piper ❌, LibreOffice ⚠️.
+- 다음: STT 어댑터 + lib/audio 파이프라인 + 분석 엔진(코드 작업, 무설치).
 
 ### 2026-06-16 — CI 그린 (data/ 디렉토리 버그 수정)
 - 🐞 CI E2E의 POST /api/sessions 500: 신규 클론에 `data/` 디렉토리 부재 → better-sqlite3가 파일 열 때 부모 디렉토리 미생성으로 실패. (gitignore `data/`가 `!data/.gitkeep` 재포함을 막아 .gitkeep 미추적이었음)
