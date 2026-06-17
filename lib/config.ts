@@ -46,6 +46,12 @@ const EnvSchema = z.object({
   // 작업 워커
   JOB_CONCURRENCY: z.coerce.number().int().positive().default(1),
   JOB_TIMEOUT_SEC: z.coerce.number().int().positive().default(600),
+
+  // 테스트/E2E 전용: 모든 AI 어댑터를 stub으로 강제(모델 없이 결정적 동작). "1"|"true"면 활성.
+  USE_STUB_ADAPTERS: z
+    .string()
+    .optional()
+    .transform((v) => v === "1" || v === "true"),
 });
 
 export type Config = z.infer<typeof EnvSchema>;

@@ -87,7 +87,9 @@
 | D11 | **Config는 `lib/config.ts`**(Zod, fail-fast) + 시작 시 외부 바이너리 preflight | 잘못된 env로 늦게 깨지는 것 방지 | 06-13 |
 | D12 | **도메인 타입은 `lib/domain/` 단일 진실원**, 어댑터/DB/분석이 공유 | 타입 중복·드리프트 방지 | 06-13 |
 | D13 | **Node 20 → Node 22 LTS 상향** | pnpm 11이 node:sqlite(22.13+) 요구, Next 15도 22 권장 | 06-13 |
-| D14 | **시작 시 마이그레이션 자동 적용**(instrumentation, 멱등) + init 실패 격리 | "클론 후 바로 동작" — 수동 db:migrate 없이 기동, 워커 크래시가 전 라우트 죽이지 않게 | 06-14 |
+| D14 | **시작 시 마이그레이션 자동 적용**(멱등) + init 실패 격리 | "클론 후 바로 동작" — 수동 db:migrate 없이 기동 | 06-14 |
+| D15 | **instrumentation 제거 → 지연 기동**: 마이그레이션은 `getDb()` 첫 호출, 워커는 `getQueue()` 첫 호출(첫 enqueue) | Next `dev`가 instrumentation 경유 better-sqlite3를 엣지 번들하려다 `fs` 미해결로 전 라우트 500 → 회피. 프로덕션/개발 모두 동작 | 06-15 |
+| D16 | **E2E/CI는 `USE_STUB_ADAPTERS=1`로 stub 강제** | 모델 없이 결정적·hermetic E2E (계획의 "E2E는 stub" 원칙) | 06-15 |
 
 ### 미해결/추후 결정 ❓
 - next-intl vs 자체 경량 i18n (UI 다국어) — Phase 1 SCR 작업 시 확정
@@ -121,6 +123,12 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-16 — 도구: Playwright E2E 활성화 + dev 모드 수정
+- `USE_STUB_ADAPTERS` 플래그(config) → factory가 stub 강제. playwright.config webServer env + CI e2e 스텝 추가. Playwright chromium 설치.
+- 🐞 `next dev`가 instrumentation 경유 better-sqlite3를 번들하다 `fs` 미해결 → 전 라우트 500(프로덕션만 동작했음). **instrumentation 제거**, 마이그레이션→`getDb()` 지연, 워커→`getQueue()` 지연 기동으로 해결(D15).
+- 검증: E2E 통과(6.8s, dev 서버+stub), unit/integration 62(+5 skip), build OK.
+- 다음: GitHub 리모트+푸시(gh 설치/인증 필요).
 
 ### 2026-06-15 — SCR-01b 슬라이드 분석 + Slide Critic 폴백(리뷰#1)
 - `lib/analysis/critique.ts` ruleBasedCritique(밀도=글자수, 분량 대비 시간 지적) + 단위 4. OllamaSlideCritic: 규칙 baseline + LLM 보강, LLM 실패 시 baseline 폴백(never-throw) → 리뷰#1(무LLM 동작) 해결.

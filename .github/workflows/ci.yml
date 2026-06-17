@@ -34,3 +34,11 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Install Playwright browser
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E (stub adapters)
+        run: pnpm e2e
+        env:
+          USE_STUB_ADAPTERS: "1"

@@ -1,5 +1,5 @@
 import { OllamaQaGenerator, OllamaScriptGenerator, OllamaSlideCritic } from "@/lib/ai/ollama";
-import { StubStt, StubTts } from "@/lib/ai/stub";
+import { StubStt, StubTts, stubAdapters } from "@/lib/ai/stub";
 import type {
   Adapters,
   QaGeneratorAdapter,
@@ -8,7 +8,7 @@ import type {
   SttAdapter,
   TtsAdapter,
 } from "@/lib/ai/types";
-import { engines } from "@/lib/config";
+import { config, engines } from "@/lib/config";
 
 /**
  * 어댑터 팩토리 — 항상 인터페이스/팩토리 경유로 어댑터를 얻는다(직접 호출 금지).
@@ -51,6 +51,8 @@ export function getStt(): SttAdapter {
 }
 
 export function getAdapters(): Adapters {
+  // 테스트/E2E: 모델 없이 결정적 동작을 위해 전체 stub.
+  if (config.USE_STUB_ADAPTERS) return stubAdapters();
   return {
     script: getScriptGenerator(),
     tts: getTts(),
