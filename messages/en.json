@@ -5,7 +5,7 @@
   },
   "home": {
     "cta": "Get started",
-    "phase": "Project setup (Phase 0) in progress"
+    "phase": "In development — start by uploading slides"
   },
   "errors": {
     "uploadFailed": "Upload failed",
@@ -28,8 +28,7 @@
   },
   "upload": {
     "title": "Upload slides",
-    "desc": "Upload PPTX/PDF + presentation settings (target time, tone, language, native language).",
-    "phaseNote": "SCR-01 — coming in Phase 1."
+    "desc": "Upload PPTX/PDF + presentation settings (target time, tone, language, native language)."
   },
   "uploadForm": {
     "file": "Slide file (PPTX/PDF)",

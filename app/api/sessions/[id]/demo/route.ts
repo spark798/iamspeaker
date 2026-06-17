@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { sessions } from "@/lib/db/schema";
-import { Errors, toApiError } from "@/lib/errors";
+import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
 import { eq } from "drizzle-orm";
 
@@ -15,7 +15,6 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
     const jobId = getQueue().enqueue("demo", { sessionId: id }, id);
     return Response.json({ jobId }, { status: 202 });
   } catch (err) {
-    const { status, body } = toApiError(err);
-    return Response.json(body, { status });
+    return errorResponse(err);
   }
 }

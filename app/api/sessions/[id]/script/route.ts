@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { scripts } from "@/lib/db/schema";
-import { Errors, toApiError } from "@/lib/errors";
+import { Errors, errorResponse } from "@/lib/errors";
 import { and, desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +21,6 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     if (!row) throw Errors.notFound("스크립트가 아직 없습니다");
     return Response.json({ version: row.version, source: row.source, content: row.content });
   } catch (err) {
-    const { status, body } = toApiError(err);
-    return Response.json(body, { status });
+    return errorResponse(err);
   }
 }

@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { jobs } from "@/lib/db/schema";
-import { Errors, toApiError } from "@/lib/errors";
+import { Errors, errorResponse } from "@/lib/errors";
 import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       error: job.error,
     });
   } catch (err) {
-    const { status, body } = toApiError(err);
-    return Response.json(body, { status });
+    return errorResponse(err);
   }
 }

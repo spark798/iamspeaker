@@ -3,7 +3,7 @@ import { writeFileSync } from "node:fs";
 import { config } from "@/lib/config";
 import { getDb } from "@/lib/db";
 import { sessions } from "@/lib/db/schema";
-import { Errors, toApiError } from "@/lib/errors";
+import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
 import { ensureDir, safeFilename, uploadDir, uploadPath } from "@/lib/storage";
 import { validateUploadFile } from "@/lib/upload/validate";
@@ -59,7 +59,6 @@ export async function POST(req: Request) {
     return Response.json({ sessionId, jobId }, { status: 201 });
   } catch (err) {
     const mapped = err instanceof z.ZodError ? Errors.badRequest("설정이 올바르지 않습니다") : err;
-    const { status, body } = toApiError(mapped);
-    return Response.json(body, { status });
+    return errorResponse(mapped);
   }
 }

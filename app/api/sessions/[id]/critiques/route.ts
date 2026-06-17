@@ -1,6 +1,6 @@
 import { getDb } from "@/lib/db";
 import { slideCritiques } from "@/lib/db/schema";
-import { toApiError } from "@/lib/errors";
+import { errorResponse } from "@/lib/errors";
 import { asc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -25,7 +25,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       })),
     });
   } catch (err) {
-    const { status, body } = toApiError(err);
-    return Response.json(body, { status });
+    return errorResponse(err);
   }
 }
