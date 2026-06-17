@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 현재 단계 | **Phase 1 진행 중** — GitHub 연동 완료(CI 가동), SCR-01b까지 완료 |
 | 최근 갱신 | 2026-06-16 |
-| GitHub | **spark798/iamspeaker (private)** — gh CLI(`~/.local/bin/gh`), origin 연결, CI(Actions) 가동. 셸에서 gh 쓰려면 `export PATH="$HOME/.local/bin:$PATH"` |
+| GitHub | **spark798/iamspeaker (private)** — gh CLI(`~/.local/bin/gh`), origin 연결, **CI 그린(lint/typecheck/test/build/E2E)**. 셸에서 gh 쓰려면 `export PATH="$HOME/.local/bin:$PATH"` |
 | 다음 액션 | ③ 오디오(ffmpeg/Whisper.cpp/Piper 설치 + 실제 어댑터) → 녹음(SCR-04)·분석(SCR-05) / 또는 SCR-06 개선(improve 잡 연결, 무설치) |
 | 도구 | Node v22.22.3(nvm, default), pnpm 11.6.0(corepack). 셸마다 `. "$HOME/.nvm/nvm.sh"; nvm use default` 필요 |
 | 설치 스택 | Next 15.5 · React 19 · TS 5.9(strict) · Tailwind v4 · Biome 1.9 · Vitest 3 · Playwright 1.60 |
@@ -124,6 +124,11 @@
 ## 5. 세션 로그 (Session Log)
 
 새 항목은 위에 추가 (최신 우선).
+
+### 2026-06-16 — CI 그린 (data/ 디렉토리 버그 수정)
+- 🐞 CI E2E의 POST /api/sessions 500: 신규 클론에 `data/` 디렉토리 부재 → better-sqlite3가 파일 열 때 부모 디렉토리 미생성으로 실패. (gitignore `data/`가 `!data/.gitkeep` 재포함을 막아 .gitkeep 미추적이었음)
+- 수정: `createDb`가 부모 디렉토리 mkdir(recursive); `.gitignore` `data/`→`data/*`로 .gitkeep 추적. API 5xx 서버 로깅(errorResponse) 추가.
+- 결과: **CI 전 스텝 그린**(lint/typecheck/test/build/playwright/E2E). 진단은 로컬 `CI=1 pnpm e2e` 재현으로 코드/인프라 분리.
 
 ### 2026-06-16 — GitHub 연동
 - gh CLI 2.94 user-local 설치(`~/.local/bin/gh`), 사용자 인증(spark798) + workflow 스코프. private 레포 `spark798/iamspeaker` 생성, origin 연결, `gh auth setup-git` 후 main 푸시.
