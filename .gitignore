@@ -15,8 +15,8 @@ next-env.d.ts
 .env.local
 .env.*.local
 
-# runtime data (로컬 저장 — 커밋 금지)
-data/
+# runtime data (로컬 저장 — 커밋 금지). data/* 패턴이라야 .gitkeep 재포함 가능.
+data/*
 !data/.gitkeep
 
 # AI 모델 가중치 (setup:models로 다운로드)
