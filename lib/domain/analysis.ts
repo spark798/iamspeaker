@@ -1,5 +1,11 @@
 import type { FillerWordResult } from "./transcript";
 
+/** 녹음 중 슬라이드 전환 시점 (SCR-04에서 기록). */
+export interface SlideTransition {
+  slideIndex: number;
+  atSec: number;
+}
+
 /** 슬라이드별 소요 시간 (슬라이드 전환 타임스탬프 × 발화 구간). */
 export interface SlideTimeBreakdown {
   slideIndex: number;
