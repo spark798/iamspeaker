@@ -2,6 +2,7 @@
 
 import { estimateSpeakingSec } from "@/lib/script/estimate";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 interface Slide {
@@ -101,6 +102,12 @@ export function ScriptEditor({ sessionId }: { sessionId: string }) {
         {savedVersion !== null && !saving && (
           <span className="text-sm text-green-600">{t("saved", { version: savedVersion })}</span>
         )}
+        <Link
+          href={`/record?session=${sessionId}`}
+          className="text-sm font-medium text-brand hover:underline"
+        >
+          {t("toRecord")}
+        </Link>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

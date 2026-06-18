@@ -1,0 +1,1 @@
+ALTER TABLE `recordings` ADD `transitions` text DEFAULT '[]' NOT NULL;

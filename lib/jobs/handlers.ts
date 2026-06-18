@@ -1,8 +1,19 @@
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import type { Adapters } from "@/lib/ai/types";
+import { analyzeSpeech } from "@/lib/analysis/speech";
+import { normalizeToWav, readWavDurationSec } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
-import { qaItems, qaSessions, scripts, sessions, slideCritiques, slides } from "@/lib/db/schema";
+import {
+  analysisResults,
+  qaItems,
+  qaSessions,
+  recordings,
+  scripts,
+  sessions,
+  slideCritiques,
+  slides,
+} from "@/lib/db/schema";
 import type { SlideContent } from "@/lib/domain";
 import { parseSlides } from "@/lib/slides";
 import { asc, desc, eq } from "drizzle-orm";
@@ -11,6 +22,7 @@ import type { JobHandlers } from "./worker";
 
 const SessionPayload = z.object({ sessionId: z.string().min(1) });
 const ParsePayload = z.object({ sessionId: z.string().min(1), filePath: z.string().min(1) });
+const AnalyzePayload = z.object({ recordingId: z.string().min(1) });
 const QaPayload = z.object({
   sessionId: z.string().min(1),
   count: z.number().int().positive().optional(),
@@ -88,6 +100,48 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         })
         .run();
       return { scriptId, slides: script.content.length };
+    },
+
+    // 녹음 → 정규화 → STT → 분석(WPM/필러/시간배분) → 저장
+    analyze: async (job, ctx) => {
+      const { recordingId } = AnalyzePayload.parse(job.payload);
+      const rec = db.select().from(recordings).where(eq(recordings.id, recordingId)).get();
+      if (!rec) throw new Error(`녹음을 찾을 수 없습니다: ${recordingId}`);
+      const session = requireSession(rec.sessionId);
+      ctx.setProgress(15);
+
+      const wavPath = `${rec.audioFilePath}.16k.wav`;
+      await normalizeToWav(rec.audioFilePath, wavPath);
+      const audioDurationSec = readWavDurationSec(wavPath);
+      ctx.setProgress(40);
+
+      const transcript = await adapters.stt.transcribe({ wavFilePath: wavPath });
+      ctx.setProgress(80);
+
+      const result = analyzeSpeech({
+        transcript,
+        audioDurationSec,
+        transitions: rec.transitions,
+        language: session.language,
+      });
+
+      db.delete(analysisResults).where(eq(analysisResults.recordingId, recordingId)).run();
+      db.insert(analysisResults)
+        .values({
+          id: randomUUID(),
+          recordingId,
+          wpm: result.wpm,
+          fillerWords: result.fillerWords,
+          slideTimeBreakdown: result.slideTimeBreakdown,
+          pronunciationIssues: result.pronunciationIssues,
+        })
+        .run();
+      db.update(recordings)
+        .set({ durationSec: audioDurationSec })
+        .where(eq(recordings.id, recordingId))
+        .run();
+
+      return { wpm: result.wpm, durationSec: audioDurationSec };
     },
 
     // 슬라이드 자체 비평 생성·저장

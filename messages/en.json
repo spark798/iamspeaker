@@ -77,6 +77,31 @@
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →"
   },
+  "record": {
+    "title": "Practice recording",
+    "noSession": "No session. Please upload first.",
+    "start": "Start recording",
+    "stop": "Stop",
+    "recording": "Recording",
+    "uploading": "Uploading…",
+    "analyzing": "Analyzing…",
+    "prev": "Prev",
+    "next": "Next",
+    "slide": "Slide",
+    "noMic": "This browser/environment doesn't support microphone recording",
+    "toReport": "View report →"
+  },
+  "report": {
+    "title": "Feedback report",
+    "noRecording": "No recording. Please record a practice run first.",
+    "loading": "Loading…",
+    "wpm": "Speaking pace (WPM)",
+    "wpmHint": "Recommended 110–150",
+    "duration": "Total length (s)",
+    "fillers": "Filler words",
+    "fillerNone": "No filler words detected",
+    "slideTime": "Time per slide (s)"
+  },
   "editor": {
     "title": "Edit script",
     "noSession": "No session. Please upload first.",
@@ -87,6 +112,7 @@
     "saving": "Saving…",
     "saved": "Saved (version {version})",
     "slide": "Slide",
-    "placeholder": "Write the spoken script for this slide"
+    "placeholder": "Write the spoken script for this slide",
+    "toRecord": "Practice recording →"
   }
 }

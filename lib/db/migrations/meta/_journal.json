@@ -8,6 +8,13 @@
       "when": 1781411901978,
       "tag": "0000_cultured_onslaught",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1781709774974,
+      "tag": "0001_soft_mastermind",
+      "breakpoints": true
     }
   ]
 }

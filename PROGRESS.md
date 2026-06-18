@@ -11,8 +11,8 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **Phase 1 진행 중** — SCR-01/01b/02/03 + LLM·파서·i18n 완료 |
-| 다음 액션 | **오디오 경로(STT·분석 ✅)**: 다음 = `analyze` 잡(녹음→정규화→STT→분석→저장) → SCR-04 녹음·SCR-05 리포트 (§4) |
+| 현재 단계 | **Phase 1 진행 중** — SCR-01/01b/02/03/04/05 + 오디오 분석 완료 (전체 루프 동작) |
+| 다음 액션 | SCR-06 개선(improve 잡 + L1) → SCR-08 Q&A 화면(qa_generate 잡 이미 있음) → SCR-07 진행/다국어 (§4) |
 | 최근 갱신 | 2026-06-17 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -38,7 +38,8 @@
 | SCR-02 AI 데모 (데모 잡 → SSE → 슬라이드별 스크립트) | ✅ |
 | SCR-03 편집기 (편집·버전 저장 + 예상시간 + 데모 참조) | ✅ |
 | 오디오 정규화(`lib/audio`) + **WhisperCpp STT** + **분석 엔진**(WPM/필러/시간배분, `lib/analysis/speech`) | ✅ |
-| **`analyze` 잡** + SCR-04 녹음 + SCR-05 리포트 | ⏳ 다음 |
+| **`analyze` 잡** + **SCR-04 녹음**(MediaRecorder+전환) + **SCR-05 리포트** | ✅ (say 음성으로 분석 전 구간 검증) |
+| SCR-06 개선(improve) · SCR-08 Q&A 화면 · SCR-07 진행/다국어 · TTS(piper) | ⏳ 대기 |
 | SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
 
 > 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
@@ -90,14 +91,15 @@
 
 1. ✅ `lib/audio/`(normalizeToWav, readWavDurationSec) + WhisperCpp STT 어댑터(`lib/ai/whispercpp`, parse+spawn). 모델 `data/models/whisper/ggml-base.en.bin` 다운로드. 실 음성(say→ffmpeg→whisper) 전사 검증.
 2. ✅ **분석 엔진** (`lib/analysis/speech.ts`) — computeWpm / detectFillerWords(en·ko 사전) / computeSlideTimeBreakdown / analyzeSpeech. 순수 + 단위 6. WPM 분모는 readWavDurationSec.
-3. **`analyze` 잡 핸들러** — recording wav → normalize → STT → 분석 → `analysis_results` 저장.
-4. **SCR-04 녹음** (MediaRecorder) → `POST /recordings`(storage) + 슬라이드 전환 타임스탬프 → analyze 잡 → **SCR-05 리포트** UI.
-5. 이어서 **SCR-06 개선** (`improve` 잡 + L1 프로필).
+3. ✅ `analyze` 잡 + recordings 라우트(멀티파트) + SCR-04 녹음(MediaRecorder+전환 타임스탬프) + SCR-05 리포트(WPM/필러/시간배분) + 마이그레이션 0001(recordings.transitions). say 음성으로 전 구간 검증.
+4. **SCR-06 개선** (`improve` 잡 + L1 프로필) — 리포트→개선 흐름.
+5. **SCR-08 Q&A** 화면 (qa_generate 잡 이미 존재) · **SCR-07** 진행/다국어 · TTS(piper 대안).
 
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
 
+- **2026-06-18** — SCR-04/05 + analyze 잡: `analyze` 핸들러(녹음→normalizeToWav→STT→analyzeSpeech→analysis_results). `POST /api/sessions/[id]/recordings`(멀티파트, 오디오 검증) + `GET /api/recordings/[id]/analysis`. `components/recorder.tsx`(MediaRecorder+슬라이드 전환) + `report-view.tsx`(WPM/필러/시간배분). 마이그레이션 0001(recordings.transitions; durationSec 기본값 변경이 테이블 재생성 유발하던 것 회피). say 음성으로 분석 전 구간 검증(WPM 146/필러 감지/시간배분). **전체 루프(업로드→데모→편집→녹음→리포트) 동작.**
 - **2026-06-17** — 분석 엔진: `lib/analysis/speech.ts`(computeWpm/detectFillerWords[en·ko]/computeSlideTimeBreakdown/analyzeSpeech) + 도메인 `SlideTransition`. 순수 함수 + 단위 6. 전체 72 통과.
 - **2026-06-17** — 오디오 STT: `lib/audio`(ffmpeg normalizeToWav + readWavDurationSec) + `lib/ai/whispercpp`(parse+WhisperCppStt), factory getStt 교체(stub 가드). ggml-base.en 다운로드. 실 음성(say→ffmpeg→whisper) 전사 검증. 단위 +4(파서/wav 길이). ⚠️ WPM은 readWavDurationSec 사용(transcript durationSec 부정확).
 - **2026-06-17** — 리뷰#2 보완: API 라우트 8개 5xx 로깅 통일(`errorResponse`), SSE 라우트 try/catch, i18n 고아키(`upload.phaseNote`) 제거·`home.phase` 현행화. PROGRESS 정리.

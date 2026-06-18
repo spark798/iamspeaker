@@ -11,6 +11,7 @@ import type {
   ScriptSource,
   SlideScript,
   SlideTimeBreakdown,
+  SlideTransition,
   TextDensity,
   Tone,
 } from "../domain";
@@ -56,6 +57,10 @@ export const recordings = sqliteTable("recordings", {
   scriptVersion: integer("script_version").notNull(),
   audioFilePath: text("audio_file_path").notNull(),
   durationSec: real("duration_sec").notNull(),
+  transitions: text("transitions", { mode: "json" })
+    .$type<SlideTransition[]>()
+    .notNull()
+    .default(sql`'[]'`),
   createdAt: createdAt(),
 });
 
