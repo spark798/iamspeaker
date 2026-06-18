@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 interface DiffEntry {
@@ -136,6 +137,14 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
         )}
         {applied !== null && (
           <span className="text-sm text-green-600">{t("applied", { version: applied })}</span>
+        )}
+        {sessionId && (
+          <Link
+            href={`/qa?session=${sessionId}`}
+            className="ml-auto text-sm font-medium text-brand hover:underline"
+          >
+            {t("toQa")}
+          </Link>
         )}
       </div>
 

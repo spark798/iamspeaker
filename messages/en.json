@@ -103,6 +103,17 @@
     "slideTime": "Time per slide (s)",
     "toImprove": "View suggestions →"
   },
+  "qa": {
+    "title": "Q&A preparation",
+    "noSession": "No session. Please upload first.",
+    "generate": "Generate questions",
+    "generating": "Generating…",
+    "regenerate": "Regenerate",
+    "empty": "Click 'Generate questions' to get likely investor questions.",
+    "slide": "Slide",
+    "easy": "Easy",
+    "tough": "Tough"
+  },
   "improve": {
     "title": "Improvement suggestions",
     "noRecording": "No recording. Please record a practice run first.",
@@ -117,7 +128,8 @@
     "reason": "Why",
     "apply": "Apply selected",
     "applying": "Applying…",
-    "applied": "Applied (version {version})"
+    "applied": "Applied (version {version})",
+    "toQa": "Q&A prep →"
   },
   "editor": {
     "title": "Edit script",
