@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface FillerWord {
@@ -39,6 +40,14 @@ export function ReportView({ recordingId }: { recordingId: string }) {
 
   return (
     <div className="mt-4 space-y-6">
+      <div className="flex justify-end">
+        <Link
+          href={`/improve?recording=${recordingId}`}
+          className="text-sm font-medium text-brand hover:underline"
+        >
+          {t("toImprove")}
+        </Link>
+      </div>
       <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
         <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>
         <div className={`text-3xl font-bold ${wpmOk ? "text-green-600" : "text-amber-600"}`}>

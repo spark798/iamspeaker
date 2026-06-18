@@ -100,7 +100,24 @@
     "duration": "Total length (s)",
     "fillers": "Filler words",
     "fillerNone": "No filler words detected",
-    "slideTime": "Time per slide (s)"
+    "slideTime": "Time per slide (s)",
+    "toImprove": "View suggestions →"
+  },
+  "improve": {
+    "title": "Improvement suggestions",
+    "noRecording": "No recording. Please record a practice run first.",
+    "generate": "Generate suggestions",
+    "generating": "Generating…",
+    "regenerate": "Regenerate",
+    "empty": "Click 'Generate suggestions' to get AI improvements.",
+    "noChanges": "No improvements suggested.",
+    "slide": "Slide",
+    "original": "Original",
+    "improved": "Improved",
+    "reason": "Why",
+    "apply": "Apply selected",
+    "applying": "Applying…",
+    "applied": "Applied (version {version})"
   },
   "editor": {
     "title": "Edit script",

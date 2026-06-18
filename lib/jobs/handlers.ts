@@ -23,6 +23,7 @@ import type { JobHandlers } from "./worker";
 const SessionPayload = z.object({ sessionId: z.string().min(1) });
 const ParsePayload = z.object({ sessionId: z.string().min(1), filePath: z.string().min(1) });
 const AnalyzePayload = z.object({ recordingId: z.string().min(1) });
+const ImprovePayload = z.object({ recordingId: z.string().min(1) });
 const QaPayload = z.object({
   sessionId: z.string().min(1),
   count: z.number().int().positive().optional(),
@@ -142,6 +143,39 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         .run();
 
       return { wpm: result.wpm, durationSec: audioDurationSec };
+    },
+
+    // 최신 스크립트 + 분석 결과 → 개선 제안(diff). 결과는 잡 result에 담김(SCR-06이 조회).
+    improve: async (job, ctx) => {
+      const { recordingId } = ImprovePayload.parse(job.payload);
+      const rec = db.select().from(recordings).where(eq(recordings.id, recordingId)).get();
+      if (!rec) throw new Error(`녹음을 찾을 수 없습니다: ${recordingId}`);
+      const scriptRow = db
+        .select()
+        .from(scripts)
+        .where(eq(scripts.sessionId, rec.sessionId))
+        .orderBy(desc(scripts.version))
+        .get();
+      if (!scriptRow) throw new Error("스크립트가 없습니다. 먼저 데모/편집을 진행하세요.");
+      const analysisRow = db
+        .select()
+        .from(analysisResults)
+        .where(eq(analysisResults.recordingId, recordingId))
+        .get();
+      if (!analysisRow) throw new Error("분석 결과가 없습니다.");
+      ctx.setProgress(30);
+      // L1 프로필은 추후(lib/ai/l1-profiles) — 지금은 미전달.
+      const diff = await adapters.script.improve(
+        { version: scriptRow.version, source: scriptRow.source, content: scriptRow.content },
+        {
+          wpm: analysisRow.wpm,
+          fillerWords: analysisRow.fillerWords,
+          slideTimeBreakdown: analysisRow.slideTimeBreakdown,
+          pronunciationIssues: analysisRow.pronunciationIssues,
+        },
+      );
+      ctx.setProgress(90);
+      return diff;
     },
 
     // 슬라이드 자체 비평 생성·저장

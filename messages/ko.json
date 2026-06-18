@@ -100,7 +100,24 @@
     "duration": "총 길이(초)",
     "fillers": "필러워드",
     "fillerNone": "감지된 필러워드 없음",
-    "slideTime": "슬라이드별 시간(초)"
+    "slideTime": "슬라이드별 시간(초)",
+    "toImprove": "개선 제안 보기 →"
+  },
+  "improve": {
+    "title": "개선 제안",
+    "noRecording": "녹음이 없습니다. 먼저 연습 녹음을 하세요.",
+    "generate": "개선 제안 생성",
+    "generating": "생성 중…",
+    "regenerate": "다시 생성",
+    "empty": "‘개선 제안 생성’을 눌러 AI 제안을 받아보세요.",
+    "noChanges": "개선할 부분이 없습니다.",
+    "slide": "슬라이드",
+    "original": "원본",
+    "improved": "개선본",
+    "reason": "이유",
+    "apply": "선택 적용",
+    "applying": "적용 중…",
+    "applied": "적용됨 (버전 {version})"
   },
   "editor": {
     "title": "스크립트 편집",
