@@ -112,7 +112,18 @@
     "empty": "‘예상 질문 생성’을 눌러 투자자 예상 질문을 받아보세요.",
     "slide": "슬라이드",
     "easy": "쉬움",
-    "tough": "압박"
+    "tough": "압박",
+    "answer": "답변 녹음",
+    "stop": "정지",
+    "recording": "녹음 중",
+    "uploading": "업로드 중…",
+    "evaluating": "평가 중…",
+    "retry": "다시 답변",
+    "relevance": "답변 적합도",
+    "wpm": "WPM",
+    "fillers": "필러워드",
+    "improved": "개선된 답변 예시",
+    "noMic": "이 브라우저/환경은 마이크 녹음을 지원하지 않습니다"
   },
   "improve": {
     "title": "개선 제안",

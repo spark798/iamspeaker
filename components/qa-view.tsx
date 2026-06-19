@@ -1,5 +1,6 @@
 "use client";
 
+import { AnswerRecorder } from "@/components/answer-recorder";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 
@@ -96,6 +97,7 @@ export function QaView({ sessionId }: { sessionId: string }) {
               </span>
             </div>
             <p className="text-sm">{q.question}</p>
+            <AnswerRecorder itemId={q.id} />
           </li>
         ))}
       </ol>

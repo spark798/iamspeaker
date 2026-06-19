@@ -112,7 +112,18 @@
     "empty": "Click 'Generate questions' to get likely investor questions.",
     "slide": "Slide",
     "easy": "Easy",
-    "tough": "Tough"
+    "tough": "Tough",
+    "answer": "Record answer",
+    "stop": "Stop",
+    "recording": "Recording",
+    "uploading": "Uploading…",
+    "evaluating": "Evaluating…",
+    "retry": "Re-answer",
+    "relevance": "Answer relevance",
+    "wpm": "WPM",
+    "fillers": "Fillers",
+    "improved": "Improved answer",
+    "noMic": "This browser/environment doesn't support microphone recording"
   },
   "improve": {
     "title": "Improvement suggestions",

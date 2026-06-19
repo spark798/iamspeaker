@@ -6,6 +6,7 @@ import { normalizeToWav, readWavDurationSec } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
 import {
   analysisResults,
+  qaAnswers,
   qaItems,
   qaSessions,
   recordings,
@@ -24,6 +25,10 @@ const SessionPayload = z.object({ sessionId: z.string().min(1) });
 const ParsePayload = z.object({ sessionId: z.string().min(1), filePath: z.string().min(1) });
 const AnalyzePayload = z.object({ recordingId: z.string().min(1) });
 const ImprovePayload = z.object({ recordingId: z.string().min(1) });
+const QaEvaluatePayload = z.object({
+  qaItemId: z.string().min(1),
+  audioFilePath: z.string().min(1),
+});
 const QaPayload = z.object({
   sessionId: z.string().min(1),
   count: z.number().int().positive().optional(),
@@ -203,6 +208,52 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           .run();
       }
       return { count: critiques.length };
+    },
+
+    // Q&A 답변 녹음 → STT → 분석(WPM/필러) + LLM 평가(적합도/개선답변) → qa_answers 저장
+    qa_evaluate: async (job, ctx) => {
+      const { qaItemId, audioFilePath } = QaEvaluatePayload.parse(job.payload);
+      const item = db.select().from(qaItems).where(eq(qaItems.id, qaItemId)).get();
+      if (!item) throw new Error(`질문을 찾을 수 없습니다: ${qaItemId}`);
+      const qs = db.select().from(qaSessions).where(eq(qaSessions.id, item.qaSessionId)).get();
+      const language = qs ? requireSession(qs.sessionId).language : "en";
+      ctx.setProgress(15);
+
+      const wavPath = `${audioFilePath}.16k.wav`;
+      await normalizeToWav(audioFilePath, wavPath);
+      const audioDurationSec = readWavDurationSec(wavPath);
+      ctx.setProgress(40);
+
+      const transcript = await adapters.stt.transcribe({ wavFilePath: wavPath });
+      const speech = analyzeSpeech({ transcript, audioDurationSec, transitions: [], language });
+      ctx.setProgress(70);
+
+      const feedback = await adapters.qa.evaluateAnswer(
+        {
+          id: item.id,
+          question: item.question,
+          relatedSlideIndex: item.relatedSlideIndex,
+          difficulty: item.difficulty,
+          category: item.category,
+        },
+        transcript,
+      );
+      ctx.setProgress(90);
+
+      db.delete(qaAnswers).where(eq(qaAnswers.qaItemId, qaItemId)).run();
+      db.insert(qaAnswers)
+        .values({
+          id: randomUUID(),
+          qaItemId,
+          audioFilePath,
+          transcript: transcript.text,
+          wpm: speech.wpm,
+          fillerWords: speech.fillerWords,
+          relevanceScore: feedback.relevanceScore,
+          improvedAnswer: feedback.improvedAnswer ?? null,
+        })
+        .run();
+      return { relevanceScore: feedback.relevanceScore, wpm: speech.wpm };
     },
 
     // 슬라이드 + 최신 스크립트 → 예상 질문 생성·저장
