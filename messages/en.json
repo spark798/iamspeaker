@@ -77,6 +77,17 @@
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →"
   },
+  "progress": {
+    "title": "Progress history",
+    "noSession": "No session. Please upload first.",
+    "noData": "No recordings yet. Try a practice recording.",
+    "loading": "Loading…",
+    "attempt": "Take",
+    "wpm": "WPM",
+    "fillers": "Fillers",
+    "duration": "Length (s)",
+    "pending": "Pending"
+  },
   "record": {
     "title": "Practice recording",
     "noSession": "No session. Please upload first.",
@@ -123,7 +134,8 @@
     "wpm": "WPM",
     "fillers": "Fillers",
     "improved": "Improved answer",
-    "noMic": "This browser/environment doesn't support microphone recording"
+    "noMic": "This browser/environment doesn't support microphone recording",
+    "toProgress": "Progress history →"
   },
   "improve": {
     "title": "Improvement suggestions",

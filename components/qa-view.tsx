@@ -2,6 +2,7 @@
 
 import { AnswerRecorder } from "@/components/answer-recorder";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 interface Question {
@@ -63,14 +64,22 @@ export function QaView({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="mt-4 space-y-4">
-      <button
-        type="button"
-        onClick={() => void generate()}
-        disabled={busy}
-        className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
-      >
-        {busy ? t("generating") : hasQuestions ? t("regenerate") : t("generate")}
-      </button>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => void generate()}
+          disabled={busy}
+          className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
+        >
+          {busy ? t("generating") : hasQuestions ? t("regenerate") : t("generate")}
+        </button>
+        <Link
+          href={`/progress?session=${sessionId}`}
+          className="ml-auto text-sm font-medium text-brand hover:underline"
+        >
+          {t("toProgress")}
+        </Link>
+      </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
       {!hasQuestions && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}

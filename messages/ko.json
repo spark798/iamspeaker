@@ -77,6 +77,17 @@
     "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요.",
     "toEditor": "스크립트 편집 →"
   },
+  "progress": {
+    "title": "진행 기록",
+    "noSession": "세션이 없습니다. 먼저 업로드하세요.",
+    "noData": "아직 녹음 기록이 없습니다. 연습 녹음을 해보세요.",
+    "loading": "불러오는 중…",
+    "attempt": "회차",
+    "wpm": "WPM",
+    "fillers": "필러",
+    "duration": "길이(초)",
+    "pending": "분석 대기"
+  },
   "record": {
     "title": "연습 녹음",
     "noSession": "세션이 없습니다. 먼저 업로드하세요.",
@@ -123,7 +134,8 @@
     "wpm": "WPM",
     "fillers": "필러워드",
     "improved": "개선된 답변 예시",
-    "noMic": "이 브라우저/환경은 마이크 녹음을 지원하지 않습니다"
+    "noMic": "이 브라우저/환경은 마이크 녹음을 지원하지 않습니다",
+    "toProgress": "진행 기록 →"
   },
   "improve": {
     "title": "개선 제안",
