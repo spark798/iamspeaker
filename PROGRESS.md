@@ -108,6 +108,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — Phase 1 전체 리뷰 + CI actions @v4→v5(Node20 경고 해소). 발견·수정: ① live 어댑터 계약 테스트가 5s 기본 타임아웃에 걸려 실행 불가 → per-it timeoutMs 주입(120s), hermes3:8b로 5종 전부 통과(2~9s) ② queue.complete/setProgress 경쟁 조건(타임아웃 failed 작업을 늦은 핸들러가 succeeded로 되살림) → WHERE status='running' 가드 ③ ollama/index 중간 import 정리. 미수정(기록): deriveEngines가 클라우드 키 있으면 "claude" 보고하나 factory는 ollama 폴백(Phase 2 구현 시 해소, /api/health에만 노출) / AnswerEvalSchema relevanceScore .max(1) — LLM이 0~100 반환 시 parse throw(프롬프트로 완화, live 통과). 강점: 어댑터패턴·path-traversal 방어·매직바이트 검증·전 경계 Zod·any 0·FK cascade·배열인자 spawn·env↔config 동기. biome/tsc/80 단위테스트 그린.
 - **2026-06-21** — 발음 분석(SCR-05): whisper `-ojf`로 토큰 확률(p) 출력→단어별 confidence 평균(특수토큰 제외). `detectPronunciationIssues`(confidence<0.6 단어를 ko.json 발음규칙 f/v/z/th/r/l과 교차→l1Related+교정팁). analyze 잡이 nativeLanguage→L1 주입, report-view에 발음 교정 섹션+모국어 빈출 배지+i18n. 단위테스트 6종 추가. 실측: say→ffmpeg→whisper 토큰 p값 흐름 + "Our"→r/l·"software"→f 규칙 매칭 확인. CI 그린.
 
 - **2026-06-20** — 감독되는 자동화 3종: `docs/automation.md`(거버닝 — Driver 정지선/단계카운터 N=3, Benchmarker 제안전용, Reviewer 규칙+벤치마크참고). `.claude/agents/iamspeaker-driver.md`(진행/정지 게이트키퍼, read-only) + `iamspeaker-benchmarker.md`(리서치→`docs/benchmark.md` 제안만) + reviewer에 벤치마크 참고 추가. `docs/benchmark.md` 시드. 완전 자율 아님 — 정지선이 안전장치.
