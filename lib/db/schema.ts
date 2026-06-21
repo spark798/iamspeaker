@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, real, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 // 도메인 타입(단일 진실원)을 JSON 컬럼 타입으로 재사용. drizzle-kit 친화 위해 상대 경로 import.
 import type {
   Difficulty,
@@ -53,15 +53,20 @@ export const scripts = sqliteTable("scripts", {
 });
 
 /** 자막 병기용 스크립트 번역 캐시(scriptId + language별 1건). */
-export const scriptTranslations = sqliteTable("script_translations", {
-  id: text("id").primaryKey(),
-  scriptId: text("script_id")
-    .notNull()
-    .references(() => scripts.id, { onDelete: "cascade" }),
-  language: text("language").notNull(),
-  content: text("content", { mode: "json" }).$type<SlideScript[]>().notNull(),
-  createdAt: createdAt(),
-});
+export const scriptTranslations = sqliteTable(
+  "script_translations",
+  {
+    id: text("id").primaryKey(),
+    scriptId: text("script_id")
+      .notNull()
+      .references(() => scripts.id, { onDelete: "cascade" }),
+    language: text("language").notNull(),
+    content: text("content", { mode: "json" }).$type<SlideScript[]>().notNull(),
+    createdAt: createdAt(),
+  },
+  // (scriptId, language)당 캐시 1건 — 동시 토글 시 중복행 방지.
+  (t) => [uniqueIndex("script_translations_script_lang").on(t.scriptId, t.language)],
+);
 
 export const recordings = sqliteTable("recordings", {
   id: text("id").primaryKey(),

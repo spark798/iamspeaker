@@ -50,8 +50,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       text: translated[i] ?? c.text,
     }));
 
+    // 동시 토글 경쟁 시 unique(scriptId,language) 충돌은 무시(이미 캐시됨).
     db.insert(scriptTranslations)
       .values({ id: randomUUID(), scriptId: scriptRow.id, language: target, content })
+      .onConflictDoNothing()
       .run();
 
     return Response.json({ language: target, content });

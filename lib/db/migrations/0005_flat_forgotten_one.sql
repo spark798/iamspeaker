@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `script_translations_script_lang` ON `script_translations` (`script_id`,`language`);
