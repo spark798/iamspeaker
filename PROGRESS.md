@@ -18,7 +18,8 @@
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
 | 테스트 | 62 통과 (+5 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
-| 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` |
+| 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
+| 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
 ---
 
@@ -107,6 +108,7 @@
 
 ## 5. 세션 로그 (요약, 최신 우선)
 
+- **2026-06-20** — 감독되는 자동화 3종: `docs/automation.md`(거버닝 — Driver 정지선/단계카운터 N=3, Benchmarker 제안전용, Reviewer 규칙+벤치마크참고). `.claude/agents/iamspeaker-driver.md`(진행/정지 게이트키퍼, read-only) + `iamspeaker-benchmarker.md`(리서치→`docs/benchmark.md` 제안만) + reviewer에 벤치마크 참고 추가. `docs/benchmark.md` 시드. 완전 자율 아님 — 정지선이 안전장치.
 - **2026-06-20** — L1 프로필(Epic 6): `lib/ai/l1-profiles/ko.json`(한국어 화자 발음/표현 규칙) + 로더(Zod 검증). improve 잡이 session.nativeLanguage→L1 로드, improveScriptPrompt가 표현 규칙을 주입. 실 LLM(hermes): nativeLanguage=ko로 복수 -s·주어동사 수일치 교정 검증.
 - **2026-06-20** — SCR-07 진행 기록: `GET /api/sessions/[id]/progress`(녹음별 wpm/필러수/길이 시간순) + `components/progress-view.tsx`(표+WPM 막대, 회차→리포트 링크). qa→progress 링크. **스토리보드 9화면 전부 구현 완료.** 다국어 출력은 Phase 2.
 - **2026-06-19** — SCR-08b Q&A 답변 평가: `qa_evaluate` 잡(답변→normalize→STT→analyzeSpeech(WPM/필러)+evaluateAnswer(적합도/개선답변)→qa_answers). `POST/GET /api/qa/[itemId]/answer`. `components/answer-recorder.tsx`(질문별 MediaRecorder→평가 표시). 실 LLM(hermes): 질문 생성→답변→relevanceScore 0.3+개선답변 검증. **Q&A 전 구간 완성.**
