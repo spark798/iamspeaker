@@ -11,8 +11,8 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **🎉 Phase 1 핵심 완료** — 스토리보드 9화면(SCR-01~08) 전부 동작 |
-| 다음 액션 | 마감 항목(택1): 다국어 출력(Phase 2) / 추가 언어팩(ja/zh) / TED 벤치마크 B-001(docs/benchmark.md, proposed) (§4) — 발음분석·CI버전업·전체리뷰·TTS ✅완료 |
+| 현재 단계 | **🎉 v0.2.0 출시** — Phase 1(9화면) + Phase 2(B-001 품질 기준선·TTS·다국어) 완료, 부채 0 |
+| 다음 액션 | **재개 시 #1: 회차별 추이 그래프(Progress Tracking)** — progress 화면을 목록→추이 차트로(저장된 WPM·필러·점수 활용, 모델 의존 없음). 이후 후보: ②클라우드 어댑터+설정 UI(deriveEngines 불일치 해소) ③es/vi L1팩+UI로케일 ④SRT export ⑤Phase3 영상/제스처. 하우스키핑: DEVELOPMENT.md §14 로드맵 체크박스 stale → 현실 반영. |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
