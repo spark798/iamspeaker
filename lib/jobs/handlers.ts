@@ -130,6 +130,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         audioDurationSec,
         transitions: rec.transitions,
         language: session.language,
+        l1Profile: loadL1Profile(session.nativeLanguage),
       });
 
       db.delete(analysisResults).where(eq(analysisResults.recordingId, recordingId)).run();

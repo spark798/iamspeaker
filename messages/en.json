@@ -112,6 +112,9 @@
     "fillers": "Filler words",
     "fillerNone": "No filler words detected",
     "slideTime": "Time per slide (s)",
+    "pronunciation": "Pronunciation",
+    "pronNone": "No pronunciation issues",
+    "l1Badge": "L1-common",
     "toImprove": "View suggestions →"
   },
   "qa": {

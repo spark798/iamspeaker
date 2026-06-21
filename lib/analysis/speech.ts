@@ -1,6 +1,8 @@
 import type {
   AnalysisResult,
   FillerWordResult,
+  L1Profile,
+  PronunciationIssue,
   SlideTimeBreakdown,
   SlideTransition,
   TranscriptResult,
@@ -68,19 +70,67 @@ export function computeSlideTimeBreakdown(
   });
 }
 
+/** 영어 발음 난점 패턴(한국어 화자 빈출) → ko.json targetPhoneme와 매칭용. */
+const PHONEME_PATTERNS: { key: string; test: RegExp }[] = [
+  { key: "f", test: /f/ },
+  { key: "v", test: /v/ },
+  { key: "z", test: /z/ },
+  { key: "th", test: /th/ },
+  { key: "r", test: /r/ },
+  { key: "l", test: /l/ },
+];
+
+/**
+ * STT confidence가 낮은 단어를 발음 의심으로 추출하고, L1 발음 규칙과 교차한다(휴리스틱, DEVELOPMENT §7).
+ * 단어에 L1 난점 음소 글자가 있으면 l1Related=true + 해당 교정 팁을 expectedSound로.
+ */
+export function detectPronunciationIssues(
+  words: TranscriptWord[],
+  l1Profile?: L1Profile,
+  threshold = 0.6,
+): PronunciationIssue[] {
+  const rules = l1Profile?.commonPronunciationIssues ?? [];
+  const matchRule = (w: string) => {
+    for (const r of rules) {
+      const tp = r.targetPhoneme.toLowerCase();
+      for (const p of PHONEME_PATTERNS) {
+        if (tp.includes(p.key) && p.test.test(w)) return r;
+      }
+    }
+    return undefined;
+  };
+
+  const out: PronunciationIssue[] = [];
+  for (const word of words) {
+    if (word.confidence >= threshold) continue;
+    const lw = word.word.toLowerCase().replace(/[^a-z]/g, "");
+    if (!lw) continue;
+    const rule = matchRule(lw);
+    out.push({
+      word: word.word,
+      expectedSound: rule ? rule.description : "발음 정확도가 낮게 인식됨",
+      confidence: word.confidence,
+      timestamp: word.startSec,
+      l1Related: rule !== undefined,
+    });
+  }
+  return out;
+}
+
 export interface SpeechAnalysisInput {
   transcript: TranscriptResult;
   audioDurationSec: number;
   transitions: SlideTransition[];
   language: string;
+  l1Profile?: L1Profile;
 }
 
-/** 전사 + 오디오 길이 + 슬라이드 전환 → 분석 결과. (발음 분석은 추후 -ojf 토큰 확률) */
+/** 전사 + 오디오 길이 + 슬라이드 전환 + (선택) L1 프로필 → 분석 결과. */
 export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
   return {
     wpm: computeWpm(input.transcript.words.length, input.audioDurationSec),
     fillerWords: detectFillerWords(input.transcript.words, input.language),
     slideTimeBreakdown: computeSlideTimeBreakdown(input.transitions, input.audioDurationSec),
-    pronunciationIssues: [],
+    pronunciationIssues: detectPronunciationIssues(input.transcript.words, input.l1Profile),
   };
 }

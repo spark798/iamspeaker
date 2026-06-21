@@ -3,16 +3,26 @@ import {
   computeSlideTimeBreakdown,
   computeWpm,
   detectFillerWords,
+  detectPronunciationIssues,
 } from "@/lib/analysis/speech";
-import type { TranscriptWord } from "@/lib/domain";
+import type { L1Profile, TranscriptWord } from "@/lib/domain";
 import { describe, expect, it } from "vitest";
 
-const w = (word: string, startSec: number): TranscriptWord => ({
+const w = (word: string, startSec: number, confidence = 1): TranscriptWord => ({
   word,
   startSec,
   endSec: startSec + 0.3,
-  confidence: 1,
+  confidence,
 });
+
+const koL1: L1Profile = {
+  language: "ko",
+  commonPronunciationIssues: [
+    { targetPhoneme: "f", commonSubstitution: "p", description: "f→ㅍ 주의" },
+    { targetPhoneme: "r / l", commonSubstitution: "혼동", description: "r/l 구분" },
+  ],
+  commonExpressionIssues: [],
+};
 
 describe("computeWpm", () => {
   it("단어수/분, 0 길이는 0", () => {
@@ -58,6 +68,32 @@ describe("computeSlideTimeBreakdown", () => {
 
   it("전환 없으면 빈 배열", () => {
     expect(computeSlideTimeBreakdown([], 30)).toEqual([]);
+  });
+});
+
+describe("detectPronunciationIssues", () => {
+  it("confidence가 높으면 이슈 없음", () => {
+    expect(detectPronunciationIssues([w("coffee", 0, 0.95)], koL1)).toEqual([]);
+  });
+
+  it("낮은 confidence + L1 난점 음소(f) → l1Related + 교정 팁", () => {
+    const out = detectPronunciationIssues([w("coffee", 1.5, 0.4)], koL1);
+    expect(out).toHaveLength(1);
+    expect(out[0]?.l1Related).toBe(true);
+    expect(out[0]?.expectedSound).toBe("f→ㅍ 주의");
+    expect(out[0]?.timestamp).toBe(1.5);
+  });
+
+  it("낮은 confidence지만 L1 난점 음소 없음 → l1Related=false", () => {
+    const out = detectPronunciationIssues([w("data", 0, 0.3)], koL1);
+    expect(out).toHaveLength(1);
+    expect(out[0]?.l1Related).toBe(false);
+  });
+
+  it("L1 프로필 없어도 낮은 confidence는 잡되 l1Related=false", () => {
+    const out = detectPronunciationIssues([w("coffee", 0, 0.3)]);
+    expect(out).toHaveLength(1);
+    expect(out[0]?.l1Related).toBe(false);
   });
 });
 

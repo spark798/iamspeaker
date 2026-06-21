@@ -112,6 +112,9 @@
     "fillers": "필러워드",
     "fillerNone": "감지된 필러워드 없음",
     "slideTime": "슬라이드별 시간(초)",
+    "pronunciation": "발음 교정",
+    "pronNone": "발음 이슈 없음",
+    "l1Badge": "모국어 빈출",
     "toImprove": "개선 제안 보기 →"
   },
   "qa": {

@@ -62,6 +62,33 @@ describe("parseWhisperJson", () => {
     expect(r.text).toBe("hi");
   });
 
+  it("토큰 확률(p)이 있으면 단어 confidence로 평균", () => {
+    const r = parseWhisperJson({
+      transcription: [
+        { offsets: { from: 0, to: 400 }, text: " Hello", tokens: [{ text: "Hello", p: 0.8 }] },
+        {
+          offsets: { from: 400, to: 900 },
+          text: " coffee",
+          tokens: [
+            { text: "[_BEG_]", p: 0.99 },
+            { text: "cof", p: 0.4 },
+            { text: "fee", p: 0.6 },
+          ],
+        },
+      ],
+    });
+    expect(r.words[0]?.confidence).toBe(0.8);
+    // 특수 토큰([_BEG_])은 제외 → (0.4+0.6)/2 = 0.5
+    expect(r.words[1]?.confidence).toBe(0.5);
+  });
+
+  it("토큰이 없으면 confidence=1", () => {
+    const r = parseWhisperJson({
+      transcription: [{ offsets: { from: 0, to: 400 }, text: " Hi" }],
+    });
+    expect(r.words[0]?.confidence).toBe(1);
+  });
+
   it("형식이 어긋나면 throw", () => {
     expect(() => parseWhisperJson({ foo: 1 })).toThrow();
   });

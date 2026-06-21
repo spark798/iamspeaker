@@ -34,6 +34,7 @@ export class WhisperCppStt implements SttAdapter {
         "-f",
         wavFilePath,
         "-oj",
+        "-ojf",
         "-of",
         outBase,
         "-ml",

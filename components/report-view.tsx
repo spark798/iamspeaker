@@ -13,10 +13,17 @@ interface SlideTime {
   slideIndex: number;
   durationSec: number;
 }
+interface PronIssue {
+  word: string;
+  expectedSound: string;
+  confidence: number;
+  l1Related: boolean;
+}
 interface Analysis {
   wpm: number;
   fillerWords: FillerWord[];
   slideTimeBreakdown: SlideTime[];
+  pronunciationIssues: PronIssue[];
 }
 
 export function ReportView({ recordingId }: { recordingId: string }) {
@@ -68,6 +75,27 @@ export function ReportView({ recordingId }: { recordingId: string }) {
                 className="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-800 dark:bg-amber-900/40 dark:text-amber-200"
               >
                 {f.word} × {f.count}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <div>
+        <h2 className="mb-2 font-medium">{t("pronunciation")}</h2>
+        {data.pronunciationIssues.length === 0 ? (
+          <p className="text-sm text-neutral-500">{t("pronNone")}</p>
+        ) : (
+          <ul className="space-y-1 text-sm">
+            {data.pronunciationIssues.map((p) => (
+              <li key={`${p.word}-${p.confidence}`} className="flex items-start gap-2">
+                <span className="font-medium">{p.word}</span>
+                {p.l1Related && (
+                  <span className="rounded-full bg-brand/15 px-2 py-0.5 text-xs text-brand">
+                    {t("l1Badge")}
+                  </span>
+                )}
+                <span className="text-neutral-500">{p.expectedSound}</span>
               </li>
             ))}
           </ul>
