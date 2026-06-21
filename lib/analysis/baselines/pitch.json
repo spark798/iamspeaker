@@ -1,0 +1,17 @@
+{
+  "genre": "pitch",
+  "source": "B-001 시드(2026-06-21). 피칭/IR 시나리오(투자자 Q&A, iamspeaker 기본). 공개 문헌 근사(원문 0). talk보다 약간 빠른 페이스·수치 강조 허용, 슬라이드 더 압축, filler 더 엄격. 라이선스: 수치=비저작권 사실데이터.",
+  "metrics": {
+    "wpm": {
+      "kind": "range",
+      "idealMin": 150,
+      "idealMax": 175,
+      "nonNativeIdealMin": 135,
+      "nonNativeIdealMax": 155,
+      "tolerance": 30
+    },
+    "fillerPerMin": { "kind": "lowerBetter", "ideal": 1, "hard": 8 },
+    "pausePerMin": { "kind": "range", "idealMin": 3, "idealMax": 8, "tolerance": 5 },
+    "slideWordsPerSlide": { "kind": "upperLimit", "limit": 30, "hard": 50 }
+  }
+}

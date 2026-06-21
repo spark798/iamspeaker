@@ -1,0 +1,17 @@
+{
+  "genre": "lecture",
+  "source": "B-001 시드(2026-06-21). 강의 시나리오(이해 우선). 공개 문헌 근사(원문 0). 느린 페이스·밀도 높은 슬라이드·filler 관대. 라이선스: 수치=비저작권 사실데이터.",
+  "metrics": {
+    "wpm": {
+      "kind": "range",
+      "idealMin": 130,
+      "idealMax": 160,
+      "nonNativeIdealMin": 120,
+      "nonNativeIdealMax": 145,
+      "tolerance": 30
+    },
+    "fillerPerMin": { "kind": "lowerBetter", "ideal": 3, "hard": 12 },
+    "pausePerMin": { "kind": "range", "idealMin": 4, "idealMax": 10, "tolerance": 6 },
+    "slideWordsPerSlide": { "kind": "upperLimit", "limit": 50, "hard": 90 }
+  }
+}

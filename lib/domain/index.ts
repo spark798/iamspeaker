@@ -4,6 +4,7 @@
  * 같은 개념을 다른 곳에서 재정의하지 말 것.
  */
 export type * from "./analysis";
+export type * from "./baseline";
 export type * from "./job";
 export type * from "./l1";
 export type * from "./qa";

@@ -1,0 +1,17 @@
+{
+  "genre": "talk",
+  "source": "B-001 시드(2026-06-21). 공개 문헌 수치 근사(원문 0). WPM: TED 163~173·2/3가 153~168(Six Minutes, VirtualSpeech), 일반권장 150~160(NCVS), 비원어민 130~150. Pause ~5/분<2s(TED Institute 2024). Filler 프로 1~2/분, >10 산만(Mic Buddy, U.Michigan). Slide 6×6=≤36단어(Presentation Training Inst.). 라이선스: 수치=비저작권 사실데이터. TED 원문 미보관. TED-LIUM(CC BY-NC-ND 3.0) 측정으로 정밀화 예정.",
+  "metrics": {
+    "wpm": {
+      "kind": "range",
+      "idealMin": 150,
+      "idealMax": 170,
+      "nonNativeIdealMin": 130,
+      "nonNativeIdealMax": 150,
+      "tolerance": 30
+    },
+    "fillerPerMin": { "kind": "lowerBetter", "ideal": 2, "hard": 10 },
+    "pausePerMin": { "kind": "range", "idealMin": 3, "idealMax": 7, "tolerance": 5 },
+    "slideWordsPerSlide": { "kind": "upperLimit", "limit": 36, "hard": 60 }
+  }
+}
