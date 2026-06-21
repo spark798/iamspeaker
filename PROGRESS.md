@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 Phase 1 핵심 완료** — 스토리보드 9화면(SCR-01~08) 전부 동작 |
-| 다음 액션 | 마감 항목(택1): TTS(piper 대안) / 다국어 출력(Phase 2) / 추가 언어팩(ja/zh) / CI actions @v4 버전업 / 전체 리뷰 (§4) — 발음분석 ✅완료 |
+| 다음 액션 | 마감 항목(택1): 다국어 출력(Phase 2) / 추가 언어팩(ja/zh) / TED 벤치마크 B-001(docs/benchmark.md, proposed) (§4) — 발음분석·CI버전업·전체리뷰·TTS ✅완료 |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -45,7 +45,8 @@
 | **SCR-07 진행 기록**(회차별 WPM/필러 추이) | ✅ (다국어 출력은 Phase 2) |
 | **L1 프로필(ko.json)** — improve에 모국어 규칙 주입(Epic 6) | ✅ (실 LLM: 복수/수일치 교정 검증) |
 | 발음분석(-ojf 토큰confidence + L1 음소교차) | ✅ |
-| TTS(piper) · 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
+| TTS(PiperTts + 데모 음성 재생, SCR-02) | ✅ |
+| 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
 | SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
 
 > 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
@@ -108,6 +109,8 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — TTS 마감(SCR-02): 핵심 루프 마지막 구멍(데모 음성). TTS는 그동안 stub이고 소비처 없어 데모가 텍스트 전용이었음. PiperTts 어댑터(텍스트→stdin, 22kHz mono WAV) + factory 배선 + storage demoAudioPath(버전·슬라이드별 캐시) + route `GET /api/sessions/[id]/demo-audio?slide=N`(합성→디스크캐시→WAV 스트리밍) + demo-view 슬라이드별 `<audio>` 플레이어 + i18n. macOS는 pip piper(`pip install piper-tts`, .env PIPER_BIN 절대경로)로 실측: 어댑터 0.7s WAV, live 계약 통과. E2E에 demo-audio 200/audio/wav 검증 추가. 기존 인프라(config PIPER_*·setup:models·preflight)와 정합. CI 그린.
+- **2026-06-21** — TED 벤치마크 B-001을 docs/benchmark.md + 메모리에 기록(Benchmarker 첫 과업, status: proposed). 3활용(백분위 점수·자기개선 루프·회귀 eval) + 제약(라이선스 CC BY-NC-ND 원문 재배포 금지 / 과적합 방지 장르별 기준선 분리). 코드 미반영(채택 대기).
 - **2026-06-21** — Phase 1 전체 리뷰 + CI actions @v4→v5(Node20 경고 해소). 발견·수정: ① live 어댑터 계약 테스트가 5s 기본 타임아웃에 걸려 실행 불가 → per-it timeoutMs 주입(120s), hermes3:8b로 5종 전부 통과(2~9s) ② queue.complete/setProgress 경쟁 조건(타임아웃 failed 작업을 늦은 핸들러가 succeeded로 되살림) → WHERE status='running' 가드 ③ ollama/index 중간 import 정리. 미수정(기록): deriveEngines가 클라우드 키 있으면 "claude" 보고하나 factory는 ollama 폴백(Phase 2 구현 시 해소, /api/health에만 노출) / AnswerEvalSchema relevanceScore .max(1) — LLM이 0~100 반환 시 parse throw(프롬프트로 완화, live 통과). 강점: 어댑터패턴·path-traversal 방어·매직바이트 검증·전 경계 Zod·any 0·FK cascade·배열인자 spawn·env↔config 동기. biome/tsc/80 단위테스트 그린.
 - **2026-06-21** — 발음 분석(SCR-05): whisper `-ojf`로 토큰 확률(p) 출력→단어별 confidence 평균(특수토큰 제외). `detectPronunciationIssues`(confidence<0.6 단어를 ko.json 발음규칙 f/v/z/th/r/l과 교차→l1Related+교정팁). analyze 잡이 nativeLanguage→L1 주입, report-view에 발음 교정 섹션+모국어 빈출 배지+i18n. 단위테스트 6종 추가. 실측: say→ffmpeg→whisper 토큰 p값 흐름 + "Our"→r/l·"software"→f 규칙 매칭 확인. CI 그린.
 
