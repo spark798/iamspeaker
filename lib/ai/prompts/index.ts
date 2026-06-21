@@ -20,10 +20,20 @@ function slideList(slides: SlideContent[]): string {
 }
 
 export function generateScriptPrompt(slides: SlideContent[], o: GenOptions): Prompt {
+  const minutes = o.targetDurationSec / 60;
+  // 분량 가이드: ~150 wpm 기준 목표 단어 수. 시간만 주면 모델이 과소 생성하므로 단어 수를 명시.
+  const targetWords = Math.round(150 * minutes);
+  const perSlide = Math.max(1, Math.round(targetWords / slides.length));
+  const biasNote =
+    o.lengthBias === "expand"
+      ? `\nThe previous draft was TOO SHORT for the time budget. Expand substantially: add detail, concrete examples, and natural transitions so the total reaches about ${targetWords} words.`
+      : o.lengthBias === "condense"
+        ? `\nThe previous draft was TOO LONG. Tighten it to about ${targetWords} words while keeping key points.`
+        : "";
   return {
     system:
       "You are an expert presentation coach for non-native English speakers. Write a natural spoken script, one segment per slide. Output STRICT JSON only, no prose.",
-    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}", paced for about ${o.targetDurationSec} seconds total.\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]}.\nIMPORTANT: produce EXACTLY ${slides.length} entries — one per input slide, reusing the same slideIndex values (${slides.map((s) => s.index).join(", ")}). Do NOT add extra intro or conclusion segments; fold any opening/closing remarks into the first/last slide.`,
+    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}".\nThe talk must fill about ${o.targetDurationSec} seconds (~${minutes.toFixed(1)} min). At a natural ~150 words/min pace, write roughly ${targetWords} words TOTAL (about ${perSlide} words per slide) — enough spoken content to actually fill the time, not just bullet summaries.${biasNote}\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]}.\nIMPORTANT: produce EXACTLY ${slides.length} entries — one per input slide, reusing the same slideIndex values (${slides.map((s) => s.index).join(", ")}). Do NOT add extra intro or conclusion segments; fold any opening/closing remarks into the first/last slide.`,
   };
 }
 

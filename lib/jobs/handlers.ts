@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { loadL1Profile } from "@/lib/ai/l1-profiles";
+import { generateWithRefinement } from "@/lib/ai/refine";
 import type { Adapters } from "@/lib/ai/types";
+import { loadBaseline } from "@/lib/analysis/baselines";
 import { analyzeSpeech } from "@/lib/analysis/speech";
 import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
@@ -89,12 +91,18 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
       if (slideContents.length === 0)
         throw new Error("슬라이드가 없습니다. 먼저 업로드/파싱하세요.");
       ctx.setProgress(20);
-      const script = await adapters.script.generate(slideContents, {
-        targetDurationSec: session.targetDurationSec,
-        tone: session.tone,
-        language: session.language,
-        nativeLanguage: session.nativeLanguage ?? undefined,
-      });
+      // 자가개선 루프(B-001 활용2): 생성 → 분량 자가 채점 → 부족하면 1회 보정 재생성.
+      const { script } = await generateWithRefinement(
+        adapters.script,
+        slideContents,
+        {
+          targetDurationSec: session.targetDurationSec,
+          tone: session.tone,
+          language: session.language,
+          nativeLanguage: session.nativeLanguage ?? undefined,
+        },
+        loadBaseline(session.genre),
+      );
       ctx.setProgress(80);
       const scriptId = randomUUID();
       db.insert(scripts)

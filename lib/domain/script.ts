@@ -24,6 +24,8 @@ export interface GenOptions {
   language: string;
   /** 사용자 모국어 — L1 Profile 매칭 (예: 'ko'). */
   nativeLanguage?: string;
+  /** 자가개선 루프(B-001 활용2)의 분량 보정 지시. expand=더 길게, condense=더 짧게. */
+  lengthBias?: "expand" | "condense";
 }
 
 /** 개선 제안의 슬라이드별 항목 (SCR-06 diff 뷰). */
