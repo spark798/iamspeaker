@@ -33,4 +33,10 @@ test("세션 생성 → 데모 작업 → 스크립트 생성", async ({ request
   expect(script.status()).toBe(200);
   const body = (await script.json()) as { content: unknown[] };
   expect(body.content).toHaveLength(2);
+
+  // SCR-02 데모 음성: TTS 합성 → WAV 스트리밍(stub은 무음 WAV).
+  const audio = await request.get(`/api/sessions/${id}/demo-audio?slide=0`);
+  expect(audio.status()).toBe(200);
+  expect(audio.headers()["content-type"]).toContain("audio/wav");
+  expect((await audio.body()).byteLength).toBeGreaterThan(0);
 });

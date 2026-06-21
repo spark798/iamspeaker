@@ -74,6 +74,7 @@
     "regenerate": "Regenerate",
     "slide": "Slide",
     "script": "AI script",
+    "listen": "🔊 Listen to demo voice",
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →"
   },

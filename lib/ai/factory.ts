@@ -1,4 +1,5 @@
 import { OllamaQaGenerator, OllamaScriptGenerator, OllamaSlideCritic } from "@/lib/ai/ollama";
+import { PiperTts } from "@/lib/ai/piper";
 import { StubStt, StubTts, stubAdapters } from "@/lib/ai/stub";
 import type {
   Adapters,
@@ -44,7 +45,8 @@ export function getSlideCritic(): SlideCriticAdapter {
 }
 
 export function getTts(): TtsAdapter {
-  return new StubTts(); // TODO(Phase 1 audio): PiperTts
+  if (config.USE_STUB_ADAPTERS) return new StubTts();
+  return new PiperTts();
 }
 
 export function getStt(): SttAdapter {

@@ -122,6 +122,17 @@ export function DemoView({ sessionId }: { sessionId: string }) {
               <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-neutral-800">
                 <div className="text-xs font-medium text-brand">{t("script")}</div>
                 <p className="mt-1 text-sm">{scriptByIndex.get(s.index)}</p>
+                <div className="mt-2">
+                  <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
+                  <audio
+                    controls
+                    preload="none"
+                    className="h-8 w-full max-w-md"
+                    src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}`}
+                  >
+                    <track kind="captions" />
+                  </audio>
+                </div>
               </div>
             )}
           </li>

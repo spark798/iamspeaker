@@ -75,13 +75,17 @@ export function runScriptGeneratorContract(
   });
 }
 
-export function runTtsContract(name: string, make: () => TtsAdapter) {
+export function runTtsContract(name: string, make: () => TtsAdapter, timeoutMs?: number) {
   describe(`TtsAdapter 계약: ${name}`, () => {
-    it("synthesize: 비어있지 않은 오디오 + format", async () => {
-      const r = await make().synthesize("Hello investors", "en");
-      expect(r.audio.byteLength).toBeGreaterThan(0);
-      expect(typeof r.format).toBe("string");
-    });
+    it(
+      "synthesize: 비어있지 않은 오디오 + format",
+      async () => {
+        const r = await make().synthesize("Hello investors", "en");
+        expect(r.audio.byteLength).toBeGreaterThan(0);
+        expect(typeof r.format).toBe("string");
+      },
+      timeoutMs,
+    );
   });
 }
 

@@ -1,6 +1,7 @@
 import {
   assertSafeSegment,
   dataDir,
+  demoAudioPath,
   recordingPath,
   safeFilename,
   safeResolve,
@@ -22,6 +23,12 @@ describe("storage 경로 빌더", () => {
 
   it("파일명에서 디렉토리 성분을 제거한다", () => {
     expect(safeFilename("a/b/c.pdf")).toBe("c.pdf");
+  });
+
+  it("데모 음성 캐시 경로가 v<버전>-<슬라이드>.wav 형태로 생성된다", () => {
+    const p = demoAudioPath("sess-1", 2, 0);
+    expect(p.endsWith("/tts/sess-1/v2-0.wav")).toBe(true);
+    expect(p.startsWith(dataDir())).toBe(true);
   });
 
   it("경로 탈출(..)·절대경로를 차단한다", () => {

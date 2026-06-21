@@ -22,6 +22,7 @@
 - ffmpeg, LibreOffice(headless) — 오디오 변환 / PPTX→PDF
 - 로컬 모델 구동 기준 **RAM 8GB 이상 권장**
 - 로컬 AI 엔진: [Ollama](https://ollama.com) (LLM) · [Piper](https://github.com/rhasspy/piper) (TTS) · [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) (STT)
+  - macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 `.env`에 `PIPER_BIN`을 해당 절대경로로 지정(예: `which piper`).
 
 ## 빠른 시작 (예정)
 ```bash

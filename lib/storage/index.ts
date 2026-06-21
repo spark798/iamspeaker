@@ -13,6 +13,7 @@ const BASE = path.resolve(config.DATA_DIR);
 export const StorageDirs = {
   uploads: "uploads",
   recordings: "recordings",
+  tts: "tts",
   piperVoices: path.join("models", "piper"),
   whisperModels: path.join("models", "whisper"),
 } as const;
@@ -72,4 +73,15 @@ export function recordingPath(sessionId: string, recordingId: string, ext: strin
   const cleanExt = assertSafeSegment(ext.replace(/^\./, ""));
   const filename = `${assertSafeSegment(recordingId)}.${cleanExt}`;
   return safeResolve(recordingDir(sessionId), filename);
+}
+
+/** 세션별 TTS 캐시 디렉토리. */
+export function ttsDir(sessionId: string): string {
+  return safeResolve(BASE, StorageDirs.tts, assertSafeSegment(sessionId));
+}
+
+/** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>.wav` (스크립트 버전·슬라이드별). */
+export function demoAudioPath(sessionId: string, version: number, slideIndex: number): string {
+  const filename = `v${assertSafeSegment(String(version))}-${assertSafeSegment(String(slideIndex))}.wav`;
+  return safeResolve(ttsDir(sessionId), filename);
 }
