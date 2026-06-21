@@ -57,6 +57,8 @@
 에이전트: `.claude/agents/iamspeaker-reviewer.md`(기존).
 - 프로젝트 규칙이 **강제(Blocker 판정 기준)**.
 - `docs/benchmark.md` 인사이트는 **참고**(🟢 제안 수준). 규칙 아님.
+- **회귀 eval(B-001 활용3)**: Script Generator/프롬프트/모델을 바꾸는 변경 PR이면 `pnpm eval` 실행을 권고.
+  하드 게이트=커버리지(green 유지 필수), 페이싱/overall은 품질 추이 참고. coverage 하락 = Blocker 후보.
 
 ---
 
