@@ -64,12 +64,8 @@
           "name": "analysis_results_recording_id_recordings_id_fk",
           "tableFrom": "analysis_results",
           "tableTo": "recordings",
-          "columnsFrom": [
-            "recording_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["recording_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -234,12 +230,8 @@
           "name": "qa_answers_qa_item_id_qa_items_id_fk",
           "tableFrom": "qa_answers",
           "tableTo": "qa_items",
-          "columnsFrom": [
-            "qa_item_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["qa_item_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -300,12 +292,8 @@
           "name": "qa_items_qa_session_id_qa_sessions_id_fk",
           "tableFrom": "qa_items",
           "tableTo": "qa_sessions",
-          "columnsFrom": [
-            "qa_session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["qa_session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -346,12 +334,8 @@
           "name": "qa_sessions_session_id_sessions_id_fk",
           "tableFrom": "qa_sessions",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -421,12 +405,8 @@
           "name": "recordings_session_id_sessions_id_fk",
           "tableFrom": "recordings",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -478,10 +458,7 @@
       "indexes": {
         "script_translations_script_lang": {
           "name": "script_translations_script_lang",
-          "columns": [
-            "script_id",
-            "language"
-          ],
+          "columns": ["script_id", "language"],
           "isUnique": true
         }
       },
@@ -490,12 +467,8 @@
           "name": "script_translations_script_id_scripts_id_fk",
           "tableFrom": "script_translations",
           "tableTo": "scripts",
-          "columnsFrom": [
-            "script_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["script_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -549,12 +522,8 @@
           "name": "scripts_session_id_sessions_id_fk",
           "tableFrom": "scripts",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -691,12 +660,8 @@
           "name": "slide_critiques_session_id_sessions_id_fk",
           "tableFrom": "slide_critiques",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -750,12 +715,8 @@
           "name": "slides_session_id_sessions_id_fk",
           "tableFrom": "slides",
           "tableTo": "sessions",
-          "columnsFrom": [
-            "session_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["session_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
