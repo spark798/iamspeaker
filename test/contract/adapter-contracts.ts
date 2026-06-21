@@ -36,29 +36,42 @@ const TRANSCRIPT: TranscriptResult = {
   durationSec: 1.5,
 };
 
-export function runScriptGeneratorContract(name: string, make: () => ScriptGeneratorAdapter) {
+/** 로컬 LLM은 5s 기본 타임아웃을 넘길 수 있어, live 스위트는 넉넉한 timeoutMs를 넘긴다(stub은 미지정 → 기본값). */
+export function runScriptGeneratorContract(
+  name: string,
+  make: () => ScriptGeneratorAdapter,
+  timeoutMs?: number,
+) {
   describe(`ScriptGeneratorAdapter 계약: ${name}`, () => {
-    it("generate: 슬라이드 수만큼 ai_demo(v0) 스크립트", async () => {
-      const s = await make().generate(SLIDES, OPTIONS);
-      expect(s.version).toBe(0);
-      expect(s.source).toBe("ai_demo");
-      expect(s.content).toHaveLength(SLIDES.length);
-      s.content.forEach((c, i) => {
-        expect(c.slideIndex).toBe(i);
-        expect(c.text.length).toBeGreaterThan(0);
-      });
-    });
+    it(
+      "generate: 슬라이드 수만큼 ai_demo(v0) 스크립트",
+      async () => {
+        const s = await make().generate(SLIDES, OPTIONS);
+        expect(s.version).toBe(0);
+        expect(s.source).toBe("ai_demo");
+        expect(s.content).toHaveLength(SLIDES.length);
+        s.content.forEach((c, i) => {
+          expect(c.slideIndex).toBe(i);
+          expect(c.text.length).toBeGreaterThan(0);
+        });
+      },
+      timeoutMs,
+    );
 
-    it("improve: baseVersion 일치 + 항목별 사유 존재", async () => {
-      const adapter = make();
-      const base = await adapter.generate(SLIDES, OPTIONS);
-      const diff = await adapter.improve(base, ANALYSIS);
-      expect(diff.baseVersion).toBe(base.version);
-      expect(diff.entries.length).toBeGreaterThan(0);
-      for (const e of diff.entries) {
-        expect(e.reason.length).toBeGreaterThan(0);
-      }
-    });
+    it(
+      "improve: baseVersion 일치 + 항목별 사유 존재",
+      async () => {
+        const adapter = make();
+        const base = await adapter.generate(SLIDES, OPTIONS);
+        const diff = await adapter.improve(base, ANALYSIS);
+        expect(diff.baseVersion).toBe(base.version);
+        expect(diff.entries.length).toBeGreaterThan(0);
+        for (const e of diff.entries) {
+          expect(e.reason.length).toBeGreaterThan(0);
+        }
+      },
+      timeoutMs,
+    );
   });
 }
 
@@ -87,7 +100,7 @@ export function runSttContract(name: string, make: () => SttAdapter) {
   });
 }
 
-export function runQaContract(name: string, make: () => QaGeneratorAdapter) {
+export function runQaContract(name: string, make: () => QaGeneratorAdapter, timeoutMs?: number) {
   describe(`QaGeneratorAdapter 계약: ${name}`, () => {
     const script: Script = {
       version: 0,
@@ -95,42 +108,58 @@ export function runQaContract(name: string, make: () => QaGeneratorAdapter) {
       content: [{ slideIndex: 0, text: "demo" }],
     };
 
-    it("generateQuestions: count개, 유효 difficulty/category", async () => {
-      const items = await make().generateQuestions(SLIDES, script, 4);
-      expect(items).toHaveLength(4);
-      for (const q of items) {
-        expect(["easy", "tough"]).toContain(q.difficulty);
-        expect(["clarification", "challenge", "detail", "numbers"]).toContain(q.category);
-        expect(q.question.length).toBeGreaterThan(0);
-      }
-    });
+    it(
+      "generateQuestions: count개, 유효 difficulty/category",
+      async () => {
+        const items = await make().generateQuestions(SLIDES, script, 4);
+        expect(items).toHaveLength(4);
+        for (const q of items) {
+          expect(["easy", "tough"]).toContain(q.difficulty);
+          expect(["clarification", "challenge", "detail", "numbers"]).toContain(q.category);
+          expect(q.question.length).toBeGreaterThan(0);
+        }
+      },
+      timeoutMs,
+    );
 
-    it("evaluateAnswer: questionId 일치, relevance 0..1, wpm>=0", async () => {
-      const q: QAItem = {
-        id: "q-test",
-        question: "How do you reach $1M ARR?",
-        relatedSlideIndex: 1,
-        difficulty: "tough",
-        category: "numbers",
-      };
-      const fb = await make().evaluateAnswer(q, TRANSCRIPT);
-      expect(fb.questionId).toBe(q.id);
-      expect(fb.relevanceScore).toBeGreaterThanOrEqual(0);
-      expect(fb.relevanceScore).toBeLessThanOrEqual(1);
-      expect(fb.wpm).toBeGreaterThanOrEqual(0);
-    });
+    it(
+      "evaluateAnswer: questionId 일치, relevance 0..1, wpm>=0",
+      async () => {
+        const q: QAItem = {
+          id: "q-test",
+          question: "How do you reach $1M ARR?",
+          relatedSlideIndex: 1,
+          difficulty: "tough",
+          category: "numbers",
+        };
+        const fb = await make().evaluateAnswer(q, TRANSCRIPT);
+        expect(fb.questionId).toBe(q.id);
+        expect(fb.relevanceScore).toBeGreaterThanOrEqual(0);
+        expect(fb.relevanceScore).toBeLessThanOrEqual(1);
+        expect(fb.wpm).toBeGreaterThanOrEqual(0);
+      },
+      timeoutMs,
+    );
   });
 }
 
-export function runSlideCriticContract(name: string, make: () => SlideCriticAdapter) {
+export function runSlideCriticContract(
+  name: string,
+  make: () => SlideCriticAdapter,
+  timeoutMs?: number,
+) {
   describe(`SlideCriticAdapter 계약: ${name}`, () => {
-    it("analyze: 슬라이드 수만큼, 유효 textDensity + readTime>=0", async () => {
-      const out = await make().analyze(SLIDES, 300);
-      expect(out).toHaveLength(SLIDES.length);
-      for (const c of out) {
-        expect(["low", "medium", "high"]).toContain(c.textDensity);
-        expect(c.estimatedReadTimeSec).toBeGreaterThanOrEqual(0);
-      }
-    });
+    it(
+      "analyze: 슬라이드 수만큼, 유효 textDensity + readTime>=0",
+      async () => {
+        const out = await make().analyze(SLIDES, 300);
+        expect(out).toHaveLength(SLIDES.length);
+        for (const c of out) {
+          expect(["low", "medium", "high"]).toContain(c.textDensity);
+          expect(c.estimatedReadTimeSec).toBeGreaterThanOrEqual(0);
+        }
+      },
+      timeoutMs,
+    );
   });
 }
