@@ -12,8 +12,8 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 Phase 1 핵심 완료** — 스토리보드 9화면(SCR-01~08) 전부 동작 |
-| 다음 액션 | 마감 항목(택1): 발음분석(-ojf 토큰확률+L1 발음규칙) / TTS(piper 대안) / 다국어 출력(Phase 2) / CI actions 버전업 / 전체 리뷰 (§4) |
-| 최근 갱신 | 2026-06-17 |
+| 다음 액션 | 마감 항목(택1): TTS(piper 대안) / 다국어 출력(Phase 2) / 추가 언어팩(ja/zh) / CI actions @v4 버전업 / 전체 리뷰 (§4) — 발음분석 ✅완료 |
+| 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
@@ -44,7 +44,8 @@
 | **SCR-08 Q&A**: 질문 생성(08a) + **답변 녹음/평가**(08b: qa_evaluate → STT 분석 + LLM 적합도/개선답변) | ✅ (실 LLM 검증) |
 | **SCR-07 진행 기록**(회차별 WPM/필러 추이) | ✅ (다국어 출력은 Phase 2) |
 | **L1 프로필(ko.json)** — improve에 모국어 규칙 주입(Epic 6) | ✅ (실 LLM: 복수/수일치 교정 검증) |
-| TTS(piper) · 발음분석(-ojf) · 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
+| 발음분석(-ojf 토큰confidence + L1 음소교차) | ✅ |
+| TTS(piper) · 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
 | SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
 
 > 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
@@ -107,6 +108,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — 발음 분석(SCR-05): whisper `-ojf`로 토큰 확률(p) 출력→단어별 confidence 평균(특수토큰 제외). `detectPronunciationIssues`(confidence<0.6 단어를 ko.json 발음규칙 f/v/z/th/r/l과 교차→l1Related+교정팁). analyze 잡이 nativeLanguage→L1 주입, report-view에 발음 교정 섹션+모국어 빈출 배지+i18n. 단위테스트 6종 추가. 실측: say→ffmpeg→whisper 토큰 p값 흐름 + "Our"→r/l·"software"→f 규칙 매칭 확인. CI 그린.
 
 - **2026-06-20** — 감독되는 자동화 3종: `docs/automation.md`(거버닝 — Driver 정지선/단계카운터 N=3, Benchmarker 제안전용, Reviewer 규칙+벤치마크참고). `.claude/agents/iamspeaker-driver.md`(진행/정지 게이트키퍼, read-only) + `iamspeaker-benchmarker.md`(리서치→`docs/benchmark.md` 제안만) + reviewer에 벤치마크 참고 추가. `docs/benchmark.md` 시드. 완전 자율 아님 — 정지선이 안전장치.
 - **2026-06-20** — L1 프로필(Epic 6): `lib/ai/l1-profiles/ko.json`(한국어 화자 발음/표현 규칙) + 로더(Zod 검증). improve 잡이 session.nativeLanguage→L1 로드, improveScriptPrompt가 표현 규칙을 주입. 실 LLM(hermes): nativeLanguage=ko로 복수 -s·주어동사 수일치 교정 검증.
