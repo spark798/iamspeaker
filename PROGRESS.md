@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — pause/슬라이드밀도 점수화(SCR-05): B-001 활용1 4메트릭(WPM·filler·휴지·밀도) 완성. **실측으로 whisper `-ml 1` word timestamp의 gap 붕괴(5.62-5.62, 마지막 단어 30s) 확인 → pause를 ffmpeg silencedetect(오디오 직접, STT 독립)로 측정**. lib/audio countSilences+parseSilenceCount, analysis_results.pause_count(마이그 0003), report API에 덱 평균 단어수(밀도). 실측 1.5s 묵음→countSilences=1. CI 그린, 97 단위테스트.
 - **2026-06-21** — 발표 장르 선택(SCR-01, B-001 장르 축 활성화): sessions.genre 컬럼(talk|pitch|lecture, 마이그레이션 0002) + 세션 생성 2경로 zod/insert + upload-form 셀렉트 + i18n. report API가 하드코딩 talk → session.genre로 기준선 선택(pitch=투자자 Q&A 주력). E2E pitch 회귀. CI 그린. 남은 후속: pause·슬라이드밀도 측정→점수화, B-001 활용2·3.
 - **2026-06-21** — v0.1.0 태그/릴리스(Phase 1 핵심 루프 완성). B-001 채택 + 활용1(기준선 백분위 점수) 구현(SCR-05): `lib/analysis/baselines/{talk,pitch,lecture}.json`(메트릭 숫자만, 원문0) + Zod 로더 + `percentile.ts`(scoreRange/lowerBetter/upperLimit, WPM 비원어민 보정) + report API 조인(duration·원어민 판정)→scores 반환 + report-view 점수 섹션. 단위 13종. 장르 talk 기본(선택 UI 후속), pause·슬라이드밀도는 측정 추가 후. 활용2·3 대기. CI 그린. 94 단위테스트.
 - **2026-06-21** — TTS 마감(SCR-02): 핵심 루프 마지막 구멍(데모 음성). TTS는 그동안 stub이고 소비처 없어 데모가 텍스트 전용이었음. PiperTts 어댑터(텍스트→stdin, 22kHz mono WAV) + factory 배선 + storage demoAudioPath(버전·슬라이드별 캐시) + route `GET /api/sessions/[id]/demo-audio?slide=N`(합성→디스크캐시→WAV 스트리밍) + demo-view 슬라이드별 `<audio>` 플레이어 + i18n. macOS는 pip piper(`pip install piper-tts`, .env PIPER_BIN 절대경로)로 실측: 어댑터 0.7s WAV, live 계약 통과. E2E에 demo-audio 200/audio/wav 검증 추가. 기존 인프라(config PIPER_*·setup:models·preflight)와 정합. CI 그린.

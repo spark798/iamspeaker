@@ -18,7 +18,7 @@
 
 ## B-001 — TED "황금 기준선" (Benchmarker 첫 과업) · status: accepted — 활용1 구현됨(2026-06-21), 활용2·3 대기
 
-> ✅ **채택**(2026-06-21). 활용 1(백분위 점수 레이어) 구현 완료: `lib/analysis/baselines/{talk,pitch,lecture}.json` + `lib/analysis/percentile.ts` + report API/뷰. 장르는 talk 기본(장르 선택 UI 후속), WPM 비원어민 보정 적용. 활용 2(자가개선 루프)·3(회귀 eval)은 대기. pause·슬라이드밀도 메트릭은 측정 추가 후 점수화(현재 WPM·filler/분만).
+> ✅ **채택**(2026-06-21). 활용 1(백분위 점수 레이어) **메트릭 완성**: WPM·filler/분·**휴지/분·슬라이드밀도** 4종 모두 점수화. `lib/analysis/baselines/{talk,pitch,lecture}.json` + `percentile.ts` + report API/뷰 + 장르 선택 UI(SCR-01). WPM 비원어민 보정. **pause는 whisper word timestamp가 부정확(`-ml 1` gap 붕괴) → ffmpeg silencedetect로 오디오에서 직접 측정(STT 독립).** 활용 2(자가개선 루프)·3(회귀 eval)은 대기.
 
 TED 코퍼스를 **"좋은 발표"의 분포 기준**으로 내재화해 세 가지로 활용한다. 파인튜닝 없이 메트릭·eval·프롬프트 보강으로만.
 
