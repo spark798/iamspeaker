@@ -16,7 +16,9 @@
 
 ---
 
-## B-001 — TED "황금 기준선" (Benchmarker 첫 과업) · status: researched (2026-06-21) — 사람 채택 대기
+## B-001 — TED "황금 기준선" (Benchmarker 첫 과업) · status: accepted — 활용1 구현됨(2026-06-21), 활용2·3 대기
+
+> ✅ **채택**(2026-06-21). 활용 1(백분위 점수 레이어) 구현 완료: `lib/analysis/baselines/{talk,pitch,lecture}.json` + `lib/analysis/percentile.ts` + report API/뷰. 장르는 talk 기본(장르 선택 UI 후속), WPM 비원어민 보정 적용. 활용 2(자가개선 루프)·3(회귀 eval)은 대기. pause·슬라이드밀도 메트릭은 측정 추가 후 점수화(현재 WPM·filler/분만).
 
 TED 코퍼스를 **"좋은 발표"의 분포 기준**으로 내재화해 세 가지로 활용한다. 파인튜닝 없이 메트릭·eval·프롬프트 보강으로만.
 
@@ -94,4 +96,4 @@ TED 코퍼스를 **"좋은 발표"의 분포 기준**으로 내재화해 세 가
 3-에이전트 구조(Builder/Reviewer/Driver + Benchmarker)의 **Benchmarker 첫 과업**. Benchmarker는 리서치→이 문서 갱신(제안)만, 자동 반영 금지. 사람이 채택 시 §채택 로그 + CLAUDE.md/DEVELOPMENT.md/PROGRESS §4 반영.
 
 ## 채택 로그
-- _(사람이 채택/반려한 항목 기록)_
+- **2026-06-21** — B-001 채택. 활용 1(백분위 점수 레이어) 구현. 활용 2·3, pause/슬라이드밀도 점수화, 장르 선택 UI는 후속.
