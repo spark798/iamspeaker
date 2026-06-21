@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — 알려진 마이너 2건 정리: ① script_translations unique(scriptId,language) 인덱스(마이그 0005) + route onConflictDoNothing(동시 토글 중복행 방지) ② 점수 band 라벨 방향중립화(느림/높음→기준 미만/초과, 4로케일) — 휴지/분 등에서 "low=적음"을 "느림"으로 오해하던 문제 해소. 백로그 비움. (주의: 로컬 biome를 `| tail`로 가려 첫 푸시가 포맷 실패 → 재포맷 커밋; 이후 exit code 확인.) CI 그린.
 - **2026-06-21** — 앱 UI 로케일 ja/zh + 언어 전환기: messages/{ja,zh}.json 전체 완역, i18n/request.ts에 ja/zh + 쿠키 기반 로케일 선택(locale 쿠키→없으면 ko), LocaleSwitcher(셀렉트→쿠키+새로고침) layout 헤더. 키셋 일치/빈값 가드 테스트(4로케일). UI ja/zh 화자 일관성 갭 해소. CI 그린, 118 단위테스트, build OK.
 - **2026-06-21** — Phase 2 전체 리뷰 + **v0.2.0 태그/릴리스**. 점검: any 0·dead code 0, 마이그레이션 0000~0004 fresh-clone 검증, 신규 어댑터(translator)·라우트(demo-audio/translation) 패턴 준수, biome/tsc/111테스트/eval 그린. **알려진 마이너(백로그)**: script_translations에 (scriptId,language) unique 인덱스 없음 → 동시 토글시 중복행 가능(단일 사용자엔 무해, .get() 첫행 반환). 향후 인덱스 추가. report-view pausePerMin band="low"(휴지 너무 적음) 라벨이 "느림"으로 표시되는 의미적 미스매치(경미).
 - **2026-06-21** — 출력 번역 자막 병기(SCR-02, Phase 2 다국어): TranslatorAdapter(순서·길이 보존) + OllamaTranslator(인덱스 JSON)/StubTranslator + factory + Adapters 번들. translatePrompt + TranslationSchema. script_translations 캐시 테이블(마이그 0004). route `GET /api/sessions/[id]/translation`(타깃=nativeLanguage, 모국어=발표언어면 204, 캐시). demo-view "모국어 번역 병기" 토글→슬라이드별 원문 아래 번역 + i18n. 계약 테스트(stub+live). 실측: en→ko/ja/zh 순서·길이 보존, 품질은 8B 한계(큰 모델로 개선). CI 그린, 111 단위테스트.
