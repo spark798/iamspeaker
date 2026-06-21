@@ -1,5 +1,5 @@
-import { z } from "zod";
 import type { TranscriptResult } from "@/lib/domain";
+import { z } from "zod";
 
 /**
  * whisper-cli JSON 파서(미신뢰 외부 출력 → Zod 검증).
@@ -12,9 +12,7 @@ const WhisperJsonSchema = z.object({
     z.object({
       offsets: z.object({ from: z.coerce.number(), to: z.coerce.number() }),
       text: z.string(),
-      tokens: z
-        .array(z.object({ text: z.string(), p: z.coerce.number().optional() }))
-        .optional(),
+      tokens: z.array(z.object({ text: z.string(), p: z.coerce.number().optional() })).optional(),
     }),
   ),
 });
