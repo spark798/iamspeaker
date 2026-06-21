@@ -29,6 +29,7 @@ const ANALYSIS: AnalysisResult = {
   fillerWords: [],
   slideTimeBreakdown: [],
   pronunciationIssues: [],
+  pauseCount: 0,
 };
 const TRANSCRIPT: TranscriptResult = {
   text: "our solution reduces churn",

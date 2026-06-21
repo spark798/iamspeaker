@@ -28,4 +28,6 @@ export interface AnalysisResult {
   fillerWords: FillerWordResult[];
   slideTimeBreakdown: SlideTimeBreakdown[];
   pronunciationIssues: PronunciationIssue[];
+  /** 단어 사이 묵음 구간(임계 이상) 개수 — 페이싱 메트릭(B-001). */
+  pauseCount: number;
 }

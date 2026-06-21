@@ -117,6 +117,8 @@
     "scoreHint": "0–100 vs. good-talk distribution (genre + native-language adjusted)",
     "metric_wpm": "Speaking pace",
     "metric_fillerPerMin": "Fillers/min",
+    "metric_pausePerMin": "Pauses/min",
+    "metric_slideWordsPerSlide": "Slide density",
     "band_ideal": "ideal",
     "band_low": "low",
     "band_high": "high",

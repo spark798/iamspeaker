@@ -33,6 +33,43 @@ export function normalizeToWav(inputPath: string, outputPath: string): Promise<v
   });
 }
 
+/** ffmpeg silencedetect stderr에서 묵음 구간 개수를 센다(각 silence_start 1회). 순수 파서(테스트용). */
+export function parseSilenceCount(stderr: string): number {
+  return (stderr.match(/silence_start:/g) ?? []).length;
+}
+
+/**
+ * 오디오에서 일정 길이 이상의 묵음(pause) 개수를 센다. ffmpeg silencedetect 필터 기반.
+ * word timestamp(whisper -ml 1)는 gap이 붕괴돼 부정확 → 오디오에서 직접 측정(STT 독립).
+ */
+export function countSilences(
+  wavPath: string,
+  minSilenceSec = 0.6,
+  noiseDb = -30,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const args = [
+      "-i",
+      wavPath,
+      "-af",
+      `silencedetect=n=${noiseDb}dB:d=${minSilenceSec}`,
+      "-f",
+      "null",
+      "-",
+    ];
+    const proc = spawn(config.FFMPEG_BIN, args, { stdio: ["ignore", "ignore", "pipe"] });
+    let stderr = "";
+    proc.stderr.on("data", (d) => {
+      stderr += d.toString();
+    });
+    proc.on("error", reject);
+    proc.on("close", (code) => {
+      if (code === 0) resolve(parseSilenceCount(stderr));
+      else reject(new Error(`ffmpeg silencedetect 실패 (code ${code}): ${stderr.slice(-300)}`));
+    });
+  });
+}
+
 /** 캐노니컬 WAV(PCM) 헤더에서 재생 길이(초)를 읽는다. byteRate(offset 28) + data 청크 크기 기반. */
 export function readWavDurationSec(wavPath: string): number {
   const buf = readFileSync(wavPath);

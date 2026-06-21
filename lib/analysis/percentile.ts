@@ -59,10 +59,16 @@ export function scoreUpperLimit(metric: string, value: number, spec: UpperLimitS
 export interface ScoreInput {
   wpm: number;
   totalFillers: number;
+  pauseCount: number;
   durationSec: number;
+  /** 슬라이드 평균 단어 수(덱 밀도). 없으면 밀도 점수 생략. */
+  avgWordsPerSlide?: number;
   /** L1(모국어)이 발표 언어와 다르면 true → WPM 비원어민 보정 구간 적용. */
   nonNative: boolean;
 }
+
+const perMin = (count: number, durationSec: number): number =>
+  Math.round((count / (durationSec / 60)) * 10) / 10;
 
 /** 분석 결과를 기준선 대비 0~100 점수로 환산(측정 가능한 메트릭만). 분석 결과는 불변(표시 레이어). */
 export function scoreAnalysis(input: ScoreInput, baseline: Baseline): MetricScore[] {
@@ -71,8 +77,31 @@ export function scoreAnalysis(input: ScoreInput, baseline: Baseline): MetricScor
     out.push(scoreRange("wpm", input.wpm, baseline.metrics.wpm, input.nonNative));
   }
   if (baseline.metrics.fillerPerMin && input.durationSec > 0) {
-    const fpm = Math.round((input.totalFillers / (input.durationSec / 60)) * 10) / 10;
-    out.push(scoreLowerBetter("fillerPerMin", fpm, baseline.metrics.fillerPerMin));
+    out.push(
+      scoreLowerBetter(
+        "fillerPerMin",
+        perMin(input.totalFillers, input.durationSec),
+        baseline.metrics.fillerPerMin,
+      ),
+    );
+  }
+  if (baseline.metrics.pausePerMin && input.durationSec > 0) {
+    out.push(
+      scoreRange(
+        "pausePerMin",
+        perMin(input.pauseCount, input.durationSec),
+        baseline.metrics.pausePerMin,
+      ),
+    );
+  }
+  if (baseline.metrics.slideWordsPerSlide && input.avgWordsPerSlide !== undefined) {
+    out.push(
+      scoreUpperLimit(
+        "slideWordsPerSlide",
+        Math.round(input.avgWordsPerSlide),
+        baseline.metrics.slideWordsPerSlide,
+      ),
+    );
   }
   return out;
 }

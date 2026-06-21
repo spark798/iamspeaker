@@ -2,8 +2,22 @@ import { writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { parseWhisperJson } from "@/lib/ai/whispercpp/parse";
-import { readWavDurationSec } from "@/lib/audio";
+import { parseSilenceCount, readWavDurationSec } from "@/lib/audio";
 import { describe, expect, it } from "vitest";
+
+describe("parseSilenceCount", () => {
+  it("silence_start 개수를 센다", () => {
+    const stderr = [
+      "[silencedetect @ 0x1] silence_start: 2.41188",
+      "[silencedetect @ 0x1] silence_end: 3.96644 | silence_duration: 1.55456",
+      "[silencedetect @ 0x1] silence_start: 7.10",
+    ].join("\n");
+    expect(parseSilenceCount(stderr)).toBe(2);
+  });
+  it("묵음 없으면 0", () => {
+    expect(parseSilenceCount("size=0kB time=00:00:30")).toBe(0);
+  });
+});
 
 /** 16kHz mono 16-bit 캐노니컬 WAV(무음) 생성 — samples/16000 초. */
 function writeWav(samples: number): string {

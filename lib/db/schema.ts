@@ -80,6 +80,7 @@ export const analysisResults = sqliteTable("analysis_results", {
   pronunciationIssues: text("pronunciation_issues", { mode: "json" })
     .$type<PronunciationIssue[]>()
     .notNull(),
+  pauseCount: integer("pause_count").notNull().default(0),
 });
 
 export const slideCritiques = sqliteTable("slide_critiques", {

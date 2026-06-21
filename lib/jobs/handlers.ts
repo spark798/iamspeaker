@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import type { Adapters } from "@/lib/ai/types";
 import { analyzeSpeech } from "@/lib/analysis/speech";
-import { normalizeToWav, readWavDurationSec } from "@/lib/audio";
+import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
 import {
   analysisResults,
@@ -123,6 +123,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
       ctx.setProgress(40);
 
       const transcript = await adapters.stt.transcribe({ wavFilePath: wavPath });
+      const pauseCount = await countSilences(wavPath);
       ctx.setProgress(80);
 
       const result = analyzeSpeech({
@@ -131,6 +132,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         transitions: rec.transitions,
         language: session.language,
         l1Profile: loadL1Profile(session.nativeLanguage),
+        pauseCount,
       });
 
       db.delete(analysisResults).where(eq(analysisResults.recordingId, recordingId)).run();
@@ -142,6 +144,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           fillerWords: result.fillerWords,
           slideTimeBreakdown: result.slideTimeBreakdown,
           pronunciationIssues: result.pronunciationIssues,
+          pauseCount: result.pauseCount,
         })
         .run();
       db.update(recordings)
@@ -181,6 +184,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           fillerWords: analysisRow.fillerWords,
           slideTimeBreakdown: analysisRow.slideTimeBreakdown,
           pronunciationIssues: analysisRow.pronunciationIssues,
+          pauseCount: analysisRow.pauseCount,
         },
         l1,
       );

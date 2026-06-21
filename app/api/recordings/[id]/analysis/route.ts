@@ -1,7 +1,7 @@
 import { loadBaseline } from "@/lib/analysis/baselines";
 import { scoreAnalysis } from "@/lib/analysis/percentile";
 import { getDb } from "@/lib/db";
-import { analysisResults, recordings, sessions } from "@/lib/db/schema";
+import { analysisResults, recordings, sessions, slides } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { eq } from "drizzle-orm";
 
@@ -25,8 +25,28 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     const baseline = loadBaseline(session?.genre ?? "talk");
     const nonNative = !!session?.nativeLanguage && session.nativeLanguage !== session.language;
     const totalFillers = row.fillerWords.reduce((sum, f) => sum + f.count, 0);
+
+    // 슬라이드 밀도(덱 단위, 세션의 슬라이드 본문 평균 단어 수).
+    const deck = session
+      ? db.select().from(slides).where(eq(slides.sessionId, session.id)).all()
+      : [];
+    const avgWordsPerSlide =
+      deck.length > 0
+        ? deck.reduce(
+            (sum, s) => sum + s.textContent.trim().split(/\s+/).filter(Boolean).length,
+            0,
+          ) / deck.length
+        : undefined;
+
     const scores = scoreAnalysis(
-      { wpm: row.wpm, totalFillers, durationSec: rec?.durationSec ?? 0, nonNative },
+      {
+        wpm: row.wpm,
+        totalFillers,
+        pauseCount: row.pauseCount,
+        durationSec: rec?.durationSec ?? 0,
+        avgWordsPerSlide,
+        nonNative,
+      },
       baseline,
     );
 
@@ -35,6 +55,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       fillerWords: row.fillerWords,
       slideTimeBreakdown: row.slideTimeBreakdown,
       pronunciationIssues: row.pronunciationIssues,
+      pauseCount: row.pauseCount,
       scores,
       baselineGenre: baseline.genre,
     });

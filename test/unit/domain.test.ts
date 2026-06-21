@@ -36,6 +36,7 @@ describe("domain 배럴 export", () => {
           l1Related: true,
         },
       ],
+      pauseCount: 3,
     };
 
     const qa: QAItem = {

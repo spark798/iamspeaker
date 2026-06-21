@@ -123,14 +123,17 @@ export interface SpeechAnalysisInput {
   transitions: SlideTransition[];
   language: string;
   l1Profile?: L1Profile;
+  /** 묵음 개수(오디오 silencedetect로 측정, lib/audio.countSilences). 없으면 0. */
+  pauseCount?: number;
 }
 
-/** 전사 + 오디오 길이 + 슬라이드 전환 + (선택) L1 프로필 → 분석 결과. */
+/** 전사 + 오디오 길이 + 슬라이드 전환 + (선택) L1 프로필/묵음수 → 분석 결과. */
 export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
   return {
     wpm: computeWpm(input.transcript.words.length, input.audioDurationSec),
     fillerWords: detectFillerWords(input.transcript.words, input.language),
     slideTimeBreakdown: computeSlideTimeBreakdown(input.transitions, input.audioDurationSec),
     pronunciationIssues: detectPronunciationIssues(input.transcript.words, input.l1Profile),
+    pauseCount: input.pauseCount ?? 0,
   };
 }

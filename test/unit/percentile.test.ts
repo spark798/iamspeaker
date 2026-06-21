@@ -61,26 +61,49 @@ describe("scoreUpperLimit", () => {
 
 describe("scoreAnalysis", () => {
   const baseline = loadBaseline("talk");
-  it("wpm + filler/분 점수 산출", () => {
+  it("wpm + filler/분 + 휴지/분 + 슬라이드밀도 점수 산출", () => {
     const scores = scoreAnalysis(
-      { wpm: 160, totalFillers: 2, durationSec: 60, nonNative: false },
+      {
+        wpm: 160,
+        totalFillers: 2,
+        pauseCount: 5,
+        durationSec: 60,
+        avgWordsPerSlide: 30,
+        nonNative: false,
+      },
       baseline,
     );
-    const wpm = scores.find((s) => s.metric === "wpm");
-    const filler = scores.find((s) => s.metric === "fillerPerMin");
-    expect(wpm).toMatchObject({ score: 100, band: "ideal" });
-    expect(filler).toMatchObject({ value: 2, score: 100, band: "ideal" });
+    expect(scores.find((s) => s.metric === "wpm")).toMatchObject({ score: 100, band: "ideal" });
+    expect(scores.find((s) => s.metric === "fillerPerMin")).toMatchObject({ value: 2, score: 100 });
+    // talk pausePerMin range 3~7, 5/분 = 적정
+    expect(scores.find((s) => s.metric === "pausePerMin")).toMatchObject({
+      value: 5,
+      band: "ideal",
+    });
+    // talk slideWordsPerSlide limit 36, 30 = 적정
+    expect(scores.find((s) => s.metric === "slideWordsPerSlide")).toMatchObject({
+      value: 30,
+      score: 100,
+    });
   });
-  it("durationSec=0이면 filler 점수 생략", () => {
+  it("durationSec=0이면 filler·휴지 점수 생략", () => {
     const scores = scoreAnalysis(
-      { wpm: 160, totalFillers: 5, durationSec: 0, nonNative: false },
+      { wpm: 160, totalFillers: 5, pauseCount: 5, durationSec: 0, nonNative: false },
       baseline,
     );
     expect(scores.find((s) => s.metric === "fillerPerMin")).toBeUndefined();
+    expect(scores.find((s) => s.metric === "pausePerMin")).toBeUndefined();
+  });
+  it("avgWordsPerSlide 없으면 밀도 점수 생략", () => {
+    const scores = scoreAnalysis(
+      { wpm: 160, totalFillers: 0, pauseCount: 5, durationSec: 60, nonNative: false },
+      baseline,
+    );
+    expect(scores.find((s) => s.metric === "slideWordsPerSlide")).toBeUndefined();
   });
   it("비원어민이면 느린 WPM도 적정(보정 구간)", () => {
     const scores = scoreAnalysis(
-      { wpm: 140, totalFillers: 0, durationSec: 60, nonNative: true },
+      { wpm: 140, totalFillers: 0, pauseCount: 5, durationSec: 60, nonNative: true },
       baseline,
     );
     expect(scores.find((s) => s.metric === "wpm")).toMatchObject({ band: "ideal" });
