@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-21** — ja/zh L1 언어팩(Epic6, Phase 2 시작): `lib/ai/l1-profiles/{ja,zh}.json`(표준 L1 간섭 패턴 발음7+표현5, 설명=화자 모국어+영어 예시) + 로더 등록 + upload-form nativeLanguage 셀렉트(ko/ja/zh/en)+i18n. l1-profiles 테스트 it.each(ko/ja/zh). 실측(hermes improve): ja·zh 모두 관사·복수·3인칭-s 교정 정상. 비원어민 WPM 보정은 자동(nativeLanguage!==language). CI 그린, 109 단위테스트. 남은 다국어: **출력 번역(자막/스크립트 번역)**은 별도 슬라이스.
 - **2026-06-21** — 자가개선 루프(B-001 활용2): `lib/ai/refine.ts generateWithRefinement`(생성→scoreScriptQuality→분량 미달/초과면 lengthBias 재생성→더 나은 쪽 채택, overall 동률시 단어수 tie-break) + generateScriptPrompt에 목표 단어수 가이드(~150wpm×분, 시간만 주던 게 과소생성 원인) + GenOptions.lengthBias. demo 핸들러가 사용(genre 기준선). 단위 5종. 실측(hermes3:8b): 분량 186→312단어, 루프 179→194 채택. 잔여 갭은 8B 용량 한계(어댑터로 큰 모델 교체시 수렴). **B-001 활용1·2·3 전부 구현 완료.** CI 그린, 107 단위테스트.
 - **2026-06-21** — 회귀 eval(B-001 활용3): `lib/eval/script-quality.ts`(scoreScriptQuality: coverage + estimatedWpm 기준선 적합도, percentile/estimate 재사용) + `scripts/eval.ts`(`pnpm eval`, stub 결정적/live 실모델) + Reviewer 훅(docs/automation.md). 하드 게이트=커버리지(green 베이스라인 유지), 페이싱은 품질 추이 정보. 단위 5종. **eval 실측 발견: 생성 스크립트가 목표 시간 대비 너무 짧음(live 26~55wpm 분량 vs 150 목표)** → 활용2(자가개선 루프) 교정 대상. CI 그린, 102 단위테스트.
 - **2026-06-21** — pause/슬라이드밀도 점수화(SCR-05): B-001 활용1 4메트릭(WPM·filler·휴지·밀도) 완성. **실측으로 whisper `-ml 1` word timestamp의 gap 붕괴(5.62-5.62, 마지막 단어 30s) 확인 → pause를 ffmpeg silencedetect(오디오 직접, STT 독립)로 측정**. lib/audio countSilences+parseSilenceCount, analysis_results.pause_count(마이그 0003), report API에 덱 평균 단어수(밀도). 실측 1.5s 묵음→countSilences=1. CI 그린, 97 단위테스트.
