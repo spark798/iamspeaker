@@ -136,11 +136,16 @@ export function UploadForm() {
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t("nativeLanguage")}
-          <input
+          <select
             name="nativeLanguage"
             defaultValue="ko"
             className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
-          />
+          >
+            <option value="ko">{t("nativeKo")}</option>
+            <option value="ja">{t("nativeJa")}</option>
+            <option value="zh">{t("nativeZh")}</option>
+            <option value="en">{t("nativeEn")}</option>
+          </select>
         </label>
       </div>
 

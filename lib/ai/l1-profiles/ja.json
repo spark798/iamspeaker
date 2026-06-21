@@ -1,0 +1,67 @@
+{
+  "language": "ja",
+  "commonPronunciationIssues": [
+    {
+      "targetPhoneme": "r / l",
+      "commonSubstitution": "混同（ら行）",
+      "description": "r と l を混同しやすい。r は舌を口の天井につけず、l は舌先を歯茎につける (right vs light, collect vs correct)"
+    },
+    {
+      "targetPhoneme": "th (θ)",
+      "commonSubstitution": "s または t",
+      "description": "無声 th を s/t で代用。舌先を上下の歯の間に置いて息を出す (think, growth, month)"
+    },
+    {
+      "targetPhoneme": "th (ð)",
+      "commonSubstitution": "z または d",
+      "description": "有声 th を z/d で代用。舌先を歯の間に置き声を響かせる (this, the, with)"
+    },
+    {
+      "targetPhoneme": "v",
+      "commonSubstitution": "b",
+      "description": "v を b で代用。上の歯で下唇を軽く触れて声を出す (value, invest, revenue)"
+    },
+    {
+      "targetPhoneme": "語末の母音挿入",
+      "commonSubstitution": "ウ/オ を追加",
+      "description": "子音で終わる語にウ/オを足さない（desk を「デスク」と伸ばさない, product, brand）"
+    },
+    {
+      "targetPhoneme": "子音連結",
+      "commonSubstitution": "母音挿入",
+      "description": "連続する子音の間に母音を入れない（strong, street をカタカナ化しない）"
+    },
+    {
+      "targetPhoneme": "語強勢",
+      "commonSubstitution": "平坦な抑揚",
+      "description": "英語は強勢のある音節を長く強く発音する。強勢の位置を守る (deVELoped, inVESTor)"
+    }
+  ],
+  "commonExpressionIssues": [
+    {
+      "pattern": "冠詞(a/an/the) の欠落",
+      "issue": "日本語に冠詞がなく a/an/the を落としやすい",
+      "suggestion": "可算単数名詞の前に a/an、特定のものには the を確認 (‘We built product’ → ‘We built a product’)"
+    },
+    {
+      "pattern": "複数形 -s の欠落",
+      "issue": "可算名詞の複数で -s を忘れる",
+      "suggestion": "2つ以上なら -s (‘three customer’ → ‘three customers’)"
+    },
+    {
+      "pattern": "主語の省略",
+      "issue": "日本語は主語を省くが英語では必須",
+      "suggestion": "各文に主語を置く (‘Is a good result’ → ‘It is a good result’)"
+    },
+    {
+      "pattern": "三人称単数 -s",
+      "issue": "三人称単数の動詞 -s を落とす",
+      "suggestion": "He/She/It/単数名詞 + 動詞-s (‘our model predict’ → ‘our model predicts’)"
+    },
+    {
+      "pattern": "前置詞の誤り",
+      "issue": "in/on/at, to/for の混同",
+      "suggestion": "時・場所・方向の前置詞を確認 (‘discuss about it’ → ‘discuss it’)"
+    }
+  ]
+}

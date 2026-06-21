@@ -1,0 +1,67 @@
+{
+  "language": "zh",
+  "commonPronunciationIssues": [
+    {
+      "targetPhoneme": "词尾辅音",
+      "commonSubstitution": "省略/不释放",
+      "description": "常省略或不发清词尾辅音。要清晰发出结尾的辅音 (good, like, product, brand)"
+    },
+    {
+      "targetPhoneme": "th (θ)",
+      "commonSubstitution": "s 或 t",
+      "description": "用 s/t 代替清音 th。把舌尖放在上下牙齿之间送气 (think, growth, month)"
+    },
+    {
+      "targetPhoneme": "th (ð)",
+      "commonSubstitution": "z 或 d",
+      "description": "用 z/d 代替浊音 th。舌尖放齿间并振动声带 (this, the, with)"
+    },
+    {
+      "targetPhoneme": "v",
+      "commonSubstitution": "w",
+      "description": "用 w 代替 v。用上齿轻触下唇并振动声带 (value, invest, very)"
+    },
+    {
+      "targetPhoneme": "辅音连缀",
+      "commonSubstitution": "插入元音",
+      "description": "不要在连续辅音之间加元音 (street, scale, growth)"
+    },
+    {
+      "targetPhoneme": "n / l",
+      "commonSubstitution": "混淆（部分方言）",
+      "description": "部分方言混淆 n 和 l。注意区分 (night vs light, no vs low)"
+    },
+    {
+      "targetPhoneme": "词重音",
+      "commonSubstitution": "平均用力",
+      "description": "英语重读音节要更长更重，不要每个音节平均用力 (deVELoped, inVESTor)"
+    }
+  ],
+  "commonExpressionIssues": [
+    {
+      "pattern": "冠词(a/an/the) 缺失",
+      "issue": "中文没有冠词，容易遗漏 a/an/the",
+      "suggestion": "可数单数名词前加 a/an，特指用 the (‘We built product’ → ‘We built a product’)"
+    },
+    {
+      "pattern": "复数 -s 缺失",
+      "issue": "中文名词不变形，复数常忘记加 -s",
+      "suggestion": "两个以上加 -s (‘three customer’ → ‘three customers’)"
+    },
+    {
+      "pattern": "动词时态",
+      "issue": "中文动词不变形，过去/完成时易出错",
+      "suggestion": "按时间选择时态 (‘we launch last year’ → ‘we launched last year’)"
+    },
+    {
+      "pattern": "第三人称单数 -s",
+      "issue": "第三人称单数动词漏掉 -s",
+      "suggestion": "He/She/It/单数名词 + 动词-s (‘our model predict’ → ‘our model predicts’)"
+    },
+    {
+      "pattern": "介词误用",
+      "issue": "in/on/at, to/for 混淆",
+      "suggestion": "检查表示时间·地点·方向的介词 (‘discuss about it’ → ‘discuss it’)"
+    }
+  ]
+}
