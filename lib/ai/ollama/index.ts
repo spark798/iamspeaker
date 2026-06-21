@@ -26,6 +26,13 @@ import type {
   TranscriptResult,
 } from "@/lib/domain";
 import { ollamaChatJson } from "./client";
+import {
+  AnswerEvalSchema,
+  CritiqueSchema,
+  QuestionsSchema,
+  ScriptContentSchema,
+  ScriptDiffSchema,
+} from "./schemas";
 
 /** Ollama 구조화 출력 스키마 — 스크립트 형태를 강제. */
 const SCRIPT_FORMAT = {
@@ -63,13 +70,6 @@ export function alignSegmentsToSlides(
     return { slideIndex: slide.index, text };
   });
 }
-import {
-  AnswerEvalSchema,
-  CritiqueSchema,
-  QuestionsSchema,
-  ScriptContentSchema,
-  ScriptDiffSchema,
-} from "./schemas";
 
 /**
  * 로컬 Ollama 기반 LLM 어댑터(기본 엔진). 프롬프트는 lib/ai/prompts, 출력은 Zod로 검증.

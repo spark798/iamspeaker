@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import type { Db } from "@/lib/db/client";
 import { jobs } from "@/lib/db/schema";
 import type { JobType } from "@/lib/domain";
-import { asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 
 export type JobRecord = typeof jobs.$inferSelect;
 
@@ -46,14 +46,20 @@ export class JobQueue {
 
   setProgress(id: string, progress: number): void {
     const clamped = Math.max(0, Math.min(100, Math.round(progress)));
-    this.db.update(jobs).set({ progress: clamped }).where(eq(jobs.id, id)).run();
+    // running 상태일 때만 — 타임아웃으로 failed 처리된 작업을 늦게 끝난 핸들러가 되살리지 못하게.
+    this.db
+      .update(jobs)
+      .set({ progress: clamped })
+      .where(and(eq(jobs.id, id), eq(jobs.status, "running")))
+      .run();
   }
 
   complete(id: string, result: unknown): void {
+    // running 상태일 때만 succeeded로 — 이미 failed(타임아웃)된 작업의 늦은 완료를 무시.
     this.db
       .update(jobs)
       .set({ status: "succeeded", progress: 100, result, finishedAt: new Date() })
-      .where(eq(jobs.id, id))
+      .where(and(eq(jobs.id, id), eq(jobs.status, "running")))
       .run();
   }
 
