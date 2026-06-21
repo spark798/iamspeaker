@@ -16,9 +16,11 @@
 
 ---
 
-## B-001 — TED "황금 기준선" (Benchmarker 첫 과업) · status: accepted — 활용1 구현됨(2026-06-21), 활용2·3 대기
+## B-001 — TED "황금 기준선" (Benchmarker 첫 과업) · status: accepted — 활용1·2·3 구현됨(2026-06-21)
 
-> ✅ **채택**(2026-06-21). 활용 1(백분위 점수 레이어) **메트릭 완성**: WPM·filler/분·**휴지/분·슬라이드밀도** 4종 모두 점수화. `lib/analysis/baselines/{talk,pitch,lecture}.json` + `percentile.ts` + report API/뷰 + 장르 선택 UI(SCR-01). WPM 비원어민 보정. **pause는 whisper word timestamp가 부정확(`-ml 1` gap 붕괴) → ffmpeg silencedetect로 오디오에서 직접 측정(STT 독립).** 활용 3(회귀 eval) **구현됨**: `lib/eval/script-quality.ts`(scoreScriptQuality: coverage·estimatedWpm 적합도) + `scripts/eval.ts`(`pnpm eval`, stub 결정적/live 실모델) + Reviewer 훅(docs/automation.md). 하드 게이트=커버리지(green 베이스라인), 페이싱은 품질 추이 정보. **eval이 실측한 현 품질 갭: 생성 스크립트가 목표 시간 대비 너무 짧음**(live 26~55wpm 분량 vs 150 목표) → 활용 2(자가개선 루프)에서 프롬프트로 교정 대상. 활용 2 대기.
+> ✅ **채택**(2026-06-21). 활용 1(백분위 점수 레이어) **메트릭 완성**: WPM·filler/분·**휴지/분·슬라이드밀도** 4종 모두 점수화. `lib/analysis/baselines/{talk,pitch,lecture}.json` + `percentile.ts` + report API/뷰 + 장르 선택 UI(SCR-01). WPM 비원어민 보정. **pause는 whisper word timestamp가 부정확(`-ml 1` gap 붕괴) → ffmpeg silencedetect로 오디오에서 직접 측정(STT 독립).** 활용 3(회귀 eval) **구현됨**: `lib/eval/script-quality.ts`(scoreScriptQuality: coverage·estimatedWpm 적합도) + `scripts/eval.ts`(`pnpm eval`, stub 결정적/live 실모델) + Reviewer 훅(docs/automation.md). 하드 게이트=커버리지(green 베이스라인), 페이싱은 품질 추이 정보. **eval이 실측한 현 품질 갭: 생성 스크립트가 목표 시간 대비 너무 짧음**(live 26~55wpm 분량 vs 150 목표) → 활용 2(자가개선 루프)에서 교정.
+
+활용 2(자가개선 루프) **구현됨**: `lib/ai/refine.ts generateWithRefinement`(생성→scoreScriptQuality→분량 미달/초과면 lengthBias로 재생성→더 나은 쪽 채택) + 프롬프트 분량 가이드(목표 단어수 명시). demo 핸들러가 사용. 실측(hermes3:8b): 프롬프트로 분량 ↑(피칭 186→312단어), 루프가 더 긴 초안 채택(179→194). **잔여 갭은 8B 모델 용량 한계** → 어댑터로 더 큰 모델/클라우드 교체 시 수렴(인프라 정상). 향후: maxRetries↑·few-shot 예시·RAG는 더 큰 모델에서 효과.
 
 TED 코퍼스를 **"좋은 발표"의 분포 기준**으로 내재화해 세 가지로 활용한다. 파인튜닝 없이 메트릭·eval·프롬프트 보강으로만.
 
