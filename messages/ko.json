@@ -98,7 +98,9 @@
     "wpm": "WPM",
     "fillers": "필러",
     "duration": "길이(초)",
-    "pending": "분석 대기"
+    "pending": "분석 대기",
+    "wpmTrend": "WPM 추이",
+    "fillerTrend": "필러 추이"
   },
   "record": {
     "title": "연습 녹음",

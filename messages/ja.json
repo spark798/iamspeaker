@@ -98,7 +98,9 @@
     "wpm": "WPM",
     "fillers": "フィラー",
     "duration": "長さ（秒）",
-    "pending": "分析待ち"
+    "pending": "分析待ち",
+    "wpmTrend": "WPM 推移",
+    "fillerTrend": "フィラー推移"
   },
   "record": {
     "title": "練習録音",

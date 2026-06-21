@@ -98,7 +98,9 @@
     "wpm": "WPM",
     "fillers": "Fillers",
     "duration": "Length (s)",
-    "pending": "Pending"
+    "pending": "Pending",
+    "wpmTrend": "WPM trend",
+    "fillerTrend": "Filler trend"
   },
   "record": {
     "title": "Practice recording",

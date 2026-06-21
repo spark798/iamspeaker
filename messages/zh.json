@@ -98,7 +98,9 @@
     "wpm": "WPM",
     "fillers": "填充词",
     "duration": "时长（秒）",
-    "pending": "等待分析"
+    "pending": "等待分析",
+    "wpmTrend": "WPM 趋势",
+    "fillerTrend": "填充词趋势"
   },
   "record": {
     "title": "练习录音",
