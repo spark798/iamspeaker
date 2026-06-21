@@ -12,6 +12,7 @@ const Body = z.object({
   tone: z.enum(["formal", "casual"]),
   language: z.string().min(1).default("en"),
   nativeLanguage: z.string().min(1).optional(),
+  genre: z.enum(["talk", "pitch", "lecture"]).default("talk"),
   slides: z.array(z.object({ textContent: z.string(), notes: z.string().optional() })).min(1),
 });
 
@@ -28,6 +29,7 @@ export async function POST(req: Request) {
         tone: body.tone,
         language: body.language,
         nativeLanguage: body.nativeLanguage ?? null,
+        genre: body.genre,
       })
       .run();
     body.slides.forEach((s, i) => {

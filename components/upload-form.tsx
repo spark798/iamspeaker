@@ -115,6 +115,18 @@ export function UploadForm() {
           </select>
         </label>
         <label className="flex flex-col gap-1 text-sm font-medium">
+          {t("genre")}
+          <select
+            name="genre"
+            defaultValue="talk"
+            className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+          >
+            <option value="talk">{t("genreTalk")}</option>
+            <option value="pitch">{t("genrePitch")}</option>
+            <option value="lecture">{t("genreLecture")}</option>
+          </select>
+        </label>
+        <label className="flex flex-col gap-1 text-sm font-medium">
           {t("language")}
           <input
             name="language"

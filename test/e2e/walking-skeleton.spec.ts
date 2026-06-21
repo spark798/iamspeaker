@@ -9,6 +9,7 @@ test("세션 생성 → 데모 작업 → 스크립트 생성", async ({ request
     data: {
       targetDurationSec: 300,
       tone: "formal",
+      genre: "pitch",
       slides: [{ textContent: "Problem" }, { textContent: "Solution" }],
     },
   });

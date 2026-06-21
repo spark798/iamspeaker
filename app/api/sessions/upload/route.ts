@@ -16,6 +16,7 @@ const Settings = z.object({
   tone: z.enum(["formal", "casual"]),
   language: z.string().min(1).default("en"),
   nativeLanguage: z.string().min(1).optional(),
+  genre: z.enum(["talk", "pitch", "lecture"]).default("talk"),
 });
 
 /** SCR-01: 파일 업로드 → storage 저장 → 세션 생성 → parse 잡 적재. 반환 {sessionId, jobId}. */
@@ -30,6 +31,7 @@ export async function POST(req: Request) {
       tone: form.get("tone"),
       language: form.get("language") ?? undefined,
       nativeLanguage: form.get("nativeLanguage") ?? undefined,
+      genre: form.get("genre") ?? undefined,
     });
 
     const bytes = new Uint8Array(await file.arrayBuffer());
@@ -52,6 +54,7 @@ export async function POST(req: Request) {
         tone: settings.tone,
         language: settings.language,
         nativeLanguage: settings.nativeLanguage ?? null,
+        genre: settings.genre,
       })
       .run();
 

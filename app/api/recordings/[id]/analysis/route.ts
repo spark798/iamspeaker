@@ -21,8 +21,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       ? db.select().from(sessions).where(eq(sessions.id, rec.sessionId)).get()
       : undefined;
 
-    // 장르는 현재 talk 기본(장르 선택 UI는 후속). 비원어민 = 모국어가 발표 언어와 다름.
-    const baseline = loadBaseline("talk");
+    // 세션 장르로 기준선 선택(미설정 시 talk). 비원어민 = 모국어가 발표 언어와 다름.
+    const baseline = loadBaseline(session?.genre ?? "talk");
     const nonNative = !!session?.nativeLanguage && session.nativeLanguage !== session.language;
     const totalFillers = row.fillerWords.reduce((sum, f) => sum + f.count, 0);
     const scores = scoreAnalysis(

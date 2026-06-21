@@ -15,6 +15,13 @@
       "when": 1781709774974,
       "tag": "0001_soft_mastermind",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1782054516727,
+      "tag": "0002_cuddly_valeria_richards",
+      "breakpoints": true
     }
   ]
 }

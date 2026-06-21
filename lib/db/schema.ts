@@ -4,6 +4,7 @@ import { integer, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import type {
   Difficulty,
   FillerWordResult,
+  Genre,
   JobStatus,
   JobType,
   PronunciationIssue,
@@ -27,6 +28,8 @@ export const sessions = sqliteTable("sessions", {
   tone: text("tone").$type<Tone>().notNull(),
   language: text("language").notNull().default("en"),
   nativeLanguage: text("native_language"),
+  // 발표 장르 — 품질 기준선(B-001) 선택에 사용. talk(강연)/pitch(피칭)/lecture(강의).
+  genre: text("genre").$type<Genre>().notNull().default("talk"),
 });
 
 export const slides = sqliteTable("slides", {

@@ -1,0 +1,1 @@
+ALTER TABLE `sessions` ADD `genre` text DEFAULT 'talk' NOT NULL;
