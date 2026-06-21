@@ -5,6 +5,7 @@ import type {
   SlideCriticAdapter,
   SttAdapter,
   SttInput,
+  TranslatorAdapter,
   TtsAdapter,
   TtsResult,
 } from "@/lib/ai/types";
@@ -138,6 +139,12 @@ export class StubSlideCritic implements SlideCriticAdapter {
   }
 }
 
+export class StubTranslator implements TranslatorAdapter {
+  async translate(texts: string[], targetLang: string, _sourceLang: string): Promise<string[]> {
+    return texts.map((t) => `[${targetLang}] ${t}`);
+  }
+}
+
 /** 전체 stub 어댑터 묶음 — 테스트/CI에서 모델 없이 주입. */
 export function stubAdapters(): Adapters {
   return {
@@ -146,5 +153,6 @@ export function stubAdapters(): Adapters {
     stt: new StubStt(),
     qa: new StubQaGenerator(),
     slideCritic: new StubSlideCritic(),
+    translator: new StubTranslator(),
   };
 }

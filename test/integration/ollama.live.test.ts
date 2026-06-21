@@ -1,9 +1,15 @@
-import { OllamaQaGenerator, OllamaScriptGenerator, OllamaSlideCritic } from "@/lib/ai/ollama";
+import {
+  OllamaQaGenerator,
+  OllamaScriptGenerator,
+  OllamaSlideCritic,
+  OllamaTranslator,
+} from "@/lib/ai/ollama";
 import { describe } from "vitest";
 import {
   runQaContract,
   runScriptGeneratorContract,
   runSlideCriticContract,
+  runTranslatorContract,
 } from "../contract/adapter-contracts";
 
 /**
@@ -19,4 +25,5 @@ describe.runIf(live)("Ollama 어댑터 계약 (live)", () => {
   runScriptGeneratorContract("ollama", () => new OllamaScriptGenerator(), LIVE_TIMEOUT_MS);
   runSlideCriticContract("ollama", () => new OllamaSlideCritic(), LIVE_TIMEOUT_MS);
   runQaContract("ollama", () => new OllamaQaGenerator(), LIVE_TIMEOUT_MS);
+  runTranslatorContract("ollama", () => new OllamaTranslator(), LIVE_TIMEOUT_MS);
 });

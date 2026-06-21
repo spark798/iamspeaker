@@ -1,12 +1,18 @@
-import { OllamaQaGenerator, OllamaScriptGenerator, OllamaSlideCritic } from "@/lib/ai/ollama";
+import {
+  OllamaQaGenerator,
+  OllamaScriptGenerator,
+  OllamaSlideCritic,
+  OllamaTranslator,
+} from "@/lib/ai/ollama";
 import { PiperTts } from "@/lib/ai/piper";
-import { StubStt, StubTts, stubAdapters } from "@/lib/ai/stub";
+import { StubStt, StubTranslator, StubTts, stubAdapters } from "@/lib/ai/stub";
 import type {
   Adapters,
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
   SttAdapter,
+  TranslatorAdapter,
   TtsAdapter,
 } from "@/lib/ai/types";
 import { WhisperCppStt } from "@/lib/ai/whispercpp";
@@ -54,6 +60,11 @@ export function getStt(): SttAdapter {
   return new WhisperCppStt();
 }
 
+export function getTranslator(): TranslatorAdapter {
+  if (config.USE_STUB_ADAPTERS) return new StubTranslator();
+  return new OllamaTranslator();
+}
+
 export function getAdapters(): Adapters {
   // 테스트/E2E: 모델 없이 결정적 동작을 위해 전체 stub.
   if (config.USE_STUB_ADAPTERS) return stubAdapters();
@@ -63,5 +74,6 @@ export function getAdapters(): Adapters {
     stt: getStt(),
     qa: getQaGenerator(),
     slideCritic: getSlideCritic(),
+    translator: getTranslator(),
   };
 }

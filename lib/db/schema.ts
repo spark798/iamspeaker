@@ -52,6 +52,17 @@ export const scripts = sqliteTable("scripts", {
   content: text("content", { mode: "json" }).$type<SlideScript[]>().notNull(),
 });
 
+/** 자막 병기용 스크립트 번역 캐시(scriptId + language별 1건). */
+export const scriptTranslations = sqliteTable("script_translations", {
+  id: text("id").primaryKey(),
+  scriptId: text("script_id")
+    .notNull()
+    .references(() => scripts.id, { onDelete: "cascade" }),
+  language: text("language").notNull(),
+  content: text("content", { mode: "json" }).$type<SlideScript[]>().notNull(),
+  createdAt: createdAt(),
+});
+
 export const recordings = sqliteTable("recordings", {
   id: text("id").primaryKey(),
   sessionId: text("session_id")

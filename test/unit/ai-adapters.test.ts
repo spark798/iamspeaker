@@ -4,6 +4,7 @@ import {
   StubScriptGenerator,
   StubSlideCritic,
   StubStt,
+  StubTranslator,
   StubTts,
 } from "@/lib/ai/stub";
 import { describe, expect, it } from "vitest";
@@ -12,6 +13,7 @@ import {
   runScriptGeneratorContract,
   runSlideCriticContract,
   runSttContract,
+  runTranslatorContract,
   runTtsContract,
 } from "../contract/adapter-contracts";
 
@@ -22,6 +24,7 @@ runTtsContract("stub", () => new StubTts());
 runSttContract("stub", () => new StubStt());
 runQaContract("stub", () => new StubQaGenerator());
 runSlideCriticContract("stub", () => new StubSlideCritic());
+runTranslatorContract("stub", () => new StubTranslator());
 
 describe("getAdapters", () => {
   it("모든 어댑터를 묶어 반환한다(구성만, 호출 없음)", () => {
@@ -31,5 +34,6 @@ describe("getAdapters", () => {
     expect(typeof a.stt.transcribe).toBe("function");
     expect(typeof a.qa.generateQuestions).toBe("function");
     expect(typeof a.slideCritic.analyze).toBe("function");
+    expect(typeof a.translator.translate).toBe("function");
   });
 });

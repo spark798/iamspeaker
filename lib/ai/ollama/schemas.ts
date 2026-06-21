@@ -46,3 +46,7 @@ export const AnswerEvalSchema = z.object({
   relevanceScore: z.coerce.number().min(0).max(1),
   improvedAnswer: z.string().optional(),
 });
+
+export const TranslationSchema = z.object({
+  items: z.array(z.object({ i: z.coerce.number().int(), text: z.string() })),
+});

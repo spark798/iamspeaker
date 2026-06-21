@@ -74,6 +74,15 @@ export function generateQuestionsPrompt(
   };
 }
 
+export function translatePrompt(texts: string[], targetLang: string, sourceLang: string): Prompt {
+  const items = texts.map((t, i) => `#${i}: ${t}`).join("\n");
+  return {
+    system:
+      "You are a professional subtitle translator. Translate faithfully and naturally, preserving meaning and tone. Output STRICT JSON only.",
+    prompt: `Translate each item from "${sourceLang}" to "${targetLang}". Keep the same index for each.\nItems:\n${items}\n\nReturn JSON: {"items":[{"i":<number>,"text":"<translation>"}]} — exactly ${texts.length} entries, one per input index (${texts.map((_, i) => i).join(", ")}).`,
+  };
+}
+
 export function evaluateAnswerPrompt(question: QAItem, answerText: string): Prompt {
   return {
     system:

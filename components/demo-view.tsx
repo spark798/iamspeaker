@@ -22,6 +22,8 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [progress, setProgress] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [translation, setTranslation] = useState<Map<number, string> | null>(null);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/slides`)
@@ -74,6 +76,29 @@ export function DemoView({ sessionId }: { sessionId: string }) {
     }
   }, [sessionId, te]);
 
+  const toggleTranslation = useCallback(async () => {
+    if (translation) {
+      setTranslation(null);
+      return;
+    }
+    setTranslating(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/translation`);
+      if (res.status === 204) {
+        setTranslation(new Map()); // 번역 불필요(모국어=발표 언어)
+        return;
+      }
+      if (!res.ok) throw new Error(te("loadFailed"));
+      const b = (await res.json()) as { content: SlideScript[] };
+      setTranslation(new Map(b.content.map((c) => [c.slideIndex, c.text])));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setTranslating(false);
+    }
+  }, [sessionId, translation, te]);
+
   const scriptByIndex = new Map(script.map((s) => [s.slideIndex, s.text]));
   const hasScript = script.length > 0;
 
@@ -94,12 +119,26 @@ export function DemoView({ sessionId }: { sessionId: string }) {
           </div>
         )}
         {hasScript && !busy && (
-          <Link
-            href={`/editor?session=${sessionId}`}
-            className="ml-auto text-sm font-medium text-brand hover:underline"
-          >
-            {t("toEditor")}
-          </Link>
+          <div className="ml-auto flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void toggleTranslation()}
+              disabled={translating}
+              className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
+            >
+              {translating
+                ? t("translating")
+                : translation
+                  ? t("hideTranslation")
+                  : t("showTranslation")}
+            </button>
+            <Link
+              href={`/editor?session=${sessionId}`}
+              className="text-sm font-medium text-brand hover:underline"
+            >
+              {t("toEditor")}
+            </Link>
+          </div>
         )}
       </div>
 
@@ -122,6 +161,11 @@ export function DemoView({ sessionId }: { sessionId: string }) {
               <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-neutral-800">
                 <div className="text-xs font-medium text-brand">{t("script")}</div>
                 <p className="mt-1 text-sm">{scriptByIndex.get(s.index)}</p>
+                {translation?.has(s.index) && (
+                  <p className="mt-1 border-l-2 border-brand/40 pl-2 text-sm text-neutral-500">
+                    {translation.get(s.index)}
+                  </p>
+                )}
                 <div className="mt-2">
                   <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
                   <audio

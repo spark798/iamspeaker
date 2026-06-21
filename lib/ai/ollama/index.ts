@@ -5,11 +5,13 @@ import {
   generateQuestionsPrompt,
   generateScriptPrompt,
   improveScriptPrompt,
+  translatePrompt,
 } from "@/lib/ai/prompts";
 import type {
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
+  TranslatorAdapter,
 } from "@/lib/ai/types";
 import { ruleBasedCritique } from "@/lib/analysis/critique";
 import type {
@@ -32,6 +34,7 @@ import {
   QuestionsSchema,
   ScriptContentSchema,
   ScriptDiffSchema,
+  TranslationSchema,
 } from "./schemas";
 
 /** Ollama 구조화 출력 스키마 — 스크립트 형태를 강제. */
@@ -130,5 +133,16 @@ export class OllamaQaGenerator implements QaGeneratorAdapter {
       relevanceScore: parsed.relevanceScore,
       improvedAnswer: parsed.improvedAnswer,
     };
+  }
+}
+
+export class OllamaTranslator implements TranslatorAdapter {
+  async translate(texts: string[], targetLang: string, sourceLang: string): Promise<string[]> {
+    if (texts.length === 0) return [];
+    const { system, prompt } = translatePrompt(texts, targetLang, sourceLang);
+    const parsed = TranslationSchema.parse(await ollamaChatJson({ system, prompt }));
+    const byIndex = new Map(parsed.items.map((it) => [it.i, it.text]));
+    // 인덱스로 정렬·복원, 누락 시 원문 유지(자막 누락보다 원문 표시가 안전).
+    return texts.map((original, i) => byIndex.get(i) ?? original);
   }
 }

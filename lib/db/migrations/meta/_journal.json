@@ -29,6 +29,13 @@
       "when": 1782055153317,
       "tag": "0003_giant_dazzler",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1782059495674,
+      "tag": "0004_curved_silk_fever",
+      "breakpoints": true
     }
   ]
 }

@@ -82,6 +82,9 @@
     "regenerate": "Regenerate",
     "slide": "Slide",
     "script": "AI script",
+    "showTranslation": "Show native translation",
+    "hideTranslation": "Hide translation",
+    "translating": "Translating…",
     "listen": "🔊 Listen to demo voice",
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →"

@@ -3,6 +3,7 @@ import type {
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
   SttAdapter,
+  TranslatorAdapter,
   TtsAdapter,
 } from "@/lib/ai/types";
 import type { AnalysisResult, GenOptions, QAItem, Script, TranscriptResult } from "@/lib/domain";
@@ -145,6 +146,29 @@ export function runQaContract(name: string, make: () => QaGeneratorAdapter, time
       },
       timeoutMs,
     );
+  });
+}
+
+export function runTranslatorContract(
+  name: string,
+  make: () => TranslatorAdapter,
+  timeoutMs?: number,
+) {
+  describe(`TranslatorAdapter 계약: ${name}`, () => {
+    it(
+      "translate: 입력 순서·길이 보존",
+      async () => {
+        const inputs = ["Hello investors", "We reduce churn"];
+        const out = await make().translate(inputs, "ko", "en");
+        expect(out).toHaveLength(inputs.length);
+        for (const t of out) expect(t.length).toBeGreaterThan(0);
+      },
+      timeoutMs,
+    );
+
+    it("빈 입력은 빈 배열", async () => {
+      expect(await make().translate([], "ko", "en")).toEqual([]);
+    });
   });
 }
 

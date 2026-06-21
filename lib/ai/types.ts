@@ -51,6 +51,11 @@ export interface SlideCriticAdapter {
   analyze(slides: SlideContent[], targetDurationSec: number): Promise<SlideCritique[]>;
 }
 
+/** 자막 병기용 번역기. 입력 순서·길이를 보존해 반환한다. */
+export interface TranslatorAdapter {
+  translate(texts: string[], targetLang: string, sourceLang: string): Promise<string[]>;
+}
+
 /** 전체 어댑터 묶음. */
 export interface Adapters {
   script: ScriptGeneratorAdapter;
@@ -58,4 +63,5 @@ export interface Adapters {
   stt: SttAdapter;
   qa: QaGeneratorAdapter;
   slideCritic: SlideCriticAdapter;
+  translator: TranslatorAdapter;
 }
