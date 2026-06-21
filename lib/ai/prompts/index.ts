@@ -34,7 +34,7 @@ export function improveScriptPrompt(
 ): Prompt {
   const segs = script.content.map((c) => `#${c.slideIndex}: ${c.text}`).join("\n");
   const l1Note = l1
-    ? ` The speaker's native language is "${l1.language}"; prioritize errors common to ${l1.language} speakers (articles, prepositions, pronunciation).`
+    ? `\nThe speaker's native language is "${l1.language}". Pay special attention to these common ${l1.language}-speaker mistakes and fix them where present:\n${l1.commonExpressionIssues.map((r) => `- ${r.issue} → ${r.suggestion}`).join("\n")}`
     : "";
   return {
     system:

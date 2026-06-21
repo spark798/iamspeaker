@@ -1,0 +1,72 @@
+{
+  "language": "ko",
+  "commonPronunciationIssues": [
+    {
+      "targetPhoneme": "f",
+      "commonSubstitution": "p",
+      "description": "f를 ㅍ(p)로 발음. 윗니를 아랫입술에 대고 바람을 내보내세요 (coffee, profit, fund)"
+    },
+    {
+      "targetPhoneme": "v",
+      "commonSubstitution": "b",
+      "description": "v를 ㅂ(b)로 발음. 윗니로 아랫입술을 살짝 물고 성대를 울리세요 (value, invest, revenue)"
+    },
+    {
+      "targetPhoneme": "th (θ)",
+      "commonSubstitution": "s 또는 t",
+      "description": "무성 th를 ㅅ/ㅌ로 발음. 혀끝을 윗니 사이에 두세요 (think, growth, month)"
+    },
+    {
+      "targetPhoneme": "th (ð)",
+      "commonSubstitution": "d",
+      "description": "유성 th를 ㄷ로 발음. 혀끝을 윗니 사이에 두고 성대를 울리세요 (this, the, with)"
+    },
+    {
+      "targetPhoneme": "r / l",
+      "commonSubstitution": "혼동",
+      "description": "r과 l 혼동. r은 혀를 입천장에 닿지 않게 말고, l은 혀끝을 잇몸에 붙이세요 (right vs light, collect vs correct)"
+    },
+    {
+      "targetPhoneme": "z",
+      "commonSubstitution": "j",
+      "description": "z를 ㅈ로 발음. s에 성대 울림을 더하세요 (zero, results, users)"
+    },
+    {
+      "targetPhoneme": "받침/종성 뒤 모음 삽입",
+      "commonSubstitution": "으 추가",
+      "description": "자음으로 끝나는 단어에 ‘으’를 붙이지 마세요 (product를 ‘프로덕트으’로 늘이지 않기)"
+    },
+    {
+      "targetPhoneme": "단어 강세",
+      "commonSubstitution": "평탄한 억양",
+      "description": "영어는 강세 음절을 길고 크게 발음. 강세 위치를 지키세요 (deVELoped, inVESTor, comPAReson)"
+    }
+  ],
+  "commonExpressionIssues": [
+    {
+      "pattern": "관사(a/an/the) 누락",
+      "issue": "한국어엔 관사가 없어 a/an/the를 자주 빠뜨림",
+      "suggestion": "가산 단수 명사 앞에 a/an, 특정 대상엔 the를 확인 (‘We built product’ → ‘We built a product’)"
+    },
+    {
+      "pattern": "복수형 -s 누락",
+      "issue": "가산 명사 복수에 -s를 빠뜨림",
+      "suggestion": "둘 이상이면 -s (‘three customer’ → ‘three customers’)"
+    },
+    {
+      "pattern": "전치사 오류",
+      "issue": "in/on/at, to/for 등 혼동, 불필요한 about",
+      "suggestion": "시점·장소·방향 전치사 점검 (‘discuss about it’ → ‘discuss it’, ‘in this week’ → ‘this week’)"
+    },
+    {
+      "pattern": "주어-동사 수일치",
+      "issue": "3인칭 단수 동사 -s 누락",
+      "suggestion": "He/She/It/단수명사 + 동사-s (‘our model predict’ → ‘our model predicts’)"
+    },
+    {
+      "pattern": "불필요한 the 과용",
+      "issue": "일반적·추상 개념에 the를 과하게 사용",
+      "suggestion": "일반론·복수 일반화엔 무관사 (‘the technology changes the business’ 맥락 점검)"
+    }
+  ]
+}

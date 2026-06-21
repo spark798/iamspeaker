@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 Phase 1 핵심 완료** — 스토리보드 9화면(SCR-01~08) 전부 동작 |
-| 다음 액션 | 마감 항목(택1): L1 프로필(ko.json) + 발음분석(-ojf) / 다국어 출력(번역·SRT, Phase 2) / TTS(piper 대안) / CI actions 버전업 / 전체 리뷰 (§4) |
+| 다음 액션 | 마감 항목(택1): 발음분석(-ojf 토큰확률+L1 발음규칙) / TTS(piper 대안) / 다국어 출력(Phase 2) / CI actions 버전업 / 전체 리뷰 (§4) |
 | 최근 갱신 | 2026-06-17 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -42,7 +42,8 @@
 | **SCR-06 개선**(improve 잡 → diff 부분/전체 적용 → 새 버전) | ✅ (실 LLM 개선 검증) |
 | **SCR-08 Q&A**: 질문 생성(08a) + **답변 녹음/평가**(08b: qa_evaluate → STT 분석 + LLM 적합도/개선답변) | ✅ (실 LLM 검증) |
 | **SCR-07 진행 기록**(회차별 WPM/필러 추이) | ✅ (다국어 출력은 Phase 2) |
-| L1 프로필(ko.json) · TTS(piper) · 발음분석(-ojf) · 다국어 출력 | ⏳ 대기 |
+| **L1 프로필(ko.json)** — improve에 모국어 규칙 주입(Epic 6) | ✅ (실 LLM: 복수/수일치 교정 검증) |
+| TTS(piper) · 발음분석(-ojf) · 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
 | SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
 
 > 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
@@ -99,12 +100,14 @@
 5. ✅ **SCR-08a Q&A 질문**: `POST /api/sessions/[id]/qa/generate` + `GET .../qa` + QaView(생성→난이도 배지/카테고리/관련 슬라이드). improve→qa 링크.
 6. ✅ **SCR-08b Q&A 답변 평가**: qa_evaluate 잡(답변→STT→analyzeSpeech+evaluateAnswer→qa_answers) + `POST/GET /api/qa/[itemId]/answer` + AnswerRecorder(질문별 녹음→평가 표시). 실 LLM 검증(relevanceScore+개선답변).
 7. ✅ **SCR-07 진행 기록**: `GET /api/sessions/[id]/progress`(회차별 wpm/필러/길이) + ProgressView(표/막대). qa→progress 링크. 다국어 출력(번역·TTS·SRT)은 Phase 2.
-8. 마감: L1 프로필 ko.json(발음/표현 규칙) + 발음분석(-ojf 토큰확률) · TTS(piper 대안: 소스빌드/say/Docker) · 다국어 출력 · CI actions @v4→최신.
+8. ✅ **L1 프로필 ko.json** + 로더(`lib/ai/l1-profiles`) → improve 프롬프트에 모국어 표현 규칙 주입(Epic 6). 실 LLM 검증.
+9. 마감: 발음분석(-ojf 토큰확률 + L1 발음규칙) · TTS(piper 대안: 소스빌드/say/Docker) · 다국어 출력 · ja/zh 언어팩 · CI actions @v4→최신.
 
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
 
+- **2026-06-20** — L1 프로필(Epic 6): `lib/ai/l1-profiles/ko.json`(한국어 화자 발음/표현 규칙) + 로더(Zod 검증). improve 잡이 session.nativeLanguage→L1 로드, improveScriptPrompt가 표현 규칙을 주입. 실 LLM(hermes): nativeLanguage=ko로 복수 -s·주어동사 수일치 교정 검증.
 - **2026-06-20** — SCR-07 진행 기록: `GET /api/sessions/[id]/progress`(녹음별 wpm/필러수/길이 시간순) + `components/progress-view.tsx`(표+WPM 막대, 회차→리포트 링크). qa→progress 링크. **스토리보드 9화면 전부 구현 완료.** 다국어 출력은 Phase 2.
 - **2026-06-19** — SCR-08b Q&A 답변 평가: `qa_evaluate` 잡(답변→normalize→STT→analyzeSpeech(WPM/필러)+evaluateAnswer(적합도/개선답변)→qa_answers). `POST/GET /api/qa/[itemId]/answer`. `components/answer-recorder.tsx`(질문별 MediaRecorder→평가 표시). 실 LLM(hermes): 질문 생성→답변→relevanceScore 0.3+개선답변 검증. **Q&A 전 구간 완성.**
 - **2026-06-18** — SCR-08a Q&A 질문: `POST /api/sessions/[id]/qa/generate` + `GET .../qa`(최신 qaSession 질문). `components/qa-view.tsx`(생성→SSE→난이도/카테고리/슬라이드 배지). improve→qa 링크. qa_generate 잡은 기존 + live 계약 검증됨.

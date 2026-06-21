@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import type { Adapters } from "@/lib/ai/types";
 import { analyzeSpeech } from "@/lib/analysis/speech";
 import { normalizeToWav, readWavDurationSec } from "@/lib/audio";
@@ -155,6 +156,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
       const { recordingId } = ImprovePayload.parse(job.payload);
       const rec = db.select().from(recordings).where(eq(recordings.id, recordingId)).get();
       if (!rec) throw new Error(`녹음을 찾을 수 없습니다: ${recordingId}`);
+      const session = requireSession(rec.sessionId);
       const scriptRow = db
         .select()
         .from(scripts)
@@ -169,7 +171,8 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         .get();
       if (!analysisRow) throw new Error("분석 결과가 없습니다.");
       ctx.setProgress(30);
-      // L1 프로필은 추후(lib/ai/l1-profiles) — 지금은 미전달.
+      // 모국어 기반 맞춤 교정(Epic 6): nativeLanguage → L1 프로필.
+      const l1 = loadL1Profile(session.nativeLanguage);
       const diff = await adapters.script.improve(
         { version: scriptRow.version, source: scriptRow.source, content: scriptRow.content },
         {
@@ -178,6 +181,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           slideTimeBreakdown: analysisRow.slideTimeBreakdown,
           pronunciationIssues: analysisRow.pronunciationIssues,
         },
+        l1,
       );
       ctx.setProgress(90);
       return diff;
