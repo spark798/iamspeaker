@@ -1,3 +1,4 @@
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
@@ -13,7 +14,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang={locale}>
       <body className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <div className="flex justify-end p-3">
+            <LocaleSwitcher />
+          </div>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
