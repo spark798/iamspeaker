@@ -13,7 +13,8 @@
     "tts": "TTS",
     "stt": "STT",
     "local": "local",
-    "cloud": "cloud"
+    "cloud": "cloud",
+    "unreachable": "Can't reach the AI engine. Make sure Ollama is running (ollama serve), or set a cloud key in .env."
   },
   "errors": {
     "uploadFailed": "Upload failed",
@@ -206,5 +207,8 @@
     "slide": "Slide",
     "placeholder": "Write the spoken script for this slide",
     "toRecord": "Practice recording →"
+  },
+  "common": {
+    "slowHint": "Local models can take tens of seconds. Please wait…"
   }
 }

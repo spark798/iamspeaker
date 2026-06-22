@@ -19,11 +19,15 @@ const CLOUD = new Set(["claude", "openai", "elevenlabs", "azure", "openai-whispe
 export function EngineStatus() {
   const t = useTranslations("engines");
   const [engines, setEngines] = useState<Engines | null>(null);
+  const [reachable, setReachable] = useState(true);
 
   useEffect(() => {
     fetch("/api/health")
       .then((r) => r.json())
-      .then((b: { engines: Engines }) => setEngines(b.engines))
+      .then((b: { engines: Engines; llm?: { reachable: boolean } }) => {
+        setEngines(b.engines);
+        setReachable(b.llm?.reachable ?? true);
+      })
       .catch(() => {});
   }, []);
 
@@ -57,6 +61,7 @@ export function EngineStatus() {
           );
         })}
       </ul>
+      {!reachable && <p className="mt-2 text-amber-600">{t("unreachable")}</p>}
     </div>
   );
 }

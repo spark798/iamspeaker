@@ -13,7 +13,8 @@
     "tts": "TTS",
     "stt": "STT",
     "local": "ローカル",
-    "cloud": "クラウド"
+    "cloud": "クラウド",
+    "unreachable": "AIエンジンに接続できません。Ollamaが起動しているか確認（ollama serve）、または.envにクラウドキーを設定してください。"
   },
   "errors": {
     "uploadFailed": "アップロードに失敗しました",
@@ -206,5 +207,8 @@
     "slide": "スライド",
     "placeholder": "このスライドの発表スクリプトを入力してください",
     "toRecord": "練習録音 →"
+  },
+  "common": {
+    "slowHint": "ローカルモデルは数十秒かかることがあります。少々お待ちください…"
   }
 }

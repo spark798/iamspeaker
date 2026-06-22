@@ -13,7 +13,8 @@
     "tts": "TTS",
     "stt": "STT",
     "local": "로컬",
-    "cloud": "클라우드"
+    "cloud": "클라우드",
+    "unreachable": "AI 엔진에 연결할 수 없습니다. Ollama 실행 여부를 확인하세요 (ollama serve) 또는 .env에 클라우드 키를 설정하세요."
   },
   "errors": {
     "uploadFailed": "업로드에 실패했습니다",
@@ -206,5 +207,8 @@
     "slide": "슬라이드",
     "placeholder": "이 슬라이드의 발표 스크립트를 입력하세요",
     "toRecord": "연습 녹음 →"
+  },
+  "common": {
+    "slowHint": "로컬 모델은 수십 초 걸릴 수 있어요. 잠시 기다려주세요…"
   }
 }

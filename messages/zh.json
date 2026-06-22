@@ -13,7 +13,8 @@
     "tts": "TTS",
     "stt": "STT",
     "local": "本地",
-    "cloud": "云端"
+    "cloud": "云端",
+    "unreachable": "无法连接 AI 引擎。请确认 Ollama 正在运行（ollama serve），或在 .env 中设置云端密钥。"
   },
   "errors": {
     "uploadFailed": "上传失败",
@@ -206,5 +207,8 @@
     "slide": "幻灯片",
     "placeholder": "输入这张幻灯片的演讲脚本",
     "toRecord": "练习录音 →"
+  },
+  "common": {
+    "slowHint": "本地模型可能需要数十秒，请稍候…"
   }
 }

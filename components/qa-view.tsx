@@ -16,6 +16,7 @@ interface Question {
 export function QaView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("qa");
   const te = useTranslations("errors");
+  const tc = useTranslations("common");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -81,6 +82,7 @@ export function QaView({ sessionId }: { sessionId: string }) {
         </Link>
       </div>
 
+      {busy && <p className="text-xs text-neutral-400">{tc("slowHint")}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
       {!hasQuestions && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
 

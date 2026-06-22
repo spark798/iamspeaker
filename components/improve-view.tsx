@@ -18,6 +18,7 @@ interface SlideScript {
 export function ImproveView({ recordingId }: { recordingId: string }) {
   const t = useTranslations("improve");
   const te = useTranslations("errors");
+  const tc = useTranslations("common");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [current, setCurrent] = useState<SlideScript[]>([]);
   const [entries, setEntries] = useState<DiffEntry[] | null>(null);
@@ -148,6 +149,7 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
         )}
       </div>
 
+      {busy && <p className="text-xs text-neutral-400">{tc("slowHint")}</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
       {entries === null && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
       {entries !== null && entries.length === 0 && (
