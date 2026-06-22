@@ -100,7 +100,7 @@ export function QaView({ sessionId }: { sessionId: string }) {
               >
                 {t(q.difficulty)}
               </span>
-              <span className="text-xs text-neutral-500">{q.category}</span>
+              <span className="text-xs text-neutral-500">{t(`cat_${q.category}`)}</span>
               <span className="text-xs text-neutral-400">
                 · {t("slide")} {q.relatedSlideIndex + 1}
               </span>

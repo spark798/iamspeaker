@@ -96,7 +96,8 @@
     "translating": "번역 중…",
     "listen": "🔊 데모 음성 듣기",
     "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요.",
-    "toEditor": "스크립트 편집 →"
+    "toEditor": "스크립트 편집 →",
+    "audioUnavailable": "음성을 불러올 수 없습니다 (TTS 미설정일 수 있어요)"
   },
   "progress": {
     "title": "진행 기록",
@@ -170,7 +171,11 @@
     "fillers": "필러워드",
     "improved": "개선된 답변 예시",
     "noMic": "이 브라우저/환경은 마이크 녹음을 지원하지 않습니다",
-    "toProgress": "진행 기록 →"
+    "toProgress": "진행 기록 →",
+    "cat_clarification": "확인",
+    "cat_challenge": "반론",
+    "cat_detail": "세부",
+    "cat_numbers": "수치"
   },
   "improve": {
     "title": "개선 제안",

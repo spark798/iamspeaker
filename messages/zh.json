@@ -96,7 +96,8 @@
     "translating": "翻译中…",
     "listen": "🔊 收听演示语音",
     "empty": "暂无脚本。点击「生成 AI 演示」开始。",
-    "toEditor": "编辑脚本 →"
+    "toEditor": "编辑脚本 →",
+    "audioUnavailable": "无法加载语音（可能未配置 TTS）"
   },
   "progress": {
     "title": "进度历史",
@@ -170,7 +171,11 @@
     "fillers": "填充词",
     "improved": "改进的回答示例",
     "noMic": "此浏览器/环境不支持麦克风录音",
-    "toProgress": "进度历史 →"
+    "toProgress": "进度历史 →",
+    "cat_clarification": "澄清",
+    "cat_challenge": "质疑",
+    "cat_detail": "细节",
+    "cat_numbers": "数据"
   },
   "improve": {
     "title": "改进建议",

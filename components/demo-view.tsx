@@ -24,6 +24,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
+  const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/slides`)
@@ -174,14 +175,19 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                 )}
                 <div className="mt-2">
                   <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
-                  <audio
-                    controls
-                    preload="none"
-                    className="h-8 w-full max-w-md"
-                    src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}`}
-                  >
-                    <track kind="captions" />
-                  </audio>
+                  {audioErr.has(s.index) ? (
+                    <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
+                  ) : (
+                    <audio
+                      controls
+                      preload="none"
+                      className="h-8 w-full max-w-md"
+                      src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}`}
+                      onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
+                    >
+                      <track kind="captions" />
+                    </audio>
+                  )}
                 </div>
               </div>
             )}

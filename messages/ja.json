@@ -96,7 +96,8 @@
     "translating": "翻訳中…",
     "listen": "🔊 デモ音声を聞く",
     "empty": "まだスクリプトがありません。「AIデモ生成」を押して開始してください。",
-    "toEditor": "スクリプトを編集 →"
+    "toEditor": "スクリプトを編集 →",
+    "audioUnavailable": "音声を読み込めません（TTS未設定の可能性）"
   },
   "progress": {
     "title": "進捗履歴",
@@ -170,7 +171,11 @@
     "fillers": "フィラー",
     "improved": "改善された回答例",
     "noMic": "このブラウザ/環境はマイク録音に対応していません",
-    "toProgress": "進捗履歴 →"
+    "toProgress": "進捗履歴 →",
+    "cat_clarification": "確認",
+    "cat_challenge": "反論",
+    "cat_detail": "詳細",
+    "cat_numbers": "数値"
   },
   "improve": {
     "title": "改善提案",

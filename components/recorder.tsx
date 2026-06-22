@@ -35,6 +35,7 @@ export function Recorder({ sessionId }: { sessionId: string }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [recordingId, setRecordingId] = useState<string | null>(null);
+  const [elapsedSec, setElapsedSec] = useState(0);
 
   const recRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -59,6 +60,16 @@ export function Recorder({ sessionId }: { sessionId: string }) {
   }, [sessionId, te]);
 
   const elapsed = () => (Date.now() - startRef.current) / 1000;
+
+  // 녹음 중 경과 시간 라이브 갱신(페이싱 보조). startRef는 ref라 안정적.
+  useEffect(() => {
+    if (phase !== "recording") return;
+    const id = setInterval(() => setElapsedSec((Date.now() - startRef.current) / 1000), 250);
+    return () => clearInterval(id);
+  }, [phase]);
+
+  const fmtTime = (s: number) =>
+    `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
   const goTo = (index: number) => {
     if (index < 0 || index >= slides.length) return;
@@ -125,6 +136,7 @@ export function Recorder({ sessionId }: { sessionId: string }) {
       chunksRef.current = [];
       transitionsRef.current = [{ slideIndex: current, atSec: 0 }];
       startRef.current = Date.now();
+      setElapsedSec(0);
       rec.ondataavailable = (e) => {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
@@ -168,7 +180,12 @@ export function Recorder({ sessionId }: { sessionId: string }) {
             ● {t("start")}
           </button>
         )}
-        {phase === "recording" && <span className="text-sm text-red-600">● {t("recording")}</span>}
+        {phase === "recording" && (
+          <span className="flex items-center gap-2 text-sm text-red-600">
+            <span>● {t("recording")}</span>
+            <span className="tabular-nums font-medium">{fmtTime(elapsedSec)}</span>
+          </span>
+        )}
         {busy && (
           <span className="text-sm text-neutral-500">
             {phase === "uploading" ? t("uploading") : t("analyzing")}

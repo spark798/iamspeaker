@@ -96,7 +96,8 @@
     "translating": "Translating…",
     "listen": "🔊 Listen to demo voice",
     "empty": "No script yet. Click 'Generate AI demo' to start.",
-    "toEditor": "Edit script →"
+    "toEditor": "Edit script →",
+    "audioUnavailable": "Audio unavailable (TTS may not be set up)"
   },
   "progress": {
     "title": "Progress history",
@@ -170,7 +171,11 @@
     "fillers": "Fillers",
     "improved": "Improved answer",
     "noMic": "This browser/environment doesn't support microphone recording",
-    "toProgress": "Progress history →"
+    "toProgress": "Progress history →",
+    "cat_clarification": "clarification",
+    "cat_challenge": "challenge",
+    "cat_detail": "detail",
+    "cat_numbers": "numbers"
   },
   "improve": {
     "title": "Improvement suggestions",
