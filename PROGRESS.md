@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 v0.2.0 출시** — Phase 1(9화면) + Phase 2(B-001 품질 기준선·TTS·다국어) 완료, 부채 0 |
-| 다음 액션 | 후보(택1): ①클라우드 어댑터+설정 UI(deriveEngines 불일치 해소·품질 레버) ②es/vi L1팩+UI로케일 ③SRT export ④Phase3 영상/제스처. 하우스키핑: DEVELOPMENT.md §14 로드맵 체크박스 stale → 현실 반영. — 회차별 추이 그래프 ✅완료 |
+| 다음 액션 | 후보(택1): ①es/vi L1팩+UI로케일 ②SRT export ③Phase3 영상/제스처 ④클라우드 LLM 실 키 live 검증. 하우스키핑: DEVELOPMENT.md §14 로드맵 체크박스 stale → 현실 반영. — 회차추이·클라우드어댑터 ✅완료 |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-22** — 클라우드 LLM 어댑터(Claude/OpenAI) + 엔진 상태 UI: `lib/ai/llm/`(client: claudeChatJson·openaiChatJson·extractJson 관대파싱 / adapters: provider-무관 Llm* — 프롬프트·Zod·정렬 공유, 호출만 주입 ChatJson). ollama/index는 Ollama*를 Llm*+ollamaChatJson 서브클래스로(임포트 보존). factory가 engines.script로 provider 선택 → **deriveEngines 보고 불일치(리뷰 미결) 해소**. config OPENAI_MODEL 추가. EngineStatus(홈, 활성 엔진+로컬/클라우드 배지, CLAUDE §2 충족). extractJson 단위 5종, ollama live 7종 통과(리팩터 무결성, hermes3:8b 43s), build/E2E 그린. 키는 .env로만(UI 입력 X). 클라우드 live는 실 키 필요 → 미검증(구조·extractJson 검증됨). CI 그린, 128 단위테스트.
 - **2026-06-21** — 회차별 추이 그래프(SCR-07): progress 화면에 의존성 없는 인라인 SVG 라인 차트(`components/trend-chart.tsx`) 추가 — WPM 추이(권장 110–150 음영)+필러 추이(분석 2회+부터), 첫→마지막 증감 표기, 단일점/빈값 처리. 기존 회차 테이블 유지. 저장된 분석 데이터만 사용(모델 의존 0). i18n 4로케일, 렌더 테스트 5종. CI 그린, 123 단위테스트.
 - **2026-06-21** — 품질 향상 실측(qwen2.5:14b, M2 Pro 16GB): "8b 한계, 인프라 정상" 가설 **데이터로 확정**. 생성 분량 5분 피칭 62→105wpm(8b 대비 ~1.7배), 데모 67→91wpm; 10분 강연은 14b도 부족(390단어)→긴 발표 완전 수렴은 32B+/클라우드. 번역 8b 미번역/깨진숫자가 14b서 대부분 해소(잔여: 큰 수 단위 현지화 ko/zh 10배 오류·ja 정확). 코드 변경 없음, README 모델 권장표 추가(8b 기본/qwen2.5:14b 권장 16GB+/32B+·클라우드), benchmark.md에 실측 기록. 기본 OLLAMA_MODEL은 진입장벽 위해 8b 유지.
 - **2026-06-21** — 알려진 마이너 2건 정리: ① script_translations unique(scriptId,language) 인덱스(마이그 0005) + route onConflictDoNothing(동시 토글 중복행 방지) ② 점수 band 라벨 방향중립화(느림/높음→기준 미만/초과, 4로케일) — 휴지/분 등에서 "low=적음"을 "느림"으로 오해하던 문제 해소. 백로그 비움. (주의: 로컬 biome를 `| tail`로 가려 첫 푸시가 포맷 실패 → 재포맷 커밋; 이후 exit code 확인.) CI 그린.
