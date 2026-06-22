@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-22** — OSS 채택 패키징(Lane 1a): package.json 메타(license MIT·repo·version 0.2.2), README stale 상태문구 정정+배지+기능요약+스크린샷 자리, CONTRIBUTING/SECURITY/CODE_OF_CONDUCT, .github 이슈·PR 템플릿. 남은 Lane 1b: 도그푸드 실사용 1회(실슬라이드+녹음, 체감 품질) + Docker 배포 실검증 + 스크린샷 실제 추가. CI 그린.
 - **2026-06-22** — **v0.2.2 태그/릴리스** (실사용 품질·a11y·반응형 패스 묶음).
 - **2026-06-22** — a11y/반응형 전용 패스: 에러 문단 role="alert"(10컴포넌트), 라이브 상태 aria-live(recorder/answer-recorder), 장식 글리프 aria-hidden, engine-status 경고 role. 반응형: upload-form 그리드 모바일 스택, progress 테이블 overflow-x, demo/recorder 헤더 flex-wrap. (기존 stepper nav·aria-current·차트 role·페이지 h1 확인). DEVELOPMENT §14 a11y/반응형 [x]. CI 그린, 134 단위테스트. 남은 갭: 8b 기대치 UI 안내, progress 대기회차 리포트 404 엣지, 정밀 색대비 감사.
 - **2026-06-22** — 실사용 품질 보강 2차: ①첫 실행 친화도 — health에 llm.reachable(로컬 ollama 핑/클라우드 키 판정), EngineStatus에 미도달 안내 배너(Ollama 실행/`.env` 키). ②긴 LLM 대기 피드백 — common.slowHint를 qa/improve busy에 표시. 1차(녹음 타이머·데모 음성 오류 안내·Q&A 카테고리 i18n)에 이어짐. 남은 갭: 8b 기대치 UI 안내, progress 대기회차 리포트 404 엣지, a11y 정식 패스/모바일 반응형. CI 그린, 134 단위테스트.
