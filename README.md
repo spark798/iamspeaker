@@ -44,7 +44,8 @@ docker compose up --build
 ```
 - 다른 LLM 모델: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (품질↑, RAM↑).
 - 데이터(업로드·녹음·DB·모델)는 `./data`에만 저장.
-- ⚠️ 첫 `docker compose up`은 모델 다운로드로 시간이 걸린다. 이미지에 whisper.cpp 빌드·LibreOffice 포함으로 빌드가 길고 용량이 크다.
+- 첫 `docker compose up`은 빌드(whisper.cpp 정적 컴파일·LibreOffice)와 모델 다운로드로 시간이 걸리고 용량이 크다. 이후 실행은 빠르다.
+- ✅ macOS(Apple Silicon, colima/Docker Desktop)에서 `docker compose up --build` 전체 루프 검증됨(LLM 생성·Piper TTS·Whisper STT·번역·SRT).
 
 ### 네이티브
 ```bash

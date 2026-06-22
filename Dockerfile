@@ -20,10 +20,12 @@ RUN pnpm build
 # Whisper.cpp 빌드(별도 스테이지 → 런타임엔 바이너리만 복사)
 FROM debian:bookworm-slim AS whisper
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git build-essential cmake \
+  && apt-get install -y --no-install-recommends ca-certificates git build-essential cmake \
   && rm -rf /var/lib/apt/lists/*
+# GGML_NATIVE=OFF: 이식성(-march=native 비활성). BUILD_SHARED_LIBS=OFF: 정적 링크 →
+# whisper-cli 단일 바이너리만 런타임에 복사 가능(libwhisper.so 의존 제거).
 RUN git clone --depth 1 https://github.com/ggerganov/whisper.cpp /w \
-  && cmake -S /w -B /w/build -DCMAKE_BUILD_TYPE=Release \
+  && cmake -S /w -B /w/build -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DBUILD_SHARED_LIBS=OFF \
   && cmake --build /w/build -j --target whisper-cli
 
 # 런타임
