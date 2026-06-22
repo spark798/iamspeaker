@@ -7,6 +7,16 @@ services:
       - ollama:/root/.ollama
     restart: unless-stopped
 
+  # 1회 모델 다운로드(기본 llama3.1:8b). OLLAMA_MODEL로 변경 가능.
+  ollama-pull:
+    image: ollama/ollama:latest
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+    entrypoint: ["/bin/sh", "-c", "ollama pull ${OLLAMA_MODEL:-llama3.1:8b}"]
+    restart: "no"
+
   app:
     build: .
     ports:
@@ -14,6 +24,7 @@ services:
     environment:
       - NODE_ENV=production
       - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.1:8b}
       - DATA_DIR=/app/data
       - DATABASE_URL=file:/app/data/iamspeaker.db
     volumes:

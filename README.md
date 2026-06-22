@@ -30,22 +30,31 @@
 - Node 22 LTS, pnpm (corepack)
 - ffmpeg, LibreOffice(headless) — 오디오 변환 / PPTX→PDF
 - 로컬 모델 구동 기준 **RAM 8GB 이상 권장**
-- 로컬 AI 엔진: [Ollama](https://ollama.com) (LLM) · [Piper](https://github.com/rhasspy/piper) (TTS) · [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) (STT)
-  - macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 `.env`에 `PIPER_BIN`을 해당 절대경로로 지정(예: `which piper`).
+- 로컬 AI 엔진: [Ollama](https://ollama.com) (LLM) · [Piper](https://github.com/rhasspy/piper) (TTS) · [Whisper.cpp](https://github.com/ggerganov/whisper.cpp) (STT) — Docker 사용 시 자동 포함
 
-## 빠른 시작 (예정)
+## 빠른 시작
+
+### Docker (권장)
+앱 + Ollama + ffmpeg/LibreOffice/Whisper.cpp/Piper를 한 번에 띄운다.
 ```bash
-# 1) 환경변수 (로컬 모델만으로 동작)
-cp .env.example .env
-
-# 2) Docker로 한 번에
-docker compose up
-
-# 또는 네이티브
-pnpm install
-pnpm setup:models    # Piper voice / Whisper 모델 다운로드
-pnpm dev
+docker compose up --build
+# ollama-pull가 기본 모델(llama3.1:8b, ~4.7GB)을 받고,
+# app 컨테이너가 첫 기동에 Whisper/Piper 모델을 data 볼륨에 받는다(최초 1회, 수 분).
+# → http://localhost:3000
 ```
+- 다른 LLM 모델: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (품질↑, RAM↑).
+- 데이터(업로드·녹음·DB·모델)는 `./data`에만 저장.
+- ⚠️ 첫 `docker compose up`은 모델 다운로드로 시간이 걸린다. 이미지에 whisper.cpp 빌드·LibreOffice 포함으로 빌드가 길고 용량이 크다.
+
+### 네이티브
+```bash
+cp .env.example .env       # 로컬 모델만으로 동작 (API 키 불필요)
+pnpm install
+pnpm setup:models          # Whisper 모델 / Piper voice 다운로드
+pnpm preflight             # 외부 바이너리 점검(선택)
+pnpm dev                   # http://localhost:3000
+```
+macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 `.env`에 `PIPER_BIN`을 절대경로로 지정(`which piper`).
 
 ## LLM 모델 선택 (품질 vs 리소스)
 기본 `OLLAMA_MODEL`은 `llama3.1:8b`(낮은 진입장벽). 더 나은 데모 스크립트 분량·번역 품질을 원하면 `.env`에서 더 큰 모델로 바꾼다.
