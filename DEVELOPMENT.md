@@ -292,23 +292,25 @@ Job {
 ## 14. 개발 로드맵
 
 > **순서 원칙**: 의존성 역순으로 토대부터 쌓고(Phase 0), stub로 전 구간을 먼저 관통시킨 뒤(M1 Walking Skeleton), 화면별로 실제 엔진을 채운다(Phase 1). 각 항목은 앞 항목에 의존하므로 위→아래 순서로 진행한다.
+>
+> **진행 현황(2026-06-22)**: Phase 0 · M1 · Phase 1 완료(**v0.1.0**). Phase 2 대부분 완료(**v0.2.0**: 다국어 번역·TTS·B-001 품질 기준선·클라우드 어댑터·ja/zh L1·회차 추이). 잔여: SRT export, wav2vec2 발음 평가, 워커 분리/PostgreSQL. Phase 3 미착수. 세부 상태는 PROGRESS.md.
 
-### Phase 0 — 기반 인프라 (의존성 순)
-1. [ ] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright 설정
-2. [ ] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + 외부 바이너리 **preflight**(ffmpeg/libreoffice/ollama)
-3. [ ] **로깅/에러 토대** — pino(`lib/logger.ts`) + API 에러 형태 헬퍼(`lib/errors/`) + React Error Boundary
-4. [ ] **도메인 타입**(`lib/domain/`) — SlideContent, Script, SlideScript, TranscriptResult, GenOptions, FillerWordResult 등 공유 타입
-5. [ ] Drizzle 스키마(§4) + 초기 마이그레이션(`lib/db/`)
-6. [ ] `lib/storage/` 경로 빌더(검증 포함), `DATA_DIR` 구성
-7. [ ] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **어댑터 계약 테스트**
-8. [ ] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream`(SSE) + 크래시 복구(running→queued)
-9. [ ] **Base UI shell** — 루트 레이아웃, 디자인 토큰, `(session)` 라우트 그룹 + 단계 스테퍼, 헬스 라우트
-10. [x] `.env.example` (완료) · [ ] `scripts/setup-models.ts` · [ ] Docker Compose(app+ollama) · [ ] GitHub Actions CI
+### Phase 0 — 기반 인프라 (의존성 순) ✅ 완료
+1. [x] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright 설정
+2. [x] **Config 모듈**(`lib/config.ts`) — Zod env 파싱(fail-fast) + 외부 바이너리 **preflight**(ffmpeg/libreoffice/ollama)
+3. [x] **로깅/에러 토대** — pino(`lib/logger.ts`) + API 에러 형태 헬퍼(`lib/errors/`) + React Error Boundary
+4. [x] **도메인 타입**(`lib/domain/`) — SlideContent, Script, SlideScript, TranscriptResult, GenOptions, FillerWordResult 등 공유 타입
+5. [x] Drizzle 스키마(§4) + 초기 마이그레이션(`lib/db/`)
+6. [x] `lib/storage/` 경로 빌더(검증 포함), `DATA_DIR` 구성
+7. [x] `lib/ai/types.ts` 어댑터 인터페이스 + `factory.ts` + **stub 어댑터** + **어댑터 계약 테스트**
+8. [x] Job Queue/Worker 골격 + `GET /api/jobs/:id/stream`(SSE) + 크래시 복구(running→queued)
+9. [x] **Base UI shell** — 루트 레이아웃, 디자인 토큰, `(session)` 라우트 그룹 + 단계 스테퍼, 헬스 라우트
+10. [x] `.env.example` · [x] `scripts/setup-models.ts` · [x] Docker Compose(app+ollama) · [x] GitHub Actions CI
 - **완료 조건**: `docker compose up`/네이티브로 앱 셸이 뜨고, env 미설정 시 친절한 에러, CI 초록.
 
-### Milestone M1 — Walking Skeleton (수직 슬라이스, stub 전용)
-- [ ] 업로드 → (stub)데모 → (stub)녹음 → (stub)리포트 → (stub)개선까지 **stub 어댑터로 전 구간 1회 관통**
-- [ ] Job/SSE/Storage/DB 통합을 실제 AI 전에 검증, **Playwright E2E 골격** 작성(이후 회귀 가드)
+### Milestone M1 — Walking Skeleton (수직 슬라이스, stub 전용) ✅ 완료
+- [x] 업로드 → (stub)데모 → (stub)녹음 → (stub)리포트 → (stub)개선까지 **stub 어댑터로 전 구간 1회 관통**
+- [x] Job/SSE/Storage/DB 통합을 실제 AI 전에 검증, **Playwright E2E 골격** 작성(이후 회귀 가드)
 - **완료 조건**: 모델 없이도 전체 화면 전환·Job 진행률·데이터 영속이 끊김 없이 동작.
 
 ### Phase 1 — MVP 실제 엔진 (Epic 0,1,2,3,6,7)
@@ -317,31 +319,32 @@ Job {
 > - SCR-05 리포트 시각화: Yoodli, Poised, Orai, Speeko (스피치 코칭 피드백 UX)
 > - SCR-08 Q&A 대비: Google Interview Warmup, Yoodli Q&A
 
-1. [ ] **UI i18n 셋업**(ko 기본/en 폴백) + **예제 슬라이드 fixture/seed** — 이후 모든 화면 작업의 토대
-2. [ ] **슬라이드 파이프라인** — LibreOffice PPTX→PDF + PDF.js 렌더 + 파서(텍스트/노트). SCR-02/03/04 공용
-3. [ ] SCR-01: 업로드 + 모국어 선택 (실제 파서 연결)
-4. [ ] SCR-01b: Slide Critic(규칙 1차 → LLM 피드백, LLM 없이도 동작)
-5. [ ] SCR-02: AI 데모(Script Gen + **TTS Piper**, 슬라이드 동기화 재생)
-6. [ ] SCR-03: 스크립트 편집기(데모 참조 토글, 예상 시간)
-7. [ ] SCR-04: 녹음(MediaRecorder, 슬라이드 전환 타임스탬프 기록)
-8. [ ] **오디오 파이프라인**(ffmpeg→16k mono WAV) + **STT(Whisper.cpp)** — 분석 선행조건
-9. [ ] **L1 언어팩 `ko.json`**(종성·강세 / 관사·전치사) — *분석보다 먼저* (분석이 이를 참조)
-10. [ ] **분석 엔진**(WPM/필러/발음/시간배분) + L1 매칭
-11. [ ] SCR-05: 리포트 UI
-12. [ ] SCR-06: 개선 스크립트(diff 비교, L1 표현 교정)
-13. [ ] SCR-08: Q&A 생성 + 답변 녹음/분석
-14. [ ] **a11y 패스**(키보드 내비/라벨/대비) + E2E를 실제 루프로 확장
-- **완료 조건**: 로컬 모델(Ollama+Piper+Whisper.cpp)만으로 업로드→…→Q&A 전체 루프 완주.
+1. [x] **UI i18n 셋업**(ko 기본/en 폴백) + **예제 슬라이드 fixture/seed** — 이후 모든 화면 작업의 토대
+2. [x] **슬라이드 파이프라인** — LibreOffice PPTX→PDF + PDF.js 렌더 + 파서(텍스트/노트). SCR-02/03/04 공용
+3. [x] SCR-01: 업로드 + 모국어 선택 (실제 파서 연결)
+4. [x] SCR-01b: Slide Critic(규칙 1차 → LLM 피드백, LLM 없이도 동작)
+5. [x] SCR-02: AI 데모(Script Gen + **TTS Piper**, 슬라이드 동기화 재생)
+6. [x] SCR-03: 스크립트 편집기(데모 참조 토글, 예상 시간)
+7. [x] SCR-04: 녹음(MediaRecorder, 슬라이드 전환 타임스탬프 기록)
+8. [x] **오디오 파이프라인**(ffmpeg→16k mono WAV) + **STT(Whisper.cpp)** — 분석 선행조건
+9. [x] **L1 언어팩 `ko.json`**(종성·강세 / 관사·전치사) — *분석보다 먼저* (분석이 이를 참조)
+10. [x] **분석 엔진**(WPM/필러/발음/시간배분) + L1 매칭
+11. [x] SCR-05: 리포트 UI
+12. [x] SCR-06: 개선 스크립트(diff 비교, L1 표현 교정)
+13. [x] SCR-08: Q&A 생성 + 답변 녹음/분석
+14. [~] **a11y 패스**(키보드 내비/라벨/대비) — 기본 적용(aria-label·audio track 등), 정식 패스는 미완 / [x] E2E 실제 루프 확장(데모 음성 검증 포함)
+- **완료 조건**: 로컬 모델(Ollama+Piper+Whisper.cpp)만으로 업로드→…→Q&A 전체 루프 완주. ✅
 
-### Phase 2 — 확장 (Epic 4,5)
-- [ ] SCR-07: 다국어 번역 + TTS + SRT
-- [ ] 회차별 추이 그래프(Progress Tracking)
-- [ ] wav2vec2 기반 발음 평가 옵션
-- [ ] 클라우드 어댑터(Claude/ElevenLabs/Azure) + 설정 UI
-- [ ] L1 언어팩 추가(일본어/중국어, 커뮤니티 기여)
-- [ ] (필요 시) 워커 프로세스 분리, PostgreSQL 선택 백엔드
+### Phase 2 — 확장 (Epic 4,5) — 대부분 완료
+- [~] SCR-07: 다국어 번역 + TTS + SRT — 번역(자막 병기)·TTS ✅ / **SRT export 미완**
+- [x] 회차별 추이 그래프(Progress Tracking) — 인라인 SVG 추이 차트(WPM/필러)
+- [ ] wav2vec2 기반 발음 평가 옵션 — 미착수(현재는 whisper confidence 휴리스틱)
+- [x] 클라우드 어댑터(Claude/OpenAI) + 엔진 상태 UI — ElevenLabs/Azure TTS·STT는 미착수
+- [x] L1 언어팩 추가(일본어/중국어) + UI 로케일 ja/zh
+- [ ] (필요 시) 워커 프로세스 분리, PostgreSQL 선택 백엔드 — 미착수(현재 in-process 워커 + SQLite)
+- 추가 완료(로드맵 외): **B-001 TED 품질 기준선**(백분위 점수·자가개선 루프·회귀 eval), 발표 장르 선택
 
-### Phase 3 — 고도화
+### Phase 3 — 고도화 (미착수)
 - [ ] 영상 기반 분석(시선/제스처, pose estimation)
 - [ ] 커뮤니티 템플릿/공유
 - [ ] 시간 제약별 스크립트 자동 압축/확장 + 슬라이드 스킵 우선순위
