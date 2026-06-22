@@ -105,7 +105,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="mt-4 space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={() => void generate()}
@@ -149,7 +149,11 @@ export function DemoView({ sessionId }: { sessionId: string }) {
         )}
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       {!hasScript && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
 
       <ol className="space-y-3">

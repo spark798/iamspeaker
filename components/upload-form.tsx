@@ -91,7 +91,7 @@ export function UploadForm() {
         <input id="file" name="file" type="file" accept=".pptx,.pdf" required className="text-sm" />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm font-medium">
           {t("targetMinutes")}
           <input
@@ -163,7 +163,11 @@ export function UploadForm() {
         </div>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       {slides && (
         <div>

@@ -150,7 +150,11 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
       </div>
 
       {busy && <p className="text-xs text-neutral-400">{tc("slowHint")}</p>}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       {entries === null && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
       {entries !== null && entries.length === 0 && (
         <p className="text-sm text-neutral-500">{t("noChanges")}</p>

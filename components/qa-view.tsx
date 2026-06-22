@@ -83,7 +83,11 @@ export function QaView({ sessionId }: { sessionId: string }) {
       </div>
 
       {busy && <p className="text-xs text-neutral-400">{tc("slowHint")}</p>}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       {!hasQuestions && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
 
       <ol className="space-y-3">

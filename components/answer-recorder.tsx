@@ -131,15 +131,24 @@ export function AnswerRecorder({ itemId }: { itemId: string }) {
             ● {feedback ? t("retry") : t("answer")}
           </button>
         )}
-        {phase === "recording" && <span className="text-xs text-red-600">● {t("recording")}</span>}
+        {phase === "recording" && (
+          <span className="text-xs text-red-600">
+            <span aria-hidden="true">● </span>
+            {t("recording")}
+          </span>
+        )}
         {busy && (
-          <span className="text-xs text-neutral-500">
+          <span className="text-xs text-neutral-500" aria-live="polite">
             {phase === "uploading" ? t("uploading") : t("evaluating")}
           </span>
         )}
       </div>
 
-      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-2 text-xs text-red-600">
+          {error}
+        </p>
+      )}
 
       {feedback && phase === "done" && (
         <div className="mt-2 space-y-1 text-xs">

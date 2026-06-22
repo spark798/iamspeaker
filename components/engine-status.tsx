@@ -61,7 +61,11 @@ export function EngineStatus() {
           );
         })}
       </ul>
-      {!reachable && <p className="mt-2 text-amber-600">{t("unreachable")}</p>}
+      {!reachable && (
+        <p role="alert" className="mt-2 text-amber-600">
+          {t("unreachable")}
+        </p>
+      )}
     </div>
   );
 }

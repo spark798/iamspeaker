@@ -46,7 +46,12 @@ export function ReportView({ recordingId }: { recordingId: string }) {
       .catch(() => setError(te("loadFailed")));
   }, [recordingId, te]);
 
-  if (error) return <p className="text-sm text-red-600">{error}</p>;
+  if (error)
+    return (
+      <p role="alert" className="text-sm text-red-600">
+        {error}
+      </p>
+    );
   if (!data) return <p className="text-sm text-neutral-500">{t("loading")}</p>;
 
   const wpmOk = data.wpm >= 110 && data.wpm <= 150;

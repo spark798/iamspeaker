@@ -161,14 +161,15 @@ export function Recorder({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="mt-4 space-y-4">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {phase === "recording" ? (
           <button
             type="button"
             onClick={stop}
             className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:opacity-90"
           >
-            ⏹ {t("stop")}
+            <span aria-hidden="true">⏹ </span>
+            {t("stop")}
           </button>
         ) : (
           <button
@@ -177,17 +178,21 @@ export function Recorder({ sessionId }: { sessionId: string }) {
             disabled={busy}
             className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
           >
-            ● {t("start")}
+            <span aria-hidden="true">● </span>
+            {t("start")}
           </button>
         )}
         {phase === "recording" && (
-          <span className="flex items-center gap-2 text-sm text-red-600">
-            <span>● {t("recording")}</span>
+          <span className="flex items-center gap-2 text-sm text-red-600" aria-live="polite">
+            <span>
+              <span aria-hidden="true">● </span>
+              {t("recording")}
+            </span>
             <span className="tabular-nums font-medium">{fmtTime(elapsedSec)}</span>
           </span>
         )}
         {busy && (
-          <span className="text-sm text-neutral-500">
+          <span className="text-sm text-neutral-500" aria-live="polite">
             {phase === "uploading" ? t("uploading") : t("analyzing")}
           </span>
         )}
@@ -201,7 +206,11 @@ export function Recorder({ sessionId }: { sessionId: string }) {
         )}
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       {slide && (
         <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">

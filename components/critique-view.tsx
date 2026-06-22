@@ -100,7 +100,11 @@ export function CritiqueView({ sessionId }: { sessionId: string }) {
         )}
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
       {!hasResult && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
 
       <ol className="space-y-3">
