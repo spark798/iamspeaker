@@ -11,7 +11,7 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **🎉 v0.2.1 출시** — Phase 1·2 완료(다국어 완결·클라우드 LLM·회차 추이·SRT), 부채 0 |
+| 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
 | 다음 액션 | 후보(택1): ①es/vi L1팩+UI로케일 ②SRT export ③Phase3 영상/제스처 ④클라우드 LLM 실 키 live 검증. 하우스키핑: DEVELOPMENT.md §14 로드맵 체크박스 stale → 현실 반영. — 회차추이·클라우드어댑터 ✅완료 |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-22** — **v0.2.2 태그/릴리스** (실사용 품질·a11y·반응형 패스 묶음).
 - **2026-06-22** — a11y/반응형 전용 패스: 에러 문단 role="alert"(10컴포넌트), 라이브 상태 aria-live(recorder/answer-recorder), 장식 글리프 aria-hidden, engine-status 경고 role. 반응형: upload-form 그리드 모바일 스택, progress 테이블 overflow-x, demo/recorder 헤더 flex-wrap. (기존 stepper nav·aria-current·차트 role·페이지 h1 확인). DEVELOPMENT §14 a11y/반응형 [x]. CI 그린, 134 단위테스트. 남은 갭: 8b 기대치 UI 안내, progress 대기회차 리포트 404 엣지, 정밀 색대비 감사.
 - **2026-06-22** — 실사용 품질 보강 2차: ①첫 실행 친화도 — health에 llm.reachable(로컬 ollama 핑/클라우드 키 판정), EngineStatus에 미도달 안내 배너(Ollama 실행/`.env` 키). ②긴 LLM 대기 피드백 — common.slowHint를 qa/improve busy에 표시. 1차(녹음 타이머·데모 음성 오류 안내·Q&A 카테고리 i18n)에 이어짐. 남은 갭: 8b 기대치 UI 안내, progress 대기회차 리포트 404 엣지, a11y 정식 패스/모바일 반응형. CI 그린, 134 단위테스트.
 - **2026-06-22** — **v0.2.1 태그/릴리스** (다국어 완결 + 클라우드 LLM + 회차 추이 + SRT). v0.2.0 이후 Phase 2 마무리분 묶음.
