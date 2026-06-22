@@ -1,0 +1,41 @@
+name: 버그 신고 (Bug report)
+description: 동작하지 않는 부분을 알려주세요
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: 무엇이 잘못됐나요?
+      description: 기대한 동작과 실제 동작
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: 재현 단계
+      placeholder: |
+        1. ...
+        2. ...
+        3. 오류 발생
+    validations:
+      required: true
+  - type: dropdown
+    id: engines
+    attributes:
+      label: 사용 엔진
+      description: 홈 화면 하단 "현재 AI 엔진" 배지 기준
+      multiple: true
+      options:
+        - 로컬 (Ollama / Whisper.cpp / Piper)
+        - 클라우드 (Claude / OpenAI 등)
+        - stub (USE_STUB_ADAPTERS=1)
+  - type: textarea
+    id: env
+    attributes:
+      label: 환경
+      placeholder: OS, Node 버전, 브라우저, OLLAMA_MODEL 등
+  - type: textarea
+    id: logs
+    attributes:
+      label: 로그 / 에러 메시지
+      render: shell

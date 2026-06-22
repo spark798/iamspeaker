@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 보안 취약점
+    url: https://github.com/spark798/iamspeaker/security/advisories/new
+    about: 보안 문제는 공개 이슈가 아닌 Security Advisory로 신고해주세요 (SECURITY.md 참고).

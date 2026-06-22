@@ -2,9 +2,11 @@
 
 > 슬라이드를 업로드하면 AI가 먼저 시범 발표(데모)를 생성하고, 사용자가 참고해 연습 녹음을 하면 **속도·발음·필러워드**를 분석해 피드백과 개선 스크립트를 제공하는 **오픈소스 발표 연습 웹앱**.
 
+![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.2.2-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+
 비영어권 발표자(예: 해외 투자자 앞에서 영어로 피칭하는 스타트업 창업자)가 백지 상태에서 시작하지 않도록 AI가 먼저 시범을 보여주고, 객관적 데이터 기반으로 반복 개선하도록 돕는다.
 
-> ⚠️ **상태: 기획·설계 단계 (코드 작성 전).** 개발 진행 상황은 [`PROGRESS.md`](PROGRESS.md)를 참고.
+> **상태: v0.2.2 — 핵심 루프(SCR-01~08) + 품질 기준선 + 다국어 동작.** 로컬 모델만으로 전체 루프 완주 가능. 개발 기록은 [`PROGRESS.md`](PROGRESS.md), 기여는 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## 핵심 원칙
 - **오픈소스 / 셀프호스팅 우선** — 누구나 클론해서 띄울 수 있다.
@@ -12,10 +14,17 @@
 - **API 키 강제 없음** — `cp .env.example .env` 후 로컬 모델만으로 전체 루프가 돌아간다.
 - **데이터는 전부 로컬 저장** — 업로드·녹음·분석 결과는 `data/`에만 저장된다 (프라이버시).
 
-## 기능 (계획)
-슬라이드 업로드(PPTX/PDF) → 슬라이드 분석 → AI 데모 발표(스크립트+TTS) → 스크립트 편집 → 연습 녹음 → 분석 리포트(WPM·필러워드·발음·시간배분, 모국어 맞춤 피드백) → 개선 스크립트 제안 → 예상 Q&A 대비 → 다국어/자막 출력.
+## 기능
+슬라이드 업로드(PPTX/PDF) → 슬라이드 분석 → AI 데모 발표(스크립트 + Piper TTS 음성) → 스크립트 편집 → 연습 녹음 → 분석 리포트(WPM·필러·발음·시간배분 + **장르·모국어 보정 기준선 대비 점수**) → 개선 스크립트 제안(자가개선 루프) → 예상 Q&A 대비 → 다국어 번역·자막(SRT) → 회차별 추이 그래프. UI 4개 언어(ko/en/ja/zh).
 
 화면·기능 명세는 [`docs/storyboard.md`](docs/storyboard.md), 설계는 [`DEVELOPMENT.md`](DEVELOPMENT.md) 참고.
+
+## 스크린샷
+> _준비 중 — `docs/img/`에 추가 예정._
+<!-- ![업로드](docs/img/upload.png) ![리포트](docs/img/report.png) -->
+
+## 라이선스
+[MIT](LICENSE) © Seung Park. TED 등 외부 코퍼스는 비저작권 메트릭만 내재화([`docs/benchmark.md`](docs/benchmark.md) 참고).
 
 ## 요구 사항
 - Node 22 LTS, pnpm (corepack)

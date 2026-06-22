@@ -1,0 +1,20 @@
+name: 기능 제안 (Feature request)
+description: 개선/새 기능 아이디어
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 해결하려는 문제
+      description: 어떤 상황에서 무엇이 불편한가요?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 제안
+      description: 원하는 동작/접근. 어댑터 패턴·로컬 우선 원칙(README) 고려 시 함께 적어주세요.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 대안 / 참고

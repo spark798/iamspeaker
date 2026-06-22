@@ -1,7 +1,12 @@
 {
   "name": "iamspeaker",
-  "version": "0.0.0",
+  "version": "0.2.2",
   "private": true,
+  "description": "오픈소스 발표 연습 웹앱 — 슬라이드 업로드 → AI 시범 발표 → 연습 녹음 분석(속도·발음·필러) → 개선 스크립트·Q&A. 로컬 모델 우선.",
+  "license": "MIT",
+  "author": "Seung Park",
+  "repository": { "type": "git", "url": "https://github.com/spark798/iamspeaker.git" },
+  "homepage": "https://github.com/spark798/iamspeaker#readme",
   "type": "module",
   "engines": {
     "node": ">=22.13"
