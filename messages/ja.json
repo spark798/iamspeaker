@@ -7,6 +7,14 @@
     "cta": "始める",
     "phase": "開発中 — まずスライドをアップロード"
   },
+  "engines": {
+    "title": "現在のAIエンジン",
+    "llm": "LLM",
+    "tts": "TTS",
+    "stt": "STT",
+    "local": "ローカル",
+    "cloud": "クラウド"
+  },
   "errors": {
     "uploadFailed": "アップロードに失敗しました",
     "parseFailed": "分析に失敗しました",

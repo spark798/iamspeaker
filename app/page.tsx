@@ -1,3 +1,4 @@
+import { EngineStatus } from "@/components/engine-status";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 
@@ -14,6 +15,7 @@ export default function HomePage() {
         {t("home.cta")}
       </Link>
       <p className="text-xs text-neutral-500">{t("home.phase")}</p>
+      <EngineStatus />
     </main>
   );
 }

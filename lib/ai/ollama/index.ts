@@ -1,148 +1,35 @@
-import { randomUUID } from "node:crypto";
 import {
-  critiqueSlidesPrompt,
-  evaluateAnswerPrompt,
-  generateQuestionsPrompt,
-  generateScriptPrompt,
-  improveScriptPrompt,
-  translatePrompt,
-} from "@/lib/ai/prompts";
-import type {
-  QaGeneratorAdapter,
-  ScriptGeneratorAdapter,
-  SlideCriticAdapter,
-  TranslatorAdapter,
-} from "@/lib/ai/types";
-import { ruleBasedCritique } from "@/lib/analysis/critique";
-import type {
-  AnalysisResult,
-  GenOptions,
-  L1Profile,
-  QAFeedback,
-  QAItem,
-  Script,
-  ScriptDiff,
-  SlideContent,
-  SlideCritique,
-  SlideScript,
-  TranscriptResult,
-} from "@/lib/domain";
+  LlmQaGenerator,
+  LlmScriptGenerator,
+  LlmSlideCritic,
+  LlmTranslator,
+} from "@/lib/ai/llm/adapters";
 import { ollamaChatJson } from "./client";
-import {
-  AnswerEvalSchema,
-  CritiqueSchema,
-  QuestionsSchema,
-  ScriptContentSchema,
-  ScriptDiffSchema,
-  TranslationSchema,
-} from "./schemas";
 
-/** Ollama 구조화 출력 스키마 — 스크립트 형태를 강제. */
-const SCRIPT_FORMAT = {
-  type: "object",
-  properties: {
-    slides: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: { slideIndex: { type: "integer" }, text: { type: "string" } },
-        required: ["slideIndex", "text"],
-      },
-    },
-  },
-  required: ["slides"],
-} as const;
+// 정렬 유틸은 provider 공용 — 호환을 위해 ollama 경로에서도 재노출.
+export { alignSegmentsToSlides } from "@/lib/ai/llm/adapters";
 
 /**
- * LLM이 반환한 세그먼트를 입력 슬라이드에 1:1로 정렬한다(결정적 보장).
- * - slideIndex가 일치하는 첫 세그먼트를 사용(중복은 첫 것)
- * - 없으면 위치(positional) 폴백, 그래도 없으면 빈 문자열
- * - 항상 입력 슬라이드 수만큼, 올바른 slideIndex로 반환(여분 세그먼트는 버림)
+ * 로컬 Ollama 어댑터 = provider-무관 Llm* 어댑터에 ollamaChatJson 주입(기본 엔진).
+ * 프롬프트/스키마/정렬은 lib/ai/llm/adapters에서 공유, 호출만 Ollama HTTP.
  */
-export function alignSegmentsToSlides(
-  slides: SlideContent[],
-  segments: { slideIndex: number; text: string }[],
-): SlideScript[] {
-  const byIndex = new Map<number, string>();
-  for (const seg of segments) {
-    if (!byIndex.has(seg.slideIndex)) byIndex.set(seg.slideIndex, seg.text);
-  }
-  return slides.map((slide, i) => {
-    const exact = byIndex.get(slide.index);
-    const text = exact ?? segments[i]?.text ?? "";
-    return { slideIndex: slide.index, text };
-  });
-}
-
-/**
- * 로컬 Ollama 기반 LLM 어댑터(기본 엔진). 프롬프트는 lib/ai/prompts, 출력은 Zod로 검증.
- * (Phase 2: ANTHROPIC/OPENAI 키가 있으면 factory가 클라우드 구현으로 교체)
- */
-export class OllamaScriptGenerator implements ScriptGeneratorAdapter {
-  async generate(slides: SlideContent[], options: GenOptions): Promise<Script> {
-    const { system, prompt } = generateScriptPrompt(slides, options);
-    const parsed = ScriptContentSchema.parse(
-      await ollamaChatJson({ system, prompt, format: SCRIPT_FORMAT }),
-    );
-    // 모델이 인트로/결론 등 여분을 추가하거나 누락해도 입력 슬라이드에 1:1 정렬(결정적).
-    return { version: 0, source: "ai_demo", content: alignSegmentsToSlides(slides, parsed.slides) };
-  }
-
-  async improve(script: Script, analysis: AnalysisResult, l1?: L1Profile): Promise<ScriptDiff> {
-    const { system, prompt } = improveScriptPrompt(script, analysis, l1);
-    const parsed = ScriptDiffSchema.parse(await ollamaChatJson({ system, prompt }));
-    return { baseVersion: script.version, entries: parsed.entries };
+export class OllamaScriptGenerator extends LlmScriptGenerator {
+  constructor() {
+    super(ollamaChatJson);
   }
 }
-
-export class OllamaSlideCritic implements SlideCriticAdapter {
-  async analyze(slides: SlideContent[], targetDurationSec: number): Promise<SlideCritique[]> {
-    // 규칙 기반 1차 결과(LLM 없이도 동작). LLM 성공 시 자연어 피드백으로 대체, 실패 시 폴백.
-    const baseline = ruleBasedCritique(slides, targetDurationSec);
-    try {
-      const { system, prompt } = critiqueSlidesPrompt(slides, targetDurationSec);
-      const parsed = CritiqueSchema.parse(await ollamaChatJson({ system, prompt }));
-      const byIndex = new Map(parsed.critiques.map((c) => [c.slideIndex, c]));
-      return baseline.map((b) => byIndex.get(b.slideIndex) ?? b);
-    } catch {
-      return baseline;
-    }
+export class OllamaSlideCritic extends LlmSlideCritic {
+  constructor() {
+    super(ollamaChatJson);
   }
 }
-
-export class OllamaQaGenerator implements QaGeneratorAdapter {
-  async generateQuestions(
-    slides: SlideContent[],
-    script: Script,
-    count: number,
-  ): Promise<QAItem[]> {
-    const { system, prompt } = generateQuestionsPrompt(slides, script, count);
-    const parsed = QuestionsSchema.parse(await ollamaChatJson({ system, prompt }));
-    return parsed.questions.slice(0, count).map((q) => ({ id: randomUUID(), ...q }));
-  }
-
-  async evaluateAnswer(question: QAItem, answerTranscript: TranscriptResult): Promise<QAFeedback> {
-    const { system, prompt } = evaluateAnswerPrompt(question, answerTranscript.text);
-    const parsed = AnswerEvalSchema.parse(await ollamaChatJson({ system, prompt }));
-    const minutes = answerTranscript.durationSec / 60;
-    const wpm = minutes > 0 ? Math.round(answerTranscript.words.length / minutes) : 0;
-    return {
-      questionId: question.id,
-      wpm,
-      fillerWords: [],
-      relevanceScore: parsed.relevanceScore,
-      improvedAnswer: parsed.improvedAnswer,
-    };
+export class OllamaQaGenerator extends LlmQaGenerator {
+  constructor() {
+    super(ollamaChatJson);
   }
 }
-
-export class OllamaTranslator implements TranslatorAdapter {
-  async translate(texts: string[], targetLang: string, sourceLang: string): Promise<string[]> {
-    if (texts.length === 0) return [];
-    const { system, prompt } = translatePrompt(texts, targetLang, sourceLang);
-    const parsed = TranslationSchema.parse(await ollamaChatJson({ system, prompt }));
-    const byIndex = new Map(parsed.items.map((it) => [it.i, it.text]));
-    // 인덱스로 정렬·복원, 누락 시 원문 유지(자막 누락보다 원문 표시가 안전).
-    return texts.map((original, i) => byIndex.get(i) ?? original);
+export class OllamaTranslator extends LlmTranslator {
+  constructor() {
+    super(ollamaChatJson);
   }
 }

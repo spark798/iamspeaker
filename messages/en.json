@@ -7,6 +7,14 @@
     "cta": "Get started",
     "phase": "In development — start by uploading slides"
   },
+  "engines": {
+    "title": "Active AI engines",
+    "llm": "LLM",
+    "tts": "TTS",
+    "stt": "STT",
+    "local": "local",
+    "cloud": "cloud"
+  },
   "errors": {
     "uploadFailed": "Upload failed",
     "parseFailed": "Analysis failed",

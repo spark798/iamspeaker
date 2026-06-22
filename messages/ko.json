@@ -7,6 +7,14 @@
     "cta": "시작하기",
     "phase": "개발 진행 중 — 슬라이드 업로드부터 시작해보세요"
   },
+  "engines": {
+    "title": "현재 AI 엔진",
+    "llm": "LLM",
+    "tts": "TTS",
+    "stt": "STT",
+    "local": "로컬",
+    "cloud": "클라우드"
+  },
   "errors": {
     "uploadFailed": "업로드에 실패했습니다",
     "parseFailed": "분석에 실패했습니다",

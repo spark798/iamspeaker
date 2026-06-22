@@ -7,6 +7,14 @@
     "cta": "开始",
     "phase": "开发中 — 先上传幻灯片"
   },
+  "engines": {
+    "title": "当前 AI 引擎",
+    "llm": "LLM",
+    "tts": "TTS",
+    "stt": "STT",
+    "local": "本地",
+    "cloud": "云端"
+  },
   "errors": {
     "uploadFailed": "上传失败",
     "parseFailed": "分析失败",
