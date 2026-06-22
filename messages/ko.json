@@ -92,6 +92,7 @@
     "script": "AI 스크립트",
     "showTranslation": "모국어 번역 병기",
     "hideTranslation": "번역 숨기기",
+    "downloadSrt": "SRT 자막 내려받기",
     "translating": "번역 중…",
     "listen": "🔊 데모 음성 듣기",
     "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요.",

@@ -92,6 +92,7 @@
     "script": "AI script",
     "showTranslation": "Show native translation",
     "hideTranslation": "Hide translation",
+    "downloadSrt": "Download SRT",
     "translating": "Translating…",
     "listen": "🔊 Listen to demo voice",
     "empty": "No script yet. Click 'Generate AI demo' to start.",

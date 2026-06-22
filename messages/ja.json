@@ -92,6 +92,7 @@
     "script": "AIスクリプト",
     "showTranslation": "母語訳を併記",
     "hideTranslation": "訳を隠す",
+    "downloadSrt": "SRT字幕をダウンロード",
     "translating": "翻訳中…",
     "listen": "🔊 デモ音声を聞く",
     "empty": "まだスクリプトがありません。「AIデモ生成」を押して開始してください。",

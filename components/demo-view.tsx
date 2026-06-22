@@ -132,6 +132,12 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                   ? t("hideTranslation")
                   : t("showTranslation")}
             </button>
+            <a
+              href={`/api/sessions/${sessionId}/subtitle`}
+              className="text-sm font-medium text-brand hover:underline"
+            >
+              {t("downloadSrt")}
+            </a>
             <Link
               href={`/editor?session=${sessionId}`}
               className="text-sm font-medium text-brand hover:underline"

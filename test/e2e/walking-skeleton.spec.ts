@@ -40,4 +40,10 @@ test("세션 생성 → 데모 작업 → 스크립트 생성", async ({ request
   expect(audio.status()).toBe(200);
   expect(audio.headers()["content-type"]).toContain("audio/wav");
   expect((await audio.body()).byteLength).toBeGreaterThan(0);
+
+  // SCR-07 자막 export: 데모 스크립트 → SRT 다운로드(타임스탬프 큐 포함).
+  const srt = await request.get(`/api/sessions/${id}/subtitle`);
+  expect(srt.status()).toBe(200);
+  expect(srt.headers()["content-type"]).toContain("subrip");
+  expect(await srt.text()).toMatch(/00:00:00,000 --> /);
 });
