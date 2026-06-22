@@ -293,7 +293,7 @@ Job {
 
 > **순서 원칙**: 의존성 역순으로 토대부터 쌓고(Phase 0), stub로 전 구간을 먼저 관통시킨 뒤(M1 Walking Skeleton), 화면별로 실제 엔진을 채운다(Phase 1). 각 항목은 앞 항목에 의존하므로 위→아래 순서로 진행한다.
 >
-> **진행 현황(2026-06-22)**: Phase 0 · M1 · Phase 1 완료(**v0.1.0**). Phase 2 대부분 완료(**v0.2.0**: 다국어 번역·TTS·B-001 품질 기준선·클라우드 어댑터·ja/zh L1·회차 추이). 잔여: SRT export, wav2vec2 발음 평가, 워커 분리/PostgreSQL. Phase 3 미착수. 세부 상태는 PROGRESS.md.
+> **진행 현황(2026-06-22)**: Phase 0 · M1 · Phase 1 완료(**v0.1.0**). Phase 2 대부분 완료(**v0.2.0**: 다국어 번역·TTS·SRT·B-001 품질 기준선·클라우드 어댑터·ja/zh L1·회차 추이). 잔여: wav2vec2 발음 평가, 워커 분리/PostgreSQL. Phase 3 미착수. 세부 상태는 PROGRESS.md.
 
 ### Phase 0 — 기반 인프라 (의존성 순) ✅ 완료
 1. [x] Next.js + Tailwind + pnpm 초기화, tsconfig strict, Biome/Vitest/Playwright 설정
@@ -336,7 +336,7 @@ Job {
 - **완료 조건**: 로컬 모델(Ollama+Piper+Whisper.cpp)만으로 업로드→…→Q&A 전체 루프 완주. ✅
 
 ### Phase 2 — 확장 (Epic 4,5) — 대부분 완료
-- [~] SCR-07: 다국어 번역 + TTS + SRT — 번역(자막 병기)·TTS ✅ / **SRT export 미완**
+- [x] SCR-07: 다국어 번역 + TTS + SRT — 번역(자막 병기)·TTS·SRT export 완료
 - [x] 회차별 추이 그래프(Progress Tracking) — 인라인 SVG 추이 차트(WPM/필러)
 - [ ] wav2vec2 기반 발음 평가 옵션 — 미착수(현재는 whisper confidence 휴리스틱)
 - [x] 클라우드 어댑터(Claude/OpenAI) + 엔진 상태 UI — ElevenLabs/Azure TTS·STT는 미착수
