@@ -12,7 +12,7 @@
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
-| 다음 액션 | **Lane 1b 검증(택1)**: ①`docker compose up --build` 실 1회 검증(개발환경 docker 부재로 미검증) ②도그푸드 실사용+스크린샷. 그 후 Lane 2(wav2vec2 발음정밀화)/Lane 3(Phase3 영상·제스처). 후보: es/vi L1팩, 클라우드 LLM 실키 live검증. |
+| 다음 액션 | **Lane 1b 남은 것**: 도그푸드 실사용(실슬라이드+녹음, 체감 품질)+스크린샷(docs/img). 그 후 Lane 2(wav2vec2)/Lane 3(Phase3 영상·제스처). 후보: es/vi L1팩, 클라우드 LLM 실키 live검증. — Docker 전체 루프 ✅검증완료 |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-22** — **Docker 전체 루프 라이브 검증 완료**(Lane 1b): colima(vz, sudo·brew 없이 ~/.local 바이너리 설치)로 `docker compose up --build` 실행. 빌드 중 3건 수정 — whisper 스테이지 ca-certificates(git HTTPS), whisper.cpp `-DGGML_NATIVE=OFF`(VM fp16 NEON 오류), `-DBUILD_SHARED_LIBS=OFF`(libwhisper.so 의존 제거→단일 바이너리 실행). 실측: health llm reachable, ollama 생성→데모 스크립트, piper TTS→WAV, whisper-cli 전사(TTS→STT 왕복 정확), en→ko 번역 SRT 전부 동작. README "미검증" 제거. CI 그린.
 - **2026-06-22** — Docker 배포 검증·보강(Lane 1b 일부): **정적 점검으로 STT/TTS 미설치 발견** — 기존 이미지는 ffmpeg/libreoffice만 있어 whisper/piper 부재로 녹음분석·데모음성 깨짐. 수정: Dockerfile에 whisper.cpp 빌드 스테이지+piper(pip)+libgomp1, entrypoint가 setup:models로 모델 부트스트랩, compose에 ollama-pull(기본 모델 자동), README 정확화. better-sqlite3 빌드는 pnpm-workspace.yaml allowBuilds로 이미 승인됨(오해 해소). **⚠️ 이 개발환경 docker 데몬 없음 → 라이브 `docker compose up --build` 미검증(표준 레시피 기반). 실 1회 빌드 검증 필요.** CI 그린.
 - **2026-06-22** — OSS 채택 패키징(Lane 1a): package.json 메타(license MIT·repo·version 0.2.2), README stale 상태문구 정정+배지+기능요약+스크린샷 자리, CONTRIBUTING/SECURITY/CODE_OF_CONDUCT, .github 이슈·PR 템플릿. 남은 Lane 1b: 도그푸드 실사용 1회(실슬라이드+녹음, 체감 품질) + Docker 배포 실검증 + 스크린샷 실제 추가. CI 그린.
 - **2026-06-22** — **v0.2.2 태그/릴리스** (실사용 품질·a11y·반응형 패스 묶음).
