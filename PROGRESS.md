@@ -11,7 +11,7 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **🎉 v0.2.0 출시** — Phase 1(9화면) + Phase 2(B-001 품질 기준선·TTS·다국어) 완료, 부채 0 |
+| 현재 단계 | **🎉 v0.2.1 출시** — Phase 1·2 완료(다국어 완결·클라우드 LLM·회차 추이·SRT), 부채 0 |
 | 다음 액션 | 후보(택1): ①es/vi L1팩+UI로케일 ②SRT export ③Phase3 영상/제스처 ④클라우드 LLM 실 키 live 검증. 하우스키핑: DEVELOPMENT.md §14 로드맵 체크박스 stale → 현실 반영. — 회차추이·클라우드어댑터 ✅완료 |
 | 최근 갱신 | 2026-06-21 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-22** — **v0.2.1 태그/릴리스** (다국어 완결 + 클라우드 LLM + 회차 추이 + SRT). v0.2.0 이후 Phase 2 마무리분 묶음.
 - **2026-06-22** — SRT 자막 export(SCR-07 완결): `lib/subtitle/srt.ts`(formatTimestamp+buildSrt, 발화 추정시간 순차 큐, 원문+번역 2줄) + `lib/translation.ts loadScriptWithTranslation` 공용 헬퍼(번역 라우트·SRT 라우트 중복 제거) + route `GET /api/sessions/[id]/subtitle`(병기 SRT 다운로드) + demo-view 링크 + i18n. srt 단위 6종 + E2E SRT 검증. DEVELOPMENT §14 SCR-07 [x]. CI 그린, 134 단위테스트.
 - **2026-06-22** — 클라우드 LLM 어댑터(Claude/OpenAI) + 엔진 상태 UI: `lib/ai/llm/`(client: claudeChatJson·openaiChatJson·extractJson 관대파싱 / adapters: provider-무관 Llm* — 프롬프트·Zod·정렬 공유, 호출만 주입 ChatJson). ollama/index는 Ollama*를 Llm*+ollamaChatJson 서브클래스로(임포트 보존). factory가 engines.script로 provider 선택 → **deriveEngines 보고 불일치(리뷰 미결) 해소**. config OPENAI_MODEL 추가. EngineStatus(홈, 활성 엔진+로컬/클라우드 배지, CLAUDE §2 충족). extractJson 단위 5종, ollama live 7종 통과(리팩터 무결성, hermes3:8b 43s), build/E2E 그린. 키는 .env로만(UI 입력 X). 클라우드 live는 실 키 필요 → 미검증(구조·extractJson 검증됨). CI 그린, 128 단위테스트.
 - **2026-06-21** — 회차별 추이 그래프(SCR-07): progress 화면에 의존성 없는 인라인 SVG 라인 차트(`components/trend-chart.tsx`) 추가 — WPM 추이(권장 110–150 음영)+필러 추이(분석 2회+부터), 첫→마지막 증감 표기, 단일점/빈값 처리. 기존 회차 테이블 유지. 저장된 분석 데이터만 사용(모델 의존 0). i18n 4로케일, 렌더 테스트 5종. CI 그린, 123 단위테스트.
