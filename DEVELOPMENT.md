@@ -332,7 +332,7 @@ Job {
 11. [x] SCR-05: 리포트 UI
 12. [x] SCR-06: 개선 스크립트(diff 비교, L1 표현 교정)
 13. [x] SCR-08: Q&A 생성 + 답변 녹음/분석
-14. [~] **a11y 패스**(키보드 내비/라벨/대비) — 기본 적용(aria-label·audio track 등), 정식 패스는 미완 / [x] E2E 실제 루프 확장(데모 음성 검증 포함)
+14. [x] **a11y 패스**(role=alert·aria-live·aria-current·라벨·랜드마크·h1) + **반응형 패스**(모바일 스택·overflow·flex-wrap) — 전용 패스 완료(정밀 대비 감사는 추후) / [x] E2E 실제 루프 확장(데모 음성·SRT 검증 포함)
 - **완료 조건**: 로컬 모델(Ollama+Piper+Whisper.cpp)만으로 업로드→…→Q&A 전체 루프 완주. ✅
 
 ### Phase 2 — 확장 (Epic 4,5) — 대부분 완료
