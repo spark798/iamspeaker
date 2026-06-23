@@ -1,5 +1,5 @@
 {
-  "_note": "필러 검출 정확도 정답셋. fillerIndices = 사람이 필러로 표시한 단어 위치(0-based). 다어절(you know)·반복어·담화표지 포함 — 현재 사전이 못 잡는 케이스로 재현율 갭을 드러냄.",
+  "_note": "필러 검출 정확도 정답셋. fillerIndices = 사람이 필러로 표시한 단어 위치(0-based). recall(다어절·반복·담화표지)과 precision(like=동사 등 함정)을 함께 측정.",
   "samples": [
     {
       "id": "en-1",
@@ -26,6 +26,42 @@
       "fillerIndices": []
     },
     {
+      "id": "en-5-like-verb",
+      "language": "en",
+      "words": ["I", "like", "this", "product", "a", "lot"],
+      "fillerIndices": []
+    },
+    {
+      "id": "en-6-like-verb2",
+      "language": "en",
+      "words": ["our", "customers", "really", "like", "the", "new", "feature"],
+      "fillerIndices": []
+    },
+    {
+      "id": "en-7-like-filler",
+      "language": "en",
+      "words": ["it's", "like", "really", "really", "good"],
+      "fillerIndices": [1]
+    },
+    {
+      "id": "en-8-heavy",
+      "language": "en",
+      "words": ["um", "so", "uh", "you", "know", "the", "the", "thing", "is", "um", "important"],
+      "fillerIndices": [0, 2, 3, 4, 6, 9]
+    },
+    {
+      "id": "en-9-clean-tech",
+      "language": "en",
+      "words": ["the", "model", "predicts", "churn", "thirty", "days", "early"],
+      "fillerIndices": []
+    },
+    {
+      "id": "en-10-kind-of",
+      "language": "en",
+      "words": ["it", "was", "kind", "of", "a", "surprise", "honestly"],
+      "fillerIndices": [2, 3, 6]
+    },
+    {
       "id": "ko-1",
       "language": "ko",
       "words": ["음", "그", "저희", "제품", "은", "어", "좋습니다"],
@@ -36,6 +72,18 @@
       "language": "ko",
       "words": ["그러니까", "뭐", "약간", "그", "그", "중요한", "부분", "입니다"],
       "fillerIndices": [0, 1, 2, 3, 4]
+    },
+    {
+      "id": "ko-3-clean",
+      "language": "ko",
+      "words": ["저희", "모델", "은", "이탈률", "을", "예측", "합니다"],
+      "fillerIndices": []
+    },
+    {
+      "id": "ko-4-mixed",
+      "language": "ko",
+      "words": ["이제", "막", "발표", "를", "음", "시작", "하겠습니다"],
+      "fillerIndices": [0, 1, 4]
     }
   ]
 }

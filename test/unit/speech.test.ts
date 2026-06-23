@@ -4,6 +4,7 @@ import {
   computeWpm,
   detectFillerWords,
   detectPronunciationIssues,
+  fillerPositions,
 } from "@/lib/analysis/speech";
 import type { L1Profile, TranscriptWord } from "@/lib/domain";
 import { describe, expect, it } from "vitest";
@@ -46,6 +47,28 @@ describe("detectFillerWords", () => {
   it("한국어 사전", () => {
     const out = detectFillerWords([w("음", 0), w("그", 1), w("발표", 2)], "ko");
     expect(out.map((f) => f.word).sort()).toEqual(["그", "음"]);
+  });
+});
+
+describe("fillerPositions", () => {
+  const idx = (words: string[], lang = "en") => fillerPositions(words, lang).map((p) => p.index);
+
+  it("다어절 'you know' 양쪽 위치 검출", () => {
+    expect(idx(["you", "know", "good"])).toEqual([0, 1]);
+  });
+  it("즉시 반복(the the) 검출, 강조어(very very)는 제외", () => {
+    expect(idx(["the", "the", "thing"])).toEqual([1]);
+    expect(idx(["very", "very", "good"])).toEqual([]);
+  });
+  it("'like'는 주어/동사 맥락이면 제외(I like / really like)", () => {
+    expect(idx(["I", "like", "it"])).toEqual([]);
+    expect(idx(["customers", "really", "like", "it"])).toEqual([]);
+  });
+  it("'like'가 담화표지면 검출(it's like good)", () => {
+    expect(idx(["it's", "like", "good"])).toEqual([1]);
+  });
+  it("라벨: 다어절은 구 문자열", () => {
+    expect(fillerPositions(["sort", "of", "stuff"], "en")[0]?.label).toBe("sort of");
   });
 });
 

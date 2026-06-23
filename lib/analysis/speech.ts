@@ -60,6 +60,22 @@ const FILLER_PHRASES: Record<string, string[][]> = {
 /** 즉시 반복(말더듬)에서 제외할 강조어(reduplication이 자연스러운 경우). */
 const REPEAT_ALLOW = new Set(["very", "really", "so", "no", "yeah", "ha", "na", "bye"]);
 
+/** "like"가 필러가 아닌 동사/구일 때의 앞 단어(정규화). 예: I/we/really/would like → 동사. */
+const LIKE_VERB_PREV = new Set([
+  "i",
+  "you",
+  "we",
+  "they",
+  "he",
+  "she",
+  "it",
+  "really",
+  "would",
+  "to",
+  "dont",
+  "didnt",
+]);
+
 /** 단어 양끝의 문장부호 제거 + 소문자. */
 function normalize(word: string): string {
   return word.toLowerCase().replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
@@ -97,6 +113,8 @@ export function fillerPositions(
   for (let i = 0; i < norm.length; i++) {
     const w = norm[i];
     if (!w || flagged.has(i)) continue;
+    // "like"는 앞 단어가 주어/동사 맥락이면 동사 → 필러 아님(precision).
+    if (w === "like" && i > 0 && LIKE_VERB_PREV.has(norm[i - 1] ?? "")) continue;
     if (dict.has(w)) flagged.set(i, w);
     else if (i > 0 && w === norm[i - 1] && !REPEAT_ALLOW.has(w)) flagged.set(i, `${w} ${w}`);
   }

@@ -24,7 +24,7 @@ if (missed.length > 0) {
   console.log(`  ⚠️ 미검출(재현율 갭): ${[...new Set(missed)].join(", ")}`);
 }
 
-// 회귀 가드: F1이 기준 밑으로 떨어지면 실패(개선분 보호). 현재 베이스라인은 낮음(다어절·반복 미지원).
-const MIN_F1 = 0.4;
+// 회귀 가드: F1이 기준 밑으로 떨어지면 실패(개선분 보호). 정답셋 확장·다어절·like-동사 규칙 반영.
+const MIN_F1 = 0.9;
 console.log(`\n  게이트 F1>=${pct(MIN_F1)} → ${overall.f1 >= MIN_F1 ? "PASS" : "FAIL"}\n`);
 if (overall.f1 < MIN_F1) process.exit(1);
