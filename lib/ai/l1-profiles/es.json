@@ -1,0 +1,67 @@
+{
+  "language": "es",
+  "commonPronunciationIssues": [
+    {
+      "targetPhoneme": "v",
+      "commonSubstitution": "b",
+      "description": "Pronunciar la v como b. La v inglesa se hace con los dientes superiores tocando el labio inferior y con vibración (value, invest, very)"
+    },
+    {
+      "targetPhoneme": "th (θ)",
+      "commonSubstitution": "t o s",
+      "description": "Sustituir la th sorda por t/s. Coloca la punta de la lengua entre los dientes (think, growth, month)"
+    },
+    {
+      "targetPhoneme": "th (ð)",
+      "commonSubstitution": "d",
+      "description": "Sustituir la th sonora por d. Lengua entre los dientes y con vibración (this, the, with)"
+    },
+    {
+      "targetPhoneme": "/ɪ/ vs /iː/",
+      "commonSubstitution": "confusión",
+      "description": "Confundir vocales cortas y largas. La /ɪ/ es más corta y relajada que /iː/ (ship vs sheep, live vs leave)"
+    },
+    {
+      "targetPhoneme": "e- antes de s+consonante",
+      "commonSubstitution": "añadir e",
+      "description": "No añadas una 'e' antes de la s inicial: di 'school', no 'eschool' (Spain, student, start)"
+    },
+    {
+      "targetPhoneme": "vocales reducidas (schwa)",
+      "commonSubstitution": "vocal plena",
+      "description": "Las vocales átonas inglesas se reducen a /ə/; no las pronuncies plenas (about, system, support)"
+    },
+    {
+      "targetPhoneme": "consonantes finales",
+      "commonSubstitution": "omisión",
+      "description": "No omitas ni suavices las consonantes finales; pronúncialas con claridad (product, helped, results)"
+    }
+  ],
+  "commonExpressionIssues": [
+    {
+      "pattern": "omisión del sujeto",
+      "issue": "el español omite el sujeto, pero el inglés lo exige",
+      "suggestion": "Incluye el sujeto en cada oración ('Is important' → 'It is important')"
+    },
+    {
+      "pattern": "the con genéricos",
+      "issue": "uso excesivo de 'the' con conceptos generales",
+      "suggestion": "Sin artículo para generalizaciones ('The technology changes business' → 'Technology changes business')"
+    },
+    {
+      "pattern": "3ª persona -s",
+      "issue": "olvidar la -s del verbo en 3ª persona del singular",
+      "suggestion": "He/She/It + verbo-s ('our model predict' → 'our model predicts')"
+    },
+    {
+      "pattern": "plural -s",
+      "issue": "olvidar la -s en plurales contables",
+      "suggestion": "Dos o más llevan -s ('three customer' → 'three customers')"
+    },
+    {
+      "pattern": "preposiciones",
+      "issue": "confusión in/on/at, to/for y 'depend of'",
+      "suggestion": "Revisa preposiciones ('depend of' → 'depend on', 'discuss about it' → 'discuss it')"
+    }
+  ]
+}
