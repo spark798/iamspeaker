@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-23** — 앱 UI 로케일 es/vi 추가: messages/{es,vi}.json 전체 완역 + request SUPPORTED_LOCALES + locale-switcher. **이제 UI 6종(ko/en/ja/zh/es/vi) = L1팩 5종 + en**. i18n 키 일치 가드 6로케일. CI 그린, 140 단위테스트, build OK.
 - **2026-06-23** — es/vi L1 언어팩(Epic6): `lib/ai/l1-profiles/{es,vi}.json`(발음7+표현5, 설명=화자 모국어+영어 예시) + 로더 등록 + upload-form 셀렉트 + i18n 4로케일. 이제 L1팩 5종(ko/ja/zh/es/vi). l1 테스트 it.each 확장. 실측(hermes improve): es·vi 관사·복수·3인칭-s 교정 정상. 비원어민 WPM 보정 자동. CI 그린.
 - **2026-06-22** — **Docker 전체 루프 라이브 검증 완료**(Lane 1b): colima(vz, sudo·brew 없이 ~/.local 바이너리 설치)로 `docker compose up --build`. 빌드 중 3건 수정 — whisper 스테이지 ca-certificates(git HTTPS), `-DGGML_NATIVE=OFF`(VM fp16 NEON 오류), `-DBUILD_SHARED_LIBS=OFF`(libwhisper.so 의존 제거→단일 바이너리). **API로 전체 루프 실측 전부 통과**: health(llm reachable) · 데모 생성(ollama) · 데모음성(piper WAV) · 녹음→analyze(whisper STT 140wpm, ffmpeg pause, 발음/필러) · 리포트 B-001 점수(pitch×ko 보정으로 140wpm=ideal) · 개선(ScriptDiff+L1) · Q&A 생성(투자자 질문) · en→ko 번역 SRT · 추이 · 모델 자동 부트스트랩(ollama-pull+setup:models). README "미검증" 제거. CI 그린. 남은 Lane 1b: 스크린샷·체감품질(브라우저 필요, 사람).
 - **2026-06-22** — Docker 배포 검증·보강(Lane 1b 일부): **정적 점검으로 STT/TTS 미설치 발견** — 기존 이미지는 ffmpeg/libreoffice만 있어 whisper/piper 부재로 녹음분석·데모음성 깨짐. 수정: Dockerfile에 whisper.cpp 빌드 스테이지+piper(pip)+libgomp1, entrypoint가 setup:models로 모델 부트스트랩, compose에 ollama-pull(기본 모델 자동), README 정확화. better-sqlite3 빌드는 pnpm-workspace.yaml allowBuilds로 이미 승인됨(오해 해소). **⚠️ 이 개발환경 docker 데몬 없음 → 라이브 `docker compose up --build` 미검증(표준 레시피 기반). 실 1회 빌드 검증 필요.** CI 그린.
