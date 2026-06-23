@@ -2,7 +2,7 @@ import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import { describe, expect, it } from "vitest";
 
 describe("loadL1Profile", () => {
-  it.each(["ko", "ja", "zh", "es", "vi"])("%s 프로필을 로드하고 형태를 검증", (lang) => {
+  it.each(["ko", "ja", "zh", "es"])("%s 프로필을 로드하고 형태를 검증", (lang) => {
     const p = loadL1Profile(lang);
     expect(p?.language).toBe(lang);
     expect(p?.commonPronunciationIssues.length).toBeGreaterThan(0);

@@ -10,7 +10,6 @@ const LOCALES: { code: string; label: string }[] = [
   { code: "ja", label: "日本語" },
   { code: "zh", label: "中文" },
   { code: "es", label: "Español" },
-  { code: "vi", label: "Tiếng Việt" },
 ];
 
 /** 쿠키에 로케일을 저장하고 새로고침해 적용(URL 라우팅 없는 방식). */

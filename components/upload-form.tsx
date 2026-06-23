@@ -145,7 +145,6 @@ export function UploadForm() {
             <option value="ja">{t("nativeJa")}</option>
             <option value="zh">{t("nativeZh")}</option>
             <option value="es">{t("nativeEs")}</option>
-            <option value="vi">{t("nativeVi")}</option>
             <option value="en">{t("nativeEn")}</option>
           </select>
         </label>

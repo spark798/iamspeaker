@@ -3,7 +3,6 @@ import en from "@/messages/en.json";
 import es from "@/messages/es.json";
 import ja from "@/messages/ja.json";
 import ko from "@/messages/ko.json";
-import vi from "@/messages/vi.json";
 import zh from "@/messages/zh.json";
 import { describe, expect, it } from "vitest";
 
@@ -17,7 +16,7 @@ function keyPaths(obj: Json, prefix = ""): string[] {
   });
 }
 
-const messages: Record<string, Json> = { ko, en, ja, zh, es, vi };
+const messages: Record<string, Json> = { ko, en, ja, zh, es };
 const enKeys = keyPaths(en as Json).sort();
 
 describe("i18n 메시지 파일", () => {
@@ -25,12 +24,12 @@ describe("i18n 메시지 파일", () => {
     expect([...SUPPORTED_LOCALES].sort()).toEqual(Object.keys(messages).sort());
   });
 
-  it.each(["ko", "ja", "zh", "es", "vi"])("%s 키 집합이 en과 동일(누락/오타 없음)", (locale) => {
+  it.each(["ko", "ja", "zh", "es"])("%s 키 집합이 en과 동일(누락/오타 없음)", (locale) => {
     const keys = keyPaths(messages[locale] as Json).sort();
     expect(keys).toEqual(enKeys);
   });
 
-  it.each(["ko", "ja", "zh", "es", "vi"])("%s 값이 모두 비어있지 않음", (locale) => {
+  it.each(["ko", "ja", "zh", "es"])("%s 값이 모두 비어있지 않음", (locale) => {
     for (const path of keyPaths(messages[locale] as Json)) {
       const value = path.split(".").reduce<unknown>((o, k) => (o as Json)?.[k], messages[locale]);
       expect(typeof value === "string" && value.length > 0).toBe(true);
