@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-23** — 상용화 품질 플랜 착수(셀프호스트 OSS 트랙). `docs/quality-plan.md`(감사+Q1~Q3). **Q1-1 정확도 eval 하니스**(`pnpm eval:accuracy`, prf, fillers 정답셋) + **Q1-2 필러 고도화**(fillerPositions: 다어절·반복·사전확장). 측정: 필러 F1 78.8%→100%(소규모셋, 일반화 위해 데이터 확장=Q1-6). 남은 Q1: 기준선 실측·발음 임계보정·기본품질·정답셋 확장. CI 그린, 154 단위테스트.
 - **2026-06-23** — wav2vec2 GOP 발음 평가(정밀, 옵션): PronunciationScorerAdapter 추상화(휴리스틱 기본·의존성0 / wav2vec2 env 게이트). `scripts/pronunciation/gop.py` — espeak G2P(espeakng_loader, pip-only)→wav2vec2 음소 CTC→torchaudio forced_align→**정규화 GOP**(exp(mean(logP(ref)−max_q logP(q)))). 대본 참조라 STT 타임스탬프 비의존. matchL1RuleByPhoneme로 IPA 오발음을 L1 규칙과 음소 매칭. analyze 핸들러가 스코어러 사용(실패시 휴리스틱 폴백). **라이브 검증(M2 Pro): 정상 conf≈1.0(FP 0), 오발음(cat/weather) conf 0.0.** 단위 10종. 모델 facebook/wav2vec2-lv-60-espeak-cv-ft. CI 그린, 150 단위테스트.
 - **2026-06-23** — 앱 UI 로케일 es/vi 추가: messages/{es,vi}.json 전체 완역 + request SUPPORTED_LOCALES + locale-switcher. **이제 UI 6종(ko/en/ja/zh/es/vi) = L1팩 5종 + en**. i18n 키 일치 가드 6로케일. CI 그린, 140 단위테스트, build OK.
 - **2026-06-23** — es/vi L1 언어팩(Epic6): `lib/ai/l1-profiles/{es,vi}.json`(발음7+표현5, 설명=화자 모국어+영어 예시) + 로더 등록 + upload-form 셀렉트 + i18n 4로케일. 이제 L1팩 5종(ko/ja/zh/es/vi). l1 테스트 it.each 확장. 실측(hermes improve): es·vi 관사·복수·3인칭-s 교정 정상. 비원어민 WPM 보정 자동. CI 그린.
