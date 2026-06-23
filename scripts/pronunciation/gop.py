@@ -107,49 +107,91 @@ def main() -> int:
 
     targets = torch.tensor([target_ids], dtype=torch.int32)
 
-    # 6) 강제정렬로 음소별 프레임 구간 확보.
-    aligned, scores = torchaudio.functional.forced_align(emission, targets, blank=blank_id)
-    spans = torchaudio.functional.merge_tokens(aligned[0], scores[0])
-    spans = [s for s in spans if s.token != blank_id]
-    n = min(len(spans), len(target_ids))
-
-    # 정밀 GOP: 정렬된(참조) 음소 사후확률을 프레임별 최댓값으로 정규화.
-    #   GOP(frame) = logP(ref음소|frame) - max_q logP(q|frame)  (≤0; 0이면 잘 발음)
-    #   confidence = exp(평균 GOP) ∈ (0,1] — 음소 종류와 무관하게 변별됨.
     emis = emission[0]  # (T, V) log-softmax
-    frame_max = emis.max(dim=-1).values  # (T,)
+    id2tok = {v: k for k, v in vocab.items()}
 
-    # 7) 단어별 집계
-    word_scores: dict[int, list[tuple[float, str, int]]] = {}
-    for i in range(n):
-        sp = spans[i]
-        ref_tok = target_ids[i]
-        seg = emis[sp.start : sp.end, ref_tok] - frame_max[sp.start : sp.end]
-        gop = float(seg.mean()) if seg.numel() > 0 else -10.0
-        conf = float(torch.exp(torch.tensor(gop)))
-        wi = tok_word_idx[i]
-        word_scores.setdefault(wi, []).append((conf, tok_phoneme[i], int(sp.start)))
+    # 6) 강제정렬 → 음소별 프레임 구간(startSec용).
+    aligned, _scores = torchaudio.functional.forced_align(emission, targets, blank=blank_id)
+    spans = [s for s in torchaudio.functional.merge_tokens(aligned[0], aligned[0].float()) if s.token != blank_id]
+    start_frame_of = {}
+    for i in range(min(len(spans), len(target_ids))):
+        start_frame_of.setdefault(tok_word_idx[i], int(spans[i].start))
+
+    # 7) 자유 디코드(greedy CTC) → 모델이 실제로 들은 음소열.
+    #    모델 출력이 espeak 음소(참조 G2P와 동일 계열)라 시퀀스 정렬로 치환을 정확히 위치 특정
+    #    → 강제정렬 cascade(치환 시 이웃 오검출) 회피.
+    pred = emis.argmax(dim=-1).tolist()
+    hyp: list[str] = []
+    prev = None
+    for t in pred:
+        if t != prev and t != blank_id:
+            tok = id2tok.get(t, "")
+            if tok and not tok.startswith("<") and tok not in ("|", " "):
+                hyp.append(tok)
+        prev = t
+
+    # 8) 참조 vs 자유디코드 NW 정렬 → 각 참조 음소 matched/error.
+    status = align_ref(tok_phoneme, hyp)
+
+    # 9) 단어별 집계: confidence = matched/total, worstPhoneme = 첫 오류 음소.
+    by_word: dict[int, list[tuple[bool, str]]] = {}
+    for i, st in enumerate(status):
+        by_word.setdefault(tok_word_idx[i], []).append((st, tok_phoneme[i]))
 
     out_words = []
-    for wi in sorted(word_scores.keys()):
-        items = word_scores[wi]
-        # 발음 평가는 단일 오발음에 민감해야 함 → 단어 confidence = 최악 음소 점수(min).
-        # (평균은 한 음소의 큰 하락을 희석시켜 변별력이 떨어짐.)
-        worst = min(items, key=lambda x: x[0])
-        worst_conf = worst[0]
-        start_frame = min(st for _, _, st in items)
+    for wi in sorted(by_word.keys()):
+        items = by_word[wi]
+        matched = sum(1 for ok, _ in items if ok)
+        conf = matched / len(items)
+        worst = next((ph for ok, ph in items if not ok), items[0][1])
         word_text = src_words[wi] if wi < len(src_words) else words_raw[wi]
         out_words.append(
             {
                 "word": word_text,
-                "startSec": round(start_frame * sec_per_frame, 2),
-                "confidence": round(max(0.0, min(1.0, worst_conf)), 3),
-                "worstPhoneme": worst[1],
+                "startSec": round(start_frame_of.get(wi, 0) * sec_per_frame, 2),
+                "confidence": round(conf, 3),
+                "worstPhoneme": worst,
             }
         )
 
     print(json.dumps({"words": out_words}, ensure_ascii=False))
     return 0
+
+
+def align_ref(ref: list[str], hyp: list[str]) -> list[bool]:
+    """참조 음소열을 자유디코드열에 NW 정렬 → 참조 음소별 matched(True)/error(sub·del=False)."""
+    n, m = len(ref), len(hyp)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    bt = [["" for _ in range(m + 1)] for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        dp[i][0] = i
+        bt[i][0] = "del"
+    for j in range(1, m + 1):
+        dp[0][j] = j
+        bt[0][j] = "ins"
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            cost = 0 if ref[i - 1] == hyp[j - 1] else 1
+            best, op = dp[i - 1][j - 1] + cost, "match" if cost == 0 else "sub"
+            if dp[i - 1][j] + 1 < best:
+                best, op = dp[i - 1][j] + 1, "del"
+            if dp[i][j - 1] + 1 < best:
+                best, op = dp[i][j - 1] + 1, "ins"
+            dp[i][j], bt[i][j] = best, op
+    status = [False] * n
+    i, j = n, m
+    while i > 0 or j > 0:
+        op = bt[i][j]
+        if op == "match":
+            status[i - 1] = True
+            i, j = i - 1, j - 1
+        elif op == "sub":
+            i, j = i - 1, j - 1
+        elif op == "del":
+            i -= 1
+        else:
+            j -= 1
+    return status
 
 
 if __name__ == "__main__":

@@ -99,6 +99,12 @@ async function main() {
         reference: "I think the weather is nice",
         gold: ["weather"],
       },
+      {
+        id: "subtle-th",
+        audioText: "I sink it is good",
+        reference: "I think it is good",
+        gold: ["think"],
+      },
     ];
     const predicted: boolean[] = [];
     const gold: boolean[] = [];

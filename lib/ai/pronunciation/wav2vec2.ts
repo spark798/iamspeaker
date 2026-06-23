@@ -49,8 +49,8 @@ export function gopWordsToIssues(
  * Python 스코어러(scripts/pronunciation/gop.py)를 서브프로세스로 호출(배열 인자 spawn, 보안 §10).
  */
 export class Wav2Vec2PronunciationScorer implements PronunciationScorerAdapter {
-  /** 음향 confidence가 이 값 미만이면 발음 이슈로 플래그. */
-  private readonly threshold = 0.5;
+  /** 음향 confidence가 이 값 미만이면 발음 이슈로 플래그(env로 보정). */
+  private readonly threshold = config.WAV2VEC2_GOP_THRESHOLD;
 
   async detect(input: PronunciationInput): Promise<PronunciationIssue[]> {
     const reference = (input.referenceText ?? input.words.map((w) => w.word).join(" ")).trim();
