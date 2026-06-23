@@ -39,13 +39,18 @@ export function computeWpm(wordCount: number, audioDurationSec: number): number 
   return Math.round(wordCount / (audioDurationSec / 60));
 }
 
+/** 단어 하나가 필러인지(정규화 후 사전 조회). 정확도 eval·검출 공용. */
+export function isFillerWord(word: string, language: string): boolean {
+  const dict = FILLER_WORDS[language] ?? FILLER_WORDS.en;
+  return !!dict?.has(normalize(word));
+}
+
 /** 필러워드 빈도·발생 위치(초) 집계. */
 export function detectFillerWords(words: TranscriptWord[], language: string): FillerWordResult[] {
-  const dict = FILLER_WORDS[language] ?? FILLER_WORDS.en;
   const acc = new Map<string, FillerWordResult>();
   for (const w of words) {
+    if (!isFillerWord(w.word, language)) continue;
     const n = normalize(w.word);
-    if (!dict?.has(n)) continue;
     const entry = acc.get(n) ?? { word: n, count: 0, timestamps: [] };
     entry.count += 1;
     entry.timestamps.push(Math.round(w.startSec * 10) / 10);
