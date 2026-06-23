@@ -13,10 +13,24 @@ GOP(Goodness of Pronunciation) 발음 평가 — wav2vec2 음소 CTC + 강제정
 """
 import argparse
 import json
+import os
 import sys
+import wave
 
+import numpy as np
 import torch
 import torchaudio
+
+# espeak-ng 시스템 설치 없이 번들 lib 사용(espeakng_loader). phonemizer import 전에 설정.
+try:
+    import espeakng_loader
+
+    espeakng_loader.make_library_available()
+    # espeak는 init path에 'espeak-ng-data'를 포함하는 디렉토리를 기대 → data_path의 상위.
+    os.environ.setdefault("ESPEAK_DATA_PATH", os.path.dirname(espeakng_loader.get_data_path()))
+except Exception:  # noqa: BLE001 — 시스템 espeak-ng가 있으면 그대로 진행
+    pass
+
 from phonemizer.backend import EspeakBackend
 from phonemizer.separator import Separator
 from transformers import AutoProcessor, Wav2Vec2ForCTC
@@ -38,10 +52,15 @@ def main() -> int:
         print(json.dumps({"words": []}))
         return 0
 
-    # 1) 오디오 로드 → 16kHz mono
-    waveform, sr = torchaudio.load(wav_path)
-    if waveform.size(0) > 1:
-        waveform = waveform.mean(dim=0, keepdim=True)
+    # 1) 오디오 로드(16-bit PCM WAV) → 16kHz mono. torchcodec 불필요하도록 stdlib wave 사용.
+    with wave.open(wav_path, "rb") as wf:
+        sr = wf.getframerate()
+        ch = wf.getnchannels()
+        raw = wf.readframes(wf.getnframes())
+    data = np.frombuffer(raw, dtype=np.int16).astype(np.float32) / 32768.0
+    if ch > 1:
+        data = data.reshape(-1, ch).mean(axis=1)
+    waveform = torch.from_numpy(data).unsqueeze(0)  # (1, N)
     if sr != 16000:
         waveform = torchaudio.functional.resample(waveform, sr, 16000)
         sr = 16000
@@ -88,33 +107,43 @@ def main() -> int:
 
     targets = torch.tensor([target_ids], dtype=torch.int32)
 
-    # 6) 강제정렬 → 음소별 점수
+    # 6) 강제정렬로 음소별 프레임 구간 확보.
     aligned, scores = torchaudio.functional.forced_align(emission, targets, blank=blank_id)
     spans = torchaudio.functional.merge_tokens(aligned[0], scores[0])
     spans = [s for s in spans if s.token != blank_id]
-    # 강제정렬은 target을 그대로 spell → spans와 target 1:1 대응
     n = min(len(spans), len(target_ids))
+
+    # 정밀 GOP: 정렬된(참조) 음소 사후확률을 프레임별 최댓값으로 정규화.
+    #   GOP(frame) = logP(ref음소|frame) - max_q logP(q|frame)  (≤0; 0이면 잘 발음)
+    #   confidence = exp(평균 GOP) ∈ (0,1] — 음소 종류와 무관하게 변별됨.
+    emis = emission[0]  # (T, V) log-softmax
+    frame_max = emis.max(dim=-1).values  # (T,)
 
     # 7) 단어별 집계
     word_scores: dict[int, list[tuple[float, str, int]]] = {}
     for i in range(n):
         sp = spans[i]
+        ref_tok = target_ids[i]
+        seg = emis[sp.start : sp.end, ref_tok] - frame_max[sp.start : sp.end]
+        gop = float(seg.mean()) if seg.numel() > 0 else -10.0
+        conf = float(torch.exp(torch.tensor(gop)))
         wi = tok_word_idx[i]
-        word_scores.setdefault(wi, []).append((float(sp.score), tok_phoneme[i], int(sp.start)))
+        word_scores.setdefault(wi, []).append((conf, tok_phoneme[i], int(sp.start)))
 
     out_words = []
     for wi in sorted(word_scores.keys()):
         items = word_scores[wi]
-        # span.score는 평균 사후확률(0..1). 단어 confidence = 음소 평균.
-        mean_conf = sum(s for s, _, _ in items) / len(items)
+        # 발음 평가는 단일 오발음에 민감해야 함 → 단어 confidence = 최악 음소 점수(min).
+        # (평균은 한 음소의 큰 하락을 희석시켜 변별력이 떨어짐.)
         worst = min(items, key=lambda x: x[0])
+        worst_conf = worst[0]
         start_frame = min(st for _, _, st in items)
         word_text = src_words[wi] if wi < len(src_words) else words_raw[wi]
         out_words.append(
             {
                 "word": word_text,
                 "startSec": round(start_frame * sec_per_frame, 2),
-                "confidence": round(max(0.0, min(1.0, mean_conf)), 3),
+                "confidence": round(max(0.0, min(1.0, worst_conf)), 3),
                 "worstPhoneme": worst[1],
             }
         )

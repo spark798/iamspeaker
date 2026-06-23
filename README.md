@@ -68,6 +68,16 @@ macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 
 
 실측(2026-06-21, M2 Pro 16GB): 5분 피칭 생성 분량 8b 62 → 14b 105 wpm, 번역도 8b의 미번역·깨짐이 14b에서 대부분 해소(숫자 단위 현지화는 잔여 약점). 인프라(어댑터/프롬프트/자가개선 루프)는 모델 무관하게 정상 동작 — 품질은 모델 크기에 비례.
 
+## 정밀 발음 평가 (선택)
+기본 발음 분석은 STT confidence + L1 음소 휴리스틱(의존성 0)이다. 더 정밀한 **GOP(wav2vec2 강제정렬)** 평가로 업그레이드할 수 있다(옵션).
+
+```bash
+pip install -r scripts/pronunciation/requirements.txt   # torch·torchaudio·transformers·phonemizer·espeakng_loader (pip만, 시스템 espeak 불필요)
+# .env
+PRONUNCIATION_SCORER=wav2vec2
+```
+대본을 오디오에 강제정렬해 음소별 발음 정확도(GOP)를 산출한다(STT 타임스탬프 비의존). 정상 발음은 통과, 실제 오발음은 해당 음소를 잡아 L1 규칙과 연결한다. 첫 실행 시 음소 모델(~1GB) 다운로드. 실패 시 휴리스틱으로 자동 폴백.
+
 ## 클라우드 어댑터 (선택)
 환경변수로 더 높은 품질의 클라우드 엔진을 켤 수 있다. 설정 시 우선 사용되고, 없으면 로컬로 폴백한다.
 

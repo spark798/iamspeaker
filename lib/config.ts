@@ -38,7 +38,7 @@ const EnvSchema = z.object({
   // 발음 평가: heuristic(기본, 의존성 0) | wav2vec2(옵션, Python+torch GOP)
   PRONUNCIATION_SCORER: z.enum(["heuristic", "wav2vec2"]).default("heuristic"),
   PYTHON_BIN: z.string().min(1).default("python3"),
-  WAV2VEC2_PHONEME_MODEL: z.string().min(1).default("facebook/wav2vec2-lv-60-espeak-cer"),
+  WAV2VEC2_PHONEME_MODEL: z.string().min(1).default("facebook/wav2vec2-lv-60-espeak-cv-ft"),
 
   // 선택적 클라우드 어댑터 (미설정 시 로컬 폴백)
   ANTHROPIC_API_KEY: z.string().min(1).optional(),

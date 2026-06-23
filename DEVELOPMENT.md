@@ -338,7 +338,7 @@ Job {
 ### Phase 2 — 확장 (Epic 4,5) — 대부분 완료
 - [x] SCR-07: 다국어 번역 + TTS + SRT — 번역(자막 병기)·TTS·SRT export 완료
 - [x] 회차별 추이 그래프(Progress Tracking) — 인라인 SVG 추이 차트(WPM/필러)
-- [ ] wav2vec2 기반 발음 평가 옵션 — 미착수(현재는 whisper confidence 휴리스틱)
+- [x] wav2vec2 기반 발음 평가 옵션 — GOP(강제정렬) 어댑터(env 게이트). 기본은 휴리스틱, 옵션으로 wav2vec2 음소 GOP. 라이브 검증(정상 conf≈1.0, 오발음 검출)
 - [x] 클라우드 어댑터(Claude/OpenAI) + 엔진 상태 UI — ElevenLabs/Azure TTS·STT는 미착수
 - [x] L1 언어팩 추가(일본어/중국어) + UI 로케일 ja/zh
 - [ ] (필요 시) 워커 프로세스 분리, PostgreSQL 선택 백엔드 — 미착수(현재 in-process 워커 + SQLite)

@@ -1,8 +1,10 @@
-# wav2vec2 GOP 발음 평가(옵션) 의존성.
+# wav2vec2 GOP 발음 평가(옵션) 의존성 — pip만으로 설치(시스템 espeak-ng 불필요).
 # 설치: pip install -r scripts/pronunciation/requirements.txt
-# 시스템 요구: espeak-ng (phonemizer 백엔드). macOS: brew install espeak-ng / Debian: apt-get install espeak-ng
 # 활성화: .env에 PRONUNCIATION_SCORER=wav2vec2
+# 검증: M2 Pro 16GB, facebook/wav2vec2-lv-60-espeak-cv-ft. 정상 발음 conf≈1.0, 오발음 급락.
 torch>=2.1
 torchaudio>=2.1
 transformers>=4.40
 phonemizer>=3.2
+numpy>=1.24
+espeakng_loader>=0.2  # libespeak-ng 번들(시스템 설치 회피)
