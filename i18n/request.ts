@@ -2,7 +2,7 @@ import { getRequestConfig } from "next-intl/server";
 import { cookies } from "next/headers";
 
 /** 지원 UI 로케일. 발표 언어(콘텐츠)와는 별개 개념. */
-export const SUPPORTED_LOCALES = ["ko", "en", "ja", "zh"] as const;
+export const SUPPORTED_LOCALES = ["ko", "en", "ja", "zh", "es", "vi"] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "ko";
 
