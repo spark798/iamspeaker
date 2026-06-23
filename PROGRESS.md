@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-23** — 베트남어(vi) 제거(타겟 아님): vi L1팩 + UI 로케일 전체 삭제. **L1팩 ko/ja/zh/es, UI 로케일 ko/en/ja/zh/es.** nativeVi 키·테스트 it.each 정리. CI 그린, 159 단위테스트.
 - **2026-06-23** — 품질 Q1-6 오디오 eval: 하니스를 WPM·발음까지 확장. `lib/eval/audio.ts`(wpmAccuracy MAE/MAPE/tolerance) + `scripts/eval-audio.ts`(`pnpm eval:audio`, 모델 게이트): piper합성→whisper STT→WPM 비교, wav2vec2 GOP 발음 PRF. 라이브: WPM MAE 0(STT 정확), 발음 clean 0플래그·gross 검출 F1 100%(합성 plumbing 검증). 단위 wpmAccuracy 3종. CI 그린, 162 단위테스트. 정확도 하니스 = 필러(CI) + WPM·발음(게이트) 완비.
 - **2026-06-23** — 품질 Q1-6 정답셋 확장: 필러 정답셋 6→14샘플(precision 함정 like=동사·반복강조·clean·ko). 확장 직후 F1 95.7%(FP=like동사 2)→ **like-동사 맥락 규칙** + 강조 오라벨 수정 → precision/recall/F1 100%(하드셋, 일반 규칙). F1 게이트 0.4→0.9. fillerPositions 단위테스트. 남은: WPM·발음 오디오 eval. CI 그린, 159 단위테스트.
 - **2026-06-23** — 상용화 품질 플랜 착수(셀프호스트 OSS 트랙). `docs/quality-plan.md`(감사+Q1~Q3). **Q1-1 정확도 eval 하니스**(`pnpm eval:accuracy`, prf, fillers 정답셋) + **Q1-2 필러 고도화**(fillerPositions: 다어절·반복·사전확장). 측정: 필러 F1 78.8%→100%(소규모셋, 일반화 위해 데이터 확장=Q1-6). 남은 Q1: 기준선 실측·발음 임계보정·기본품질·정답셋 확장. CI 그린, 154 단위테스트.
