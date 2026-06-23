@@ -1,4 +1,4 @@
-import { isFillerWord } from "@/lib/analysis/speech";
+import { fillerPositions } from "@/lib/analysis/speech";
 
 /** 이진 분류 정밀도/재현율/F1(양성=필러). 순수 함수. */
 export interface PRF {
@@ -34,7 +34,7 @@ export interface FillerSample {
   fillerIndices: number[];
 }
 
-/** 현재 필러 검출(isFillerWord)을 정답셋에 대해 평가 → 전체 PRF + 미검출(누락) 단어. */
+/** 현재 필러 검출(fillerPositions)을 정답셋에 대해 평가 → 전체 PRF + 미검출(누락) 단어. */
 export function evalFillers(samples: FillerSample[]): {
   overall: PRF;
   missed: string[]; // 정답인데 못 잡은 단어(재현율 갭 진단)
@@ -44,8 +44,9 @@ export function evalFillers(samples: FillerSample[]): {
   const missed: string[] = [];
   for (const s of samples) {
     const goldSet = new Set(s.fillerIndices);
+    const predSet = new Set(fillerPositions(s.words, s.language).map((p) => p.index));
     s.words.forEach((w, i) => {
-      const p = isFillerWord(w, s.language);
+      const p = predSet.has(i);
       const g = goldSet.has(i);
       predicted.push(p);
       gold.push(g);

@@ -23,14 +23,14 @@ describe("prf", () => {
 describe("evalFillers", () => {
   const samples: FillerSample[] = [
     { id: "s1", language: "en", words: ["um", "I", "think"], fillerIndices: [0] },
-    // "you know" 다어절은 현재 사전이 못 잡음 → 누락
+    // 다어절 "you know" 검출 + 비필러 오검출 없음
     { id: "s2", language: "en", words: ["you", "know", "good"], fillerIndices: [0, 1] },
   ];
-  it("검출 가능한 필러는 잡고, 미지원은 missed로 보고", () => {
+  it("단일어 + 다어절 모두 검출(누락 없음)", () => {
     const { overall, missed } = evalFillers(samples);
-    expect(overall.tp).toBe(1); // "um"
-    expect(missed).toContain("you");
-    expect(missed).toContain("know");
-    expect(overall.recall).toBeLessThan(1); // 다어절 미지원 → 재현율 갭
+    expect(overall.tp).toBe(3); // um + you + know
+    expect(missed).toEqual([]);
+    expect(overall.recall).toBe(1);
+    expect(overall.precision).toBe(1); // good 오검출 없음
   });
 });

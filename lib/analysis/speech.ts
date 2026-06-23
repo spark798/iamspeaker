@@ -9,12 +9,13 @@ import type {
   TranscriptWord,
 } from "@/lib/domain";
 
-/** 언어별 필러워드 사전(소문자, 단일 토큰). 다어절(you know 등)은 추후. */
+/** 언어별 단일 토큰 필러워드 사전(소문자). */
 const FILLER_WORDS: Record<string, ReadonlySet<string>> = {
   en: new Set([
     "um",
     "uhm",
     "uh",
+    "uhh",
     "er",
     "erm",
     "ah",
@@ -24,9 +25,40 @@ const FILLER_WORDS: Record<string, ReadonlySet<string>> = {
     "actually",
     "basically",
     "literally",
+    "honestly",
+    "anyway",
   ]),
-  ko: new Set(["음", "어", "그", "그게", "그러니까", "뭐", "약간", "이제", "인제", "막"]),
+  ko: new Set([
+    "음",
+    "어",
+    "그",
+    "그게",
+    "그러니까",
+    "뭐",
+    "약간",
+    "이제",
+    "인제",
+    "막",
+    "뭐랄까",
+    "아",
+  ]),
 };
+
+/** 언어별 다어절 필러(담화표지). 정규화 토큰 시퀀스로 매칭. */
+const FILLER_PHRASES: Record<string, string[][]> = {
+  en: [
+    ["you", "know"],
+    ["i", "mean"],
+    ["sort", "of"],
+    ["kind", "of"],
+    ["you", "see"],
+    ["i", "guess"],
+  ],
+  ko: [["뭐", "랄까"]],
+};
+
+/** 즉시 반복(말더듬)에서 제외할 강조어(reduplication이 자연스러운 경우). */
+const REPEAT_ALLOW = new Set(["very", "really", "so", "no", "yeah", "ha", "na", "bye"]);
 
 /** 단어 양끝의 문장부호 제거 + 소문자. */
 function normalize(word: string): string {
@@ -39,22 +71,60 @@ export function computeWpm(wordCount: number, audioDurationSec: number): number 
   return Math.round(wordCount / (audioDurationSec / 60));
 }
 
-/** 단어 하나가 필러인지(정규화 후 사전 조회). 정확도 eval·검출 공용. */
-export function isFillerWord(word: string, language: string): boolean {
-  const dict = FILLER_WORDS[language] ?? FILLER_WORDS.en;
-  return !!dict?.has(normalize(word));
+/**
+ * 필러 위치 검출 — 단일어 사전 + 다어절 구 + 즉시 반복(말더듬). 위치·라벨 반환.
+ * 정밀도 유지를 위해 반복은 강조어(very 등)를 제외한 동일어 연속만 플래그.
+ */
+export function fillerPositions(
+  words: string[],
+  language: string,
+): { index: number; label: string }[] {
+  const dict = FILLER_WORDS[language] ?? FILLER_WORDS.en ?? new Set<string>();
+  const phrases = FILLER_PHRASES[language] ?? [];
+  const norm = words.map(normalize);
+  const flagged = new Map<number, string>();
+
+  // 다어절 구 우선(겹치면 구 라벨 유지)
+  for (const phrase of phrases) {
+    for (let i = 0; i + phrase.length <= norm.length; i++) {
+      if (phrase.every((p, k) => norm[i + k] === p)) {
+        const label = phrase.join(" ");
+        for (let k = 0; k < phrase.length; k++) flagged.set(i + k, label);
+      }
+    }
+  }
+  // 단일어 + 즉시 반복
+  for (let i = 0; i < norm.length; i++) {
+    const w = norm[i];
+    if (!w || flagged.has(i)) continue;
+    if (dict.has(w)) flagged.set(i, w);
+    else if (i > 0 && w === norm[i - 1] && !REPEAT_ALLOW.has(w)) flagged.set(i, `${w} ${w}`);
+  }
+  return [...flagged.entries()]
+    .sort((a, b) => a[0] - b[0])
+    .map(([index, label]) => ({ index, label }));
 }
 
-/** 필러워드 빈도·발생 위치(초) 집계. */
+/** 필러(단일어·다어절·반복) 빈도·발생 위치(초) 집계. 다어절은 1회 occurrence로 합쳐 집계. */
 export function detectFillerWords(words: TranscriptWord[], language: string): FillerWordResult[] {
+  const positions = fillerPositions(
+    words.map((w) => w.word),
+    language,
+  );
   const acc = new Map<string, FillerWordResult>();
-  for (const w of words) {
-    if (!isFillerWord(w.word, language)) continue;
-    const n = normalize(w.word);
-    const entry = acc.get(n) ?? { word: n, count: 0, timestamps: [] };
+  let prev: { index: number; label: string } | null = null;
+  for (const p of positions) {
+    // 같은 라벨의 연속 위치(다어절 구성 토큰)는 한 occurrence로 묶음.
+    if (prev && prev.label === p.label && p.index === prev.index + 1) {
+      prev = p;
+      continue;
+    }
+    const ts = Math.round((words[p.index]?.startSec ?? 0) * 10) / 10;
+    const entry = acc.get(p.label) ?? { word: p.label, count: 0, timestamps: [] };
     entry.count += 1;
-    entry.timestamps.push(Math.round(w.startSec * 10) / 10);
-    acc.set(n, entry);
+    entry.timestamps.push(ts);
+    acc.set(p.label, entry);
+    prev = p;
   }
   return [...acc.values()];
 }
