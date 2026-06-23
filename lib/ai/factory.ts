@@ -7,9 +7,11 @@ import {
 import { type ChatJson, claudeChatJson, openaiChatJson } from "@/lib/ai/llm/client";
 import { ollamaChatJson } from "@/lib/ai/ollama/client";
 import { PiperTts } from "@/lib/ai/piper";
+import { HeuristicPronunciationScorer, Wav2Vec2PronunciationScorer } from "@/lib/ai/pronunciation";
 import { StubStt, StubTranslator, StubTts, stubAdapters } from "@/lib/ai/stub";
 import type {
   Adapters,
+  PronunciationScorerAdapter,
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
@@ -66,6 +68,12 @@ export function getStt(): SttAdapter {
   return new WhisperCppStt();
 }
 
+export function getPronunciationScorer(): PronunciationScorerAdapter {
+  // 기본 휴리스틱(의존성 0). wav2vec2는 env로 명시 활성(Python+torch GOP).
+  if (config.PRONUNCIATION_SCORER === "wav2vec2") return new Wav2Vec2PronunciationScorer();
+  return new HeuristicPronunciationScorer();
+}
+
 export function getAdapters(): Adapters {
   // 테스트/E2E: 모델 없이 결정적 동작을 위해 전체 stub.
   if (config.USE_STUB_ADAPTERS) return stubAdapters();
@@ -76,5 +84,6 @@ export function getAdapters(): Adapters {
     qa: getQaGenerator(),
     slideCritic: getSlideCritic(),
     translator: getTranslator(),
+    pronunciation: getPronunciationScorer(),
   };
 }

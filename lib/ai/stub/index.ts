@@ -1,5 +1,7 @@
 import type {
   Adapters,
+  PronunciationInput,
+  PronunciationScorerAdapter,
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
   SlideCriticAdapter,
@@ -13,6 +15,7 @@ import type {
   AnalysisResult,
   GenOptions,
   L1Profile,
+  PronunciationIssue,
   QAFeedback,
   QAItem,
   Script,
@@ -145,6 +148,12 @@ export class StubTranslator implements TranslatorAdapter {
   }
 }
 
+export class StubPronunciationScorer implements PronunciationScorerAdapter {
+  async detect(_input: PronunciationInput): Promise<PronunciationIssue[]> {
+    return [];
+  }
+}
+
 /** 전체 stub 어댑터 묶음 — 테스트/CI에서 모델 없이 주입. */
 export function stubAdapters(): Adapters {
   return {
@@ -154,5 +163,6 @@ export function stubAdapters(): Adapters {
     qa: new StubQaGenerator(),
     slideCritic: new StubSlideCritic(),
     translator: new StubTranslator(),
+    pronunciation: new StubPronunciationScorer(),
   };
 }

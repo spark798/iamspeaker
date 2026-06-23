@@ -19,8 +19,9 @@ import {
   slides,
 } from "@/lib/db/schema";
 import type { SlideContent } from "@/lib/domain";
+import { logger } from "@/lib/logger";
 import { parseSlides } from "@/lib/slides";
-import { asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { JobHandlers } from "./worker";
 
@@ -132,15 +133,41 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
 
       const transcript = await adapters.stt.transcribe({ wavFilePath: wavPath });
       const pauseCount = await countSilences(wavPath);
-      ctx.setProgress(80);
+      ctx.setProgress(70);
+
+      // 발음 평가(스코어러 어댑터). wav2vec2 GOP는 대본을 참조로 강제정렬하므로 녹음한 버전의 스크립트를 전달.
+      const l1Profile = loadL1Profile(session.nativeLanguage);
+      const scriptRow = db
+        .select()
+        .from(scripts)
+        .where(and(eq(scripts.sessionId, rec.sessionId), eq(scripts.version, rec.scriptVersion)))
+        .get();
+      const referenceText = scriptRow?.content.map((c) => c.text).join(" ");
+      // 발음 스코어러 실패(모델/Python 등)는 분석 전체를 중단시키지 않도록 휴리스틱 폴백.
+      let pronunciationIssues:
+        | Awaited<ReturnType<typeof adapters.pronunciation.detect>>
+        | undefined;
+      try {
+        pronunciationIssues = await adapters.pronunciation.detect({
+          wavFilePath: wavPath,
+          words: transcript.words,
+          referenceText,
+          l1Profile,
+        });
+      } catch (err) {
+        logger.warn({ err }, "발음 스코어러 실패 — 휴리스틱 폴백");
+        pronunciationIssues = undefined; // analyzeSpeech가 휴리스틱으로 폴백
+      }
+      ctx.setProgress(85);
 
       const result = analyzeSpeech({
         transcript,
         audioDurationSec,
         transitions: rec.transitions,
         language: session.language,
-        l1Profile: loadL1Profile(session.nativeLanguage),
+        l1Profile,
         pauseCount,
+        pronunciationIssues,
       });
 
       db.delete(analysisResults).where(eq(analysisResults.recordingId, recordingId)).run();

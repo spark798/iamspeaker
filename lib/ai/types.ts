@@ -2,6 +2,7 @@ import type {
   AnalysisResult,
   GenOptions,
   L1Profile,
+  PronunciationIssue,
   QAFeedback,
   QAItem,
   Script,
@@ -9,6 +10,7 @@ import type {
   SlideContent,
   SlideCritique,
   TranscriptResult,
+  TranscriptWord,
 } from "@/lib/domain";
 
 /**
@@ -56,6 +58,24 @@ export interface TranslatorAdapter {
   translate(texts: string[], targetLang: string, sourceLang: string): Promise<string[]>;
 }
 
+/** 발음 평가 입력 — 정규화 WAV + 전사 단어 + (선택) 대본 참조/L1 프로필. */
+export interface PronunciationInput {
+  wavFilePath: string;
+  /** 전사 단어(휴리스틱·폴백용). */
+  words: TranscriptWord[];
+  /** 대본(스크립트) 텍스트 — wav2vec2 GOP의 정렬 참조(의도한 발음). */
+  referenceText?: string;
+  l1Profile?: L1Profile;
+}
+
+/**
+ * 발음 이슈 검출기. 기본은 휴리스틱(STT confidence + L1 음소 교차, 의존성 0).
+ * 선택적으로 wav2vec2 음향 평가로 교체(env 게이트). 항상 로컬 폴백.
+ */
+export interface PronunciationScorerAdapter {
+  detect(input: PronunciationInput): Promise<PronunciationIssue[]>;
+}
+
 /** 전체 어댑터 묶음. */
 export interface Adapters {
   script: ScriptGeneratorAdapter;
@@ -64,4 +84,5 @@ export interface Adapters {
   qa: QaGeneratorAdapter;
   slideCritic: SlideCriticAdapter;
   translator: TranslatorAdapter;
+  pronunciation: PronunciationScorerAdapter;
 }
