@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-23** — 품질 Q1-4 발음 GOP 정밀화: 오디오 eval로 측정 — 강제정렬 GOP가 치환(think→sink)에서 cascade로 오발음 통과·이웃(it=0.09) 오검출 발견. **decode-compare**(자유 greedy CTC + 참조 음소 NW 정렬, 모델=espeak 음소라 가능)로 위치 특정 전환. WAV2VEC2_GOP_THRESHOLD env화. 측정: precision 50→100%(cascade FP 제거), recall 50%, F1 50→67%. 잔여 한계: 반복음소 미세치환은 time-anchor/실 L2 코퍼스(speechocean762) 필요. CI 그린, 159 단위테스트.
 - **2026-06-23** — 베트남어(vi) 제거(타겟 아님): vi L1팩 + UI 로케일 전체 삭제. **L1팩 ko/ja/zh/es, UI 로케일 ko/en/ja/zh/es.** nativeVi 키·테스트 it.each 정리. CI 그린, 159 단위테스트.
 - **2026-06-23** — 품질 Q1-6 오디오 eval: 하니스를 WPM·발음까지 확장. `lib/eval/audio.ts`(wpmAccuracy MAE/MAPE/tolerance) + `scripts/eval-audio.ts`(`pnpm eval:audio`, 모델 게이트): piper합성→whisper STT→WPM 비교, wav2vec2 GOP 발음 PRF. 라이브: WPM MAE 0(STT 정확), 발음 clean 0플래그·gross 검출 F1 100%(합성 plumbing 검증). 단위 wpmAccuracy 3종. CI 그린, 162 단위테스트. 정확도 하니스 = 필러(CI) + WPM·발음(게이트) 완비.
 - **2026-06-23** — 품질 Q1-6 정답셋 확장: 필러 정답셋 6→14샘플(precision 함정 like=동사·반복강조·clean·ko). 확장 직후 F1 95.7%(FP=like동사 2)→ **like-동사 맥락 규칙** + 강조 오라벨 수정 → precision/recall/F1 100%(하드셋, 일반 규칙). F1 게이트 0.4→0.9. fillerPositions 단위테스트. 남은: WPM·발음 오디오 eval. CI 그린, 159 단위테스트.

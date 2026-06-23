@@ -14,7 +14,7 @@
 1. [x] **정확도 eval 하니스 + 정답셋** — `pnpm eval:accuracy`(필러 PRF), `lib/eval/accuracy.ts`, `eval/accuracy/fillers.json`. 베이스라인 F1 78.8%.
 2. [x] **필러 검출 고도화** — 다어절·반복어·사전 확장(`fillerPositions`). eval F1 78.8%→100%(소규모셋, 데이터 확장 필요).
 3. [ ] **B-001 기준선 실측** — TED-LIUM 분포 측정으로 시드값 대체(라이선스: 메트릭만).
-4. [ ] **발음 GOP 임계 보정** + 집계 개선(cherry-pick 완화).
+4. [x] **발음 GOP 정밀화** — 오디오 eval로 측정: 강제정렬 cascade(치환 시 이웃 오검출) 발견 → decode-compare(자유디코드+NW 정렬) 위치 특정. precision 50→100%(FP 제거), F1 50→67%. 임계 env화. [ ] 잔여: 반복음소 미세치환은 time-anchor/실 L2 코퍼스(speechocean762) 필요.
 5. [ ] **기본 품질 ↑** — 권장 모델/클라우드 연결 매끄럽게 + 인앱 기대치 안내.
 6. [x] **정답셋 확장(필러)** — 14샘플 + like-동사 규칙, F1 게이트 0.9. [x] **WPM·발음 오디오 eval** — `pnpm eval:audio`(모델 게이트): WPM MAE/±15% 게이트, GOP 발음 PRF. 라이브 검증 통과. [ ] 인간 코퍼스 기반 절대정확도 확장은 지속.
 
