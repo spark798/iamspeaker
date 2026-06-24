@@ -22,7 +22,9 @@
     "demoFailed": "Error al generar la demo",
     "loadFailed": "Error al cargar",
     "saveFailed": "Error al guardar",
-    "connection": "Error de conexión"
+    "connection": "Error de conexión",
+    "tooManyRequests": "Demasiadas solicitudes. Inténtalo de nuevo en breve",
+    "tooLarge": "El archivo es demasiado grande"
   },
   "stepper": {
     "upload": "Subir",

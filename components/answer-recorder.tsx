@@ -1,5 +1,6 @@
 "use client";
 
+import { errorKeyForStatus } from "@/lib/api/error-key";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -48,7 +49,7 @@ export function AnswerRecorder({ itemId }: { itemId: string }) {
         const fd = new FormData();
         fd.set("audio", new File([blob], `answer.${ext}`, { type: blob.type }));
         const res = await fetch(`/api/qa/${itemId}/answer`, { method: "POST", body: fd });
-        if (!res.ok) throw new Error(te("uploadFailed"));
+        if (!res.ok) throw new Error(te(errorKeyForStatus(res.status) ?? "uploadFailed"));
         const { jobId } = (await res.json()) as { jobId: string };
         setPhase("evaluating");
         const es = new EventSource(`/api/jobs/${jobId}/stream`);

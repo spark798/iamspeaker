@@ -1,5 +1,6 @@
 "use client";
 
+import { errorKeyForStatus } from "@/lib/api/error-key";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -43,7 +44,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
     setProgress(0);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/demo`, { method: "POST" });
-      if (!res.ok) throw new Error(te("demoFailed"));
+      if (!res.ok) throw new Error(te(errorKeyForStatus(res.status) ?? "demoFailed"));
       const { jobId } = (await res.json()) as { jobId: string };
       const es = new EventSource(`/api/jobs/${jobId}/stream`);
       es.onmessage = async (ev) => {

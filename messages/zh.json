@@ -22,7 +22,9 @@
     "demoFailed": "演示生成失败",
     "loadFailed": "加载失败",
     "saveFailed": "保存失败",
-    "connection": "连接错误"
+    "connection": "连接错误",
+    "tooManyRequests": "请求过于频繁，请稍后再试",
+    "tooLarge": "文件过大"
   },
   "stepper": {
     "upload": "上传",

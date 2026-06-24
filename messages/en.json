@@ -22,7 +22,9 @@
     "demoFailed": "Demo generation failed",
     "loadFailed": "Failed to load",
     "saveFailed": "Save failed",
-    "connection": "Connection error"
+    "connection": "Connection error",
+    "tooManyRequests": "Too many requests. Please try again shortly",
+    "tooLarge": "The file is too large"
   },
   "stepper": {
     "upload": "Upload",

@@ -1,6 +1,7 @@
 "use client";
 
 import { AnswerRecorder } from "@/components/answer-recorder";
+import { errorKeyForStatus } from "@/lib/api/error-key";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
@@ -35,7 +36,7 @@ export function QaView({ sessionId }: { sessionId: string }) {
     setError(null);
     try {
       const res = await fetch(`/api/sessions/${sessionId}/qa/generate`, { method: "POST" });
-      if (!res.ok) throw new Error(te("parseFailed"));
+      if (!res.ok) throw new Error(te(errorKeyForStatus(res.status) ?? "parseFailed"));
       const { jobId } = (await res.json()) as { jobId: string };
       const es = new EventSource(`/api/jobs/${jobId}/stream`);
       es.onmessage = (ev) => {

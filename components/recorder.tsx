@@ -1,5 +1,6 @@
 "use client";
 
+import { errorKeyForStatus } from "@/lib/api/error-key";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -89,7 +90,7 @@ export function Recorder({ sessionId }: { sessionId: string }) {
           method: "POST",
           body: fd,
         });
-        if (!res.ok) throw new Error(te("uploadFailed"));
+        if (!res.ok) throw new Error(te(errorKeyForStatus(res.status) ?? "uploadFailed"));
         const { recordingId: rid, jobId } = (await res.json()) as {
           recordingId: string;
           jobId: string;

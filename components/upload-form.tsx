@@ -1,5 +1,6 @@
 "use client";
 
+import { errorKeyForStatus } from "@/lib/api/error-key";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { type FormEvent, useState } from "react";
@@ -37,6 +38,8 @@ export function UploadForm() {
     try {
       const res = await fetch("/api/sessions/upload", { method: "POST", body: data });
       if (!res.ok) {
+        const key = errorKeyForStatus(res.status);
+        if (key) throw new Error(te(key));
         const body = (await res.json().catch(() => null)) as {
           error?: { message?: string };
         } | null;

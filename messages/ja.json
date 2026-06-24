@@ -22,7 +22,9 @@
     "demoFailed": "デモ生成に失敗しました",
     "loadFailed": "読み込みに失敗しました",
     "saveFailed": "保存に失敗しました",
-    "connection": "接続エラーが発生しました"
+    "connection": "接続エラーが発生しました",
+    "tooManyRequests": "リクエストが多すぎます。しばらくしてから再試行してください",
+    "tooLarge": "ファイルが大きすぎます"
   },
   "stepper": {
     "upload": "アップロード",
