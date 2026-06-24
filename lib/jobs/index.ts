@@ -18,10 +18,14 @@ let appWorker: Worker | undefined;
  */
 function ensureStarted(): JobQueue {
   if (appQueue) return appQueue;
-  appQueue = new JobQueue(getDb());
+  appQueue = new JobQueue(getDb(), {
+    maxAttempts: config.JOB_MAX_ATTEMPTS,
+    retryBaseMs: config.JOB_RETRY_BASE_MS,
+  });
   appWorker = new Worker(appQueue, createHandlers(getDb(), getAdapters()), {
     concurrency: config.JOB_CONCURRENCY,
     timeoutSec: config.JOB_TIMEOUT_SEC,
+    ttlHours: config.JOB_TTL_HOURS,
   });
   appWorker.start();
   return appQueue;

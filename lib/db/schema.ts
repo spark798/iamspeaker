@@ -149,6 +149,11 @@ export const jobs = sqliteTable("jobs", {
   sessionId: text("session_id"),
   status: text("status").$type<JobStatus>().notNull().default("queued"),
   progress: integer("progress").notNull().default(0),
+  // 신뢰성(Q2): 재시도/dead-letter. attempt=실행 회차(claim 시 증가), maxAttempts=시도 한도.
+  attempt: integer("attempt").notNull().default(0),
+  maxAttempts: integer("max_attempts").notNull().default(1),
+  // 백오프 재시도 시 이 시각 이후에만 claim 가능(null=즉시).
+  nextRunAt: integer("next_run_at", { mode: "timestamp_ms" }),
   payload: text("payload", { mode: "json" }).$type<unknown>(),
   result: text("result", { mode: "json" }).$type<unknown>(),
   error: text("error"),

@@ -14,6 +14,10 @@ export interface WorkerOptions {
   pollMs?: number;
   /** 핸들러 1건당 최대 실행 시간(초). 초과 시 작업 failed 처리. */
   timeoutSec?: number;
+  /** 완료(succeeded) 작업 TTL(시간). 0 이하면 정리 비활성. */
+  ttlHours?: number;
+  /** TTL 정리 주기(ms). 기본 1시간. */
+  purgeIntervalMs?: number;
 }
 
 /**
@@ -23,9 +27,12 @@ export interface WorkerOptions {
 export class Worker {
   private inFlight = 0;
   private timer: NodeJS.Timeout | null = null;
+  private purgeTimer: NodeJS.Timeout | null = null;
   private readonly concurrency: number;
   private readonly pollMs: number;
   private readonly timeoutMs: number;
+  private readonly ttlMs: number;
+  private readonly purgeIntervalMs: number;
 
   constructor(
     private readonly queue: JobQueue,
@@ -35,6 +42,8 @@ export class Worker {
     this.concurrency = Math.max(1, opts.concurrency ?? 1);
     this.pollMs = Math.max(50, opts.pollMs ?? 250);
     this.timeoutMs = Math.max(1, opts.timeoutSec ?? 600) * 1000;
+    this.ttlMs = Math.max(0, opts.ttlHours ?? 0) * 3600 * 1000;
+    this.purgeIntervalMs = Math.max(60_000, opts.purgeIntervalMs ?? 3600_000);
   }
 
   /** 큐에서 1건을 꺼내 처리. 처리할 작업이 없으면 false. (테스트/수동 구동용) */
@@ -45,7 +54,7 @@ export class Worker {
     return true;
   }
 
-  /** 크래시 복구 후 폴링 루프를 시작한다. */
+  /** 크래시 복구 후 폴링 루프 + 완료 잡 TTL 정리를 시작한다. */
   start(): void {
     const recovered = this.queue.recoverStalled();
     if (recovered > 0) {
@@ -56,12 +65,30 @@ export class Worker {
       void this.poll();
     }, this.pollMs);
     this.timer.unref?.();
+
+    if (this.ttlMs > 0 && !this.purgeTimer) {
+      this.purge();
+      this.purgeTimer = setInterval(() => this.purge(), this.purgeIntervalMs);
+      this.purgeTimer.unref?.();
+    }
   }
 
   stop(): void {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
+    }
+    if (this.purgeTimer) {
+      clearInterval(this.purgeTimer);
+      this.purgeTimer = null;
+    }
+  }
+
+  /** 완료 잡 TTL 정리(삭제 건수 로깅). */
+  private purge(): void {
+    const removed = this.queue.purgeFinished(Date.now() - this.ttlMs);
+    if (removed > 0) {
+      logger.info({ removed }, "완료 잡 TTL 정리");
     }
   }
 

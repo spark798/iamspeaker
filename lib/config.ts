@@ -54,6 +54,10 @@ const EnvSchema = z.object({
   // 작업 워커
   JOB_CONCURRENCY: z.coerce.number().int().positive().default(1),
   JOB_TIMEOUT_SEC: z.coerce.number().int().positive().default(600),
+  // 신뢰성: 실패 시 최대 시도 횟수(1=무재시도) · 백오프 기준(ms, 지연=base×2^(n-1)) · 완료 잡 TTL(시간)
+  JOB_MAX_ATTEMPTS: z.coerce.number().int().positive().default(3),
+  JOB_RETRY_BASE_MS: z.coerce.number().int().positive().default(1000),
+  JOB_TTL_HOURS: z.coerce.number().int().positive().default(24),
 
   // 테스트/E2E 전용: 모든 AI 어댑터를 stub으로 강제(모델 없이 결정적 동작). "1"|"true"면 활성.
   USE_STUB_ADAPTERS: z
