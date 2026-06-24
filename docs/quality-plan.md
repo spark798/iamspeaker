@@ -7,8 +7,15 @@
 ## 감사 요약 (2026-06-23, 코드 검증)
 - **강점**: 어댑터 패턴·전 경계 Zod·path-traversal 방어·4로케일 i18n·a11y/반응형·Docker 전체 검증·150 테스트·발음(GOP)/번역/점수 어댑터화.
 - **핵심 갭(정확도)**: ① 데모 생성 품질(기본 8b 짧음) ② B-001 기준선 문헌 시드(미실측) ③ 필러 검출 사전 빈약(다어절·반복어·말늘임 미검출) ④ 발음 GOP 임계 미보정 ⑤ **정확도 정답셋·eval 부재**.
-- **신뢰성 갭**: 잡 재시도/TTL/dead-letter 없음, 레이트리밋·오디오 magic-byte 없음.
+- **신뢰성 갭**: ~~잡 재시도/TTL/dead-letter 없음, 레이트리밋·오디오 magic-byte 없음~~ → **Q2에서 전부 해소**.
 - **성능**: 로컬 CPU 모델 지연 → 상용 응답성엔 큰 모델/GPU/클라우드 경로 권장.
+
+## 상용화 하드닝 패스 (2026-06-24, Q2 직후 감사)
+- [x] **업로드 메모리 DoS 방어** — 본문 적재(arrayBuffer) 전 `file.size` 선검사(413). 3개 업로드 라우트.
+- [x] **HTTP 보안 헤더** — CSP(마이크/blob 허용, dev만 unsafe-eval)·X-Frame-Options·X-Content-Type-Options·Referrer-Policy·Permissions-Policy(microphone=self)·X-DNS-Prefetch. E2E·prod curl 검증.
+- [x] **의존성 취약점 0** — postcss `>=8.5.10` override(GHSA-qx2v-qp2m-jg93). `pnpm audit --prod` 0건.
+- 확인됨(양호): `.env` 미추적·MIT/CONTRIBUTING/SECURITY/행동강령·env fail-fast·5xx 비노출·헬스체크·구조화 로깅.
+- 보류(낮음): graceful SIGTERM(부팅 시 recoverStalled로 커버)·reqId 요청 상관로깅(미사용).
 
 ## Q1 — 정확도 (핵심 가치) ← 진행 중
 1. [x] **정확도 eval 하니스 + 정답셋** — `pnpm eval:accuracy`(필러 PRF), `lib/eval/accuracy.ts`, `eval/accuracy/fillers.json`. 베이스라인 F1 78.8%.

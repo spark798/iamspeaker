@@ -17,7 +17,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 187 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 188 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -109,6 +109,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-24** — **상용화 하드닝 패스**(Q2 직후 감사→보충): ①**업로드 메모리 DoS 방어** — upload/recordings/answer가 크기 검증 전에 arrayBuffer로 파일 전체를 메모리 적재하던 것을 `file.size` 선검사(413)로 차단(`assertSizeWithinLimit`). ②**HTTP 보안 헤더** — next.config headers()로 CSP(default-src 'self', 마이크 녹음·blob 오디오 허용, Next 부트스트랩 'unsafe-inline', React Refresh eval은 dev만)·X-Frame-Options DENY·X-Content-Type-Options·Referrer-Policy·Permissions-Policy(microphone=self)·X-DNS-Prefetch. E2E(CSP 하 하이드레이션) 통과 + prod curl로 헤더 방출·prod에 unsafe-eval 없음 확인. ③**postcss `>=8.5.10` override**(GHSA-qx2v-qp2m-jg93) → `pnpm audit --prod` 0건. 감사 확인 양호: `.env` 미추적·라이선스/거버넌스·env fail-fast·5xx 비노출·헬스체크. 보류(낮음): graceful SIGTERM(부팅 recoverStalled로 커버)·reqId 상관로깅. CI 그린, 188 단위테스트, build·E2E OK.
 - **2026-06-24** — **품질 Q2 신뢰성 완료**(4슬라이스, 각 1커밋). ①오디오 magic-byte 검증(Q2-7a): 녹음/데모 오디오가 그동안 확장자만 검사·MAGIC 무항목으로 위장 통과하던 것 차단(wav RIFF/WAVE·webm EBML·ogg/opus OggS·m4a/mp4 ftyp·mp3 ID3/sync·aac ADTS/ftyp). ②잡 재시도+지수백오프·dead-letter·완료 TTL(Q2-6): jobs.attempt/maxAttempts/nextRunAt(마이그 0006). fail()이 시도 여력 시 base×2^(n-1) 백오프로 queued 재큐, 소진 시 terminal failed(dead-letter). **별도 dead 상태 미도입** — 다수 컴포넌트가 succeeded/failed만 폴링하므로 재시도 중 queued로 되돌려 투명. claimNext가 nextRunAt 게이팅. Worker가 완료 잡 TTL 정리(JOB_TTL_HOURS, 실패는 점검 위해 보존). 기본 maxAttempts=1로 두어 기존 단일시도 테스트 호환, 앱만 config 주입. ③레이트리밋(Q2-7b): `lib/ratelimit.ts` 인프로세스 고정창(라우트·IP별, 429+Retry-After, now 주입 테스트), enqueue POST 8개 적용, E2E는 병렬·재시도 충돌 방지로 RATE_LIMIT_ENABLED=false. ④상태코드별 현지화 에러(Q2-8): 서버 한국어 메시지가 멀티로케일 클라이언트에 노출되던 갭을 errorKeyForStatus(429→tooManyRequests/413→tooLarge)+5로케일로 해소, 7개 컴포넌트가 res.status 우선 매핑. config: JOB_MAX_ATTEMPTS(3)/RETRY_BASE_MS(1000)/TTL_HOURS(24), RATE_LIMIT_ENABLED/MAX(30)/WINDOW_SEC(60). **CI 그린, 195 단위테스트(+26), build OK.** 잔여: Q2는 인프로세스 한정(멀티워커 확장은 Q3 Redis). Q1-3(TED 기준선 실측)·Q1-4 잔여(speechocean762)는 외부 코퍼스 대기.
 - **2026-06-23** — 품질 Q1-4 발음 GOP 정밀화: 오디오 eval로 측정 — 강제정렬 GOP가 치환(think→sink)에서 cascade로 오발음 통과·이웃(it=0.09) 오검출 발견. **decode-compare**(자유 greedy CTC + 참조 음소 NW 정렬, 모델=espeak 음소라 가능)로 위치 특정 전환. WAV2VEC2_GOP_THRESHOLD env화. 측정: precision 50→100%(cascade FP 제거), recall 50%, F1 50→67%. 잔여 한계: 반복음소 미세치환은 time-anchor/실 L2 코퍼스(speechocean762) 필요. CI 그린, 159 단위테스트.
 - **2026-06-23** — 베트남어(vi) 제거(타겟 아님): vi L1팩 + UI 로케일 전체 삭제. **L1팩 ko/ja/zh/es, UI 로케일 ko/en/ja/zh/es.** nativeVi 키·테스트 it.each 정리. CI 그린, 159 단위테스트.
