@@ -5,3 +5,7 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   sharp: true
+
+# 보안: transitive 취약점 패치 강제(next/tailwind 경유 postcss < 8.5.10, GHSA-qx2v-qp2m-jg93).
+overrides:
+  postcss: '>=8.5.10'
