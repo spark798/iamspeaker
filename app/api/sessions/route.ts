@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { getDb } from "@/lib/db";
 import { sessions, slides } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
+import { rateLimitGuard } from "@/lib/ratelimit";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -18,6 +19,8 @@ const Body = z.object({
 
 export async function POST(req: Request) {
   try {
+    const limited = rateLimitGuard(req, "session-create");
+    if (limited) return limited;
     const body = Body.parse(await req.json());
     const db = getDb();
     const id = randomUUID();

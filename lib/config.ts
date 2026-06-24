@@ -59,6 +59,14 @@ const EnvSchema = z.object({
   JOB_RETRY_BASE_MS: z.coerce.number().int().positive().default(1000),
   JOB_TTL_HOURS: z.coerce.number().int().positive().default(24),
 
+  // 레이트리밋(인프로세스, 라우트·IP별 고정창). 폭주/남용 방어. 셀프호스트 단일 프로세스 전제.
+  RATE_LIMIT_ENABLED: z
+    .string()
+    .default("true")
+    .transform((v) => v !== "0" && v !== "false"),
+  RATE_LIMIT_MAX: z.coerce.number().int().positive().default(30),
+  RATE_LIMIT_WINDOW_SEC: z.coerce.number().int().positive().default(60),
+
   // 테스트/E2E 전용: 모든 AI 어댑터를 stub으로 강제(모델 없이 결정적 동작). "1"|"true"면 활성.
   USE_STUB_ADAPTERS: z
     .string()

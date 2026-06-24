@@ -17,7 +17,8 @@ export default defineConfig({
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    // E2E는 모델 없이 결정적으로 — 모든 AI 어댑터를 stub으로 강제.
-    env: { USE_STUB_ADAPTERS: "1" },
+    // E2E는 모델 없이 결정적으로 — 모든 AI 어댑터를 stub으로 강제. 병렬·재시도가
+    // localhost 공유 버킷의 레이트리밋에 걸리지 않도록 E2E에서는 리밋 비활성.
+    env: { USE_STUB_ADAPTERS: "1", RATE_LIMIT_ENABLED: "false" },
   },
 });

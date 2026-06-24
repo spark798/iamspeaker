@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { sessions } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
+import { rateLimitGuard } from "@/lib/ratelimit";
 import { ensureDir, safeFilename, uploadDir, uploadPath } from "@/lib/storage";
 import { validateUploadFile } from "@/lib/upload/validate";
 import { z } from "zod";
@@ -22,6 +23,8 @@ const Settings = z.object({
 /** SCR-01: 파일 업로드 → storage 저장 → 세션 생성 → parse 잡 적재. 반환 {sessionId, jobId}. */
 export async function POST(req: Request) {
   try {
+    const limited = rateLimitGuard(req, "upload");
+    if (limited) return limited;
     const form = await req.formData();
     const file = form.get("file");
     if (!(file instanceof File)) throw Errors.badRequest("파일이 필요합니다");

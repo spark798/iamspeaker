@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db";
 import { qaAnswers, qaItems, qaSessions } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
+import { rateLimitGuard } from "@/lib/ratelimit";
 import { ensureDir, recordingDir, recordingPath } from "@/lib/storage";
 import { validateUploadFile } from "@/lib/upload/validate";
 import { eq } from "drizzle-orm";
@@ -15,6 +16,8 @@ const AUDIO_EXT = ["webm", "wav", "m4a", "mp3", "ogg", "oga", "opus", "mp4", "aa
 /** SCR-08b: 답변 오디오 업로드 → 저장 → qa_evaluate 잡 적재. */
 export async function POST(req: Request, { params }: { params: Promise<{ itemId: string }> }) {
   try {
+    const limited = rateLimitGuard(req, "answer");
+    if (limited) return limited;
     const { itemId } = await params;
     const db = getDb();
     const item = db.select().from(qaItems).where(eq(qaItems.id, itemId)).get();

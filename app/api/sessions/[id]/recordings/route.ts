@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { recordings, sessions } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
+import { rateLimitGuard } from "@/lib/ratelimit";
 import { ensureDir, recordingDir, recordingPath } from "@/lib/storage";
 import { validateUploadFile } from "@/lib/upload/validate";
 import { eq } from "drizzle-orm";
@@ -34,6 +35,8 @@ const Meta = z.object({
 /** SCR-04: 녹음 업로드 → storage 저장 → recordings 행 + analyze 잡 적재. 반환 {recordingId, jobId}. */
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const limited = rateLimitGuard(req, "recordings");
+    if (limited) return limited;
     const { id } = await params;
     const db = getDb();
     if (!db.select().from(sessions).where(eq(sessions.id, id)).get()) {
