@@ -18,10 +18,10 @@
 5. [ ] **기본 품질 ↑** — 권장 모델/클라우드 연결 매끄럽게 + 인앱 기대치 안내.
 6. [x] **정답셋 확장(필러)** — 14샘플 + like-동사 규칙, F1 게이트 0.9. [x] **WPM·발음 오디오 eval** — `pnpm eval:audio`(모델 게이트): WPM MAE/±15% 게이트, GOP 발음 PRF. 라이브 검증 통과. [ ] 인간 코퍼스 기반 절대정확도 확장은 지속.
 
-## Q2 — 신뢰성
-6. [ ] 잡 재시도+백오프 · 완료 잡 TTL 정리 · dead-letter
-7. [ ] 레이트리밋 · 오디오 magic-byte 검증
-8. [ ] 사용자 친화 에러 메시지
+## Q2 — 신뢰성 ✅
+1. [x] **잡 재시도+지수백오프 · dead-letter · 완료 잡 TTL** — jobs.attempt/maxAttempts/nextRunAt(마이그 0006). fail()이 시도 여력 시 백오프 재큐, 소진 시 terminal failed(dead-letter). 재시도 중 queued로 되돌려 상태 폴링 클라이언트엔 투명(별도 dead 상태 미도입). Worker가 완료 잡 TTL 정리(JOB_TTL_HOURS). config: JOB_MAX_ATTEMPTS(3)/RETRY_BASE_MS(1000)/TTL_HOURS(24).
+2. [x] **레이트리밋 · 오디오 magic-byte 검증** — `lib/ratelimit.ts` 인프로세스 고정창(라우트·IP별, 429+Retry-After), enqueue POST 8개 적용, RATE_LIMIT_* env. 오디오 magic-byte(wav/webm/ogg/opus/m4a/mp4/mp3/aac) — 그동안 무검사 통과하던 확장자 위장 차단.
+3. [x] **사용자 친화 에러 메시지** — 상태코드별 현지화(429→tooManyRequests, 413→tooLarge) `errorKeyForStatus` + 5로케일. 서버 한국어 메시지가 멀티로케일 클라이언트에 노출되던 갭 해소.
 
 ## Q3 — 확장 (SaaS 추구 시에만)
 9. [ ] 인증·멀티테넌시 10. [ ] Postgres+워커 분리 11. [ ] GPU/클라우드 추론 12. [ ] 리포트 PDF export
