@@ -1,4 +1,4 @@
-import { validateUploadFile } from "@/lib/upload/validate";
+import { assertSizeWithinLimit, validateUploadFile } from "@/lib/upload/validate";
 import { describe, expect, it } from "vitest";
 
 const LIMITS = { allowedExt: ["pptx", "pdf"], maxBytes: 1024 };
@@ -25,6 +25,14 @@ describe("validateUploadFile", () => {
   it("매직바이트 불일치를 거부(확장자 위장 차단)", () => {
     const fakePdf = new Uint8Array([0x00, 0x01, 0x02, 0x03]);
     expect(() => validateUploadFile("a.pdf", fakePdf, LIMITS)).toThrow(/일치하지 않습니다/);
+  });
+});
+
+describe("assertSizeWithinLimit", () => {
+  it("한도 이하는 통과, 초과는 413(본문 적재 전 방어)", () => {
+    expect(() => assertSizeWithinLimit(1024, 2048)).not.toThrow();
+    expect(() => assertSizeWithinLimit(2048, 2048)).not.toThrow();
+    expect(() => assertSizeWithinLimit(2049, 2048)).toThrow(/너무 큽니다/);
   });
 });
 

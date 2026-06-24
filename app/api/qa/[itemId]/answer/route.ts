@@ -6,7 +6,7 @@ import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
 import { rateLimitGuard } from "@/lib/ratelimit";
 import { ensureDir, recordingDir, recordingPath } from "@/lib/storage";
-import { validateUploadFile } from "@/lib/upload/validate";
+import { assertSizeWithinLimit, validateUploadFile } from "@/lib/upload/validate";
 import { eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +28,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ itemId:
     const form = await req.formData();
     const file = form.get("audio");
     if (!(file instanceof File)) throw Errors.badRequest("오디오 파일이 필요합니다");
+    assertSizeWithinLimit(file.size, config.MAX_UPLOAD_MB * 1024 * 1024);
     const bytes = new Uint8Array(await file.arrayBuffer());
     const ext = validateUploadFile(file.name, bytes, {
       allowedExt: AUDIO_EXT,

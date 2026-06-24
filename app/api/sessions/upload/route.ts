@@ -7,7 +7,7 @@ import { Errors, errorResponse } from "@/lib/errors";
 import { getQueue } from "@/lib/jobs";
 import { rateLimitGuard } from "@/lib/ratelimit";
 import { ensureDir, safeFilename, uploadDir, uploadPath } from "@/lib/storage";
-import { validateUploadFile } from "@/lib/upload/validate";
+import { assertSizeWithinLimit, validateUploadFile } from "@/lib/upload/validate";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +28,7 @@ export async function POST(req: Request) {
     const form = await req.formData();
     const file = form.get("file");
     if (!(file instanceof File)) throw Errors.badRequest("파일이 필요합니다");
+    assertSizeWithinLimit(file.size, config.MAX_UPLOAD_MB * 1024 * 1024);
 
     const settings = Settings.parse({
       targetDurationSec: form.get("targetDurationSec"),

@@ -42,6 +42,16 @@ const MAGIC: Record<string, (b: Uint8Array) => boolean> = {
 };
 
 /**
+ * 본문을 메모리에 적재하기 전 크기 한도 검사(메모리 DoS 방어).
+ * File.size는 바디를 읽지 않고 알 수 있으므로 arrayBuffer() 호출 전에 거른다.
+ */
+export function assertSizeWithinLimit(size: number, maxBytes: number): void {
+  if (size > maxBytes) {
+    throw Errors.payloadTooLarge(`파일이 너무 큽니다 (최대 ${Math.round(maxBytes / 1048576)}MB)`);
+  }
+}
+
+/**
  * 업로드 파일 검증: 확장자 화이트리스트 + 크기 한도 + 매직바이트(보안 §10).
  * 통과 시 소문자 확장자를 반환, 위반 시 AppError throw.
  */
