@@ -18,7 +18,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 234 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 236 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-25** — **코치→개선 연결(Pillar ②)**: 처방 cue를 improve 프롬프트에 슬라이드별 영어 편집 지시로 주입해, 개선 스크립트가 측정된 약점을 직접 겨냥. `ScriptGeneratorAdapter.improve(...cues?)` 확장(llm/stub), `improveScriptPrompt(...cues)`에 cueInstruction 섹션, improve 핸들러가 generateCues 산출(전환·기준선 목표·target·덱)해 주입. **라이브 검증(hermes3:8b)**: 슬라이드 1 pace_fast cue → 모델이 슬라이드 1만 개선(긴 문장 분할+쉼표), 미플래그 슬라이드는 그대로. 프롬프트 단위 +2. CI 그린, 236 단위테스트, build OK. **다음 후보**: 도그푸드(실 발표 3회+) 또는 목표 커스터마이즈.
 - **2026-06-25** — **처방적 코칭 노트(Pillar ②)** — 방향 논의에서 합의한 최대 품질 레버. 서술적 지표를 "어디서·무엇을"의 행동으로. 새 인프라 0(이미 가진 전환 타임스탬프·구간별 단어/필러 조합). SlideTimeBreakdown.wordCount?(JSON, 마이그 불필요) + computeSlideTimeBreakdown이 단어를 슬라이드 구간 버킷팅→슬라이드별 WPM. `lib/analysis/cues.ts generateCues`(순수): 페이스(빠름/느림 vs 목표)·시간예산(길었음/급함 vs target/slide)·필러 밀집(구간 버킷 ≥3), 노이즈 임계(단어≥10)·최대 6. analysis 라우트가 cues 산출·반환, report-view 상단 코칭 노트 카드(슬라이드 앵커 행동 문구, 없으면 격려). i18n cue_* 5종+title+none 5로케일. cues 단위 +6·speech wordCount +1·렌더 테스트. 구버전 기록은 wordCount 없어 페이스 생략(시간/필러는 동작). CI 그린, 234 단위테스트, build·E2E OK. **다음 후보**: 처방 cue를 개선 프롬프트에 주입(코치→개선 연결), 또는 도그푸드.
 - **2026-06-25** — **재연습 루프백(Pillar ①·④)** — 실시간 코칭(③) 폐기 결정 후 원래 방향(비동기 연습-개선 루프) 확정. "발표용 게임 필름" 비유: 경기 중이 아니라 후에 리뷰. 선형 스텝퍼의 "다시 녹음" 화살표를 실제로 연결: 리포트·개선 화면에 "이 스크립트로 다시 연습" CTA(→/record?session=ID, 녹음기가 /script 최신=개선본 자동 로드), analysis 라우트가 sessionId 반환, improve는 적용 직후 재연습을 1차 CTA로, 추이 표에 "버전" 열(v0→v1→v2 가시화). i18n common.practiceAgain·progress.version 5로케일. 렌더 테스트(CTA→/record). CI 그린, 226 단위테스트, build·E2E OK. **다음**: ② 처방적 피드백(슬라이드/타임스탬프에 묶인 행동 신호 — "슬라이드 3에서 빨라짐, 쉬세요"). 보류: 실시간 코칭·GOP 자동 승격·기능 폭 확장.
 - **2026-06-25** — **제품 방향 재정의 + 반복 루프 동기부여(Pillar ①)**. **방향**: 범용 AI = "한 번 봐주는 선생님", iamspeaker = "매일 함께 훈련하는 코치". 해자 = 내 연습 이력이 시간축으로 축적(챗 AI는 구조적 불가). 4기둥 채점 — ①반복 루프/트래킹=반쯤(데이터·추이 있음, 동기부여 없음) ②발표 특화 지표=가장 강함 ③실시간 코칭=거의 없음(전부 사후) ④워크플로우=구축됨. **결정**: GOP 자동 승격 보류(가장 강한 ② polish라 한계효용 낮음) → ①(싸고 해자 직결) 먼저 → 이후 ③(오디오 실시간, 브라우저 Web Audio+Web Speech, 큰 wedge). **구현(①)**: `lib/analysis/progress.ts summarizeProgress`(첫→최신 개선·베스트 테이크[recordingId 링크]·목표 달성[기준선 WPM구간+필러상한, 비원어민 보정]·연속 연습 스트릭) + progress 라우트가 장르→목표 산출·요약 반환 + ProgressView 요약 카드(🔥스트릭·개선 화살표·목표·베스트 링크, i18n 8키 5로케일). 순수 +7·렌더 테스트. CI 그린, 225 단위테스트, build OK. **다음 후보**: ① 심화(목표 커스터마이즈·회차 나란히 비교) 또는 ③ 실시간 오디오 코칭.
