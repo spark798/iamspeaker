@@ -165,6 +165,13 @@
     "pronPhonemeLegend": "Fonemas: verde = correcto, rojo = a mejorar",
     "l1Badge": "típico L1",
     "exportPdf": "Exportar a PDF",
+    "cueTitle": "Notas del coach",
+    "cueNone": "Sin problemas de ritmo que señalar en esta toma 👍",
+    "cue_pace_fast": "Diapositiva {slide}: muy rápido ({value} PPM) — haz una pausa",
+    "cue_pace_slow": "Diapositiva {slide}: lento ({value} PPM) — habla con más energía",
+    "cue_time_long": "Diapositiva {slide}: se alargó ({value}s) — deja solo lo esencial",
+    "cue_time_short": "Diapositiva {slide}: pasaste muy rápido ({value}s)",
+    "cue_filler": "Diapositiva {slide}: {value} muletillas juntas — dudaste aquí",
     "toImprove": "Ver sugerencias →"
   },
   "qa": {

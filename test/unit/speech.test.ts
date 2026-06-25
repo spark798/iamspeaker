@@ -82,11 +82,29 @@ describe("computeSlideTimeBreakdown", () => {
       ],
       40,
     );
+    // 단어 미전달 시 wordCount=0.
     expect(out).toEqual([
-      { slideIndex: 0, durationSec: 10 },
-      { slideIndex: 1, durationSec: 15 },
-      { slideIndex: 2, durationSec: 15 },
+      { slideIndex: 0, durationSec: 10, wordCount: 0 },
+      { slideIndex: 1, durationSec: 15, wordCount: 0 },
+      { slideIndex: 2, durationSec: 15, wordCount: 0 },
     ]);
+  });
+
+  it("단어를 전달하면 슬라이드 구간별 wordCount 버킷팅", () => {
+    const out = computeSlideTimeBreakdown(
+      [
+        { slideIndex: 0, atSec: 0 },
+        { slideIndex: 1, atSec: 10 },
+      ],
+      20,
+      [
+        { word: "a", startSec: 1, endSec: 1.2, confidence: 1 },
+        { word: "b", startSec: 5, endSec: 5.2, confidence: 1 },
+        { word: "c", startSec: 12, endSec: 12.2, confidence: 1 },
+      ],
+    );
+    expect(out[0]?.wordCount).toBe(2); // [0,10)
+    expect(out[1]?.wordCount).toBe(1); // [10,20)
   });
 
   it("전환 없으면 빈 배열", () => {

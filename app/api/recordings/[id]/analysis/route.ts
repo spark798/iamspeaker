@@ -1,4 +1,5 @@
 import { loadBaseline } from "@/lib/analysis/baselines";
+import { generateCues } from "@/lib/analysis/cues";
 import { scoreAnalysis } from "@/lib/analysis/percentile";
 import { getDb } from "@/lib/db";
 import { analysisResults, recordings, sessions, slides } from "@/lib/db/schema";
@@ -50,6 +51,25 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       baseline,
     );
 
+    // 처방적 코칭 신호: 슬라이드별 페이스·시간예산·필러 밀집(어디서 무엇을).
+    const wpmSpec = baseline.metrics.wpm;
+    const cues = generateCues({
+      breakdown: row.slideTimeBreakdown,
+      transitions: rec?.transitions ?? [],
+      totalDurationSec: rec?.durationSec ?? 0,
+      fillerWords: row.fillerWords,
+      goalWpmMin:
+        nonNative && wpmSpec?.nonNativeIdealMin !== undefined
+          ? wpmSpec.nonNativeIdealMin
+          : (wpmSpec?.idealMin ?? 110),
+      goalWpmMax:
+        nonNative && wpmSpec?.nonNativeIdealMax !== undefined
+          ? wpmSpec.nonNativeIdealMax
+          : (wpmSpec?.idealMax ?? 150),
+      targetDurationSec: session?.targetDurationSec ?? 0,
+      slideCount: deck.length,
+    });
+
     return Response.json({
       sessionId: rec?.sessionId ?? null,
       wpm: row.wpm,
@@ -59,6 +79,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       pronunciationScore: row.pronunciationScore,
       pauseCount: row.pauseCount,
       scores,
+      cues,
       baselineGenre: baseline.genre,
     });
   } catch (err) {

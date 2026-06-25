@@ -30,6 +30,11 @@ interface MetricScore {
   score: number;
   band: "ideal" | "low" | "high";
 }
+interface Cue {
+  slideIndex: number;
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
+  value?: number;
+}
 interface Analysis {
   sessionId: string | null;
   wpm: number;
@@ -38,6 +43,7 @@ interface Analysis {
   pronunciationIssues: PronIssue[];
   pronunciationScore: number | null;
   scores: MetricScore[];
+  cues: Cue[];
 }
 
 export function ReportView({ recordingId }: { recordingId: string }) {
@@ -94,6 +100,24 @@ export function ReportView({ recordingId }: { recordingId: string }) {
           </Link>
         )}
       </div>
+
+      {/* 처방적 코칭 노트 — 어느 슬라이드에서 무엇을(행동). 코치의 헤드라인 가치. */}
+      <div className="rounded-lg border border-brand/30 bg-brand/5 p-4">
+        <h2 className="mb-2 font-medium">{t("cueTitle")}</h2>
+        {data.cues.length === 0 ? (
+          <p className="text-sm text-neutral-500">{t("cueNone")}</p>
+        ) : (
+          <ul className="space-y-1.5 text-sm">
+            {data.cues.map((c, i) => (
+              <li key={`${c.slideIndex}-${c.kind}-${i}`} className="flex items-start gap-2">
+                <span className="text-brand">▸</span>
+                <span>{t(`cue_${c.kind}`, { slide: c.slideIndex + 1, value: c.value ?? 0 })}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
         <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>
         <div className={`text-3xl font-bold ${wpmOk ? "text-green-600" : "text-amber-600"}`}>

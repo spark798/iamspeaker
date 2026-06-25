@@ -10,6 +10,16 @@ export interface SlideTransition {
 export interface SlideTimeBreakdown {
   slideIndex: number;
   durationSec: number;
+  /** 그 슬라이드 구간에서 발화한 단어 수(슬라이드별 WPM 산출용). 구버전 기록엔 없을 수 있음. */
+  wordCount?: number;
+}
+
+/** 처방적 코칭 신호 — 어느 슬라이드에서 무엇을 고칠지(서술적 지표를 행동으로). */
+export interface Cue {
+  slideIndex: number;
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
+  /** i18n 보간용 값(슬라이드별 wpm·필러 수 등). */
+  value?: number;
 }
 
 /** 단어 내 음소 1개의 발음 정확도(GOP). */

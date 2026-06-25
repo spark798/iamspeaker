@@ -165,6 +165,13 @@
     "pronPhonemeLegend": "음소: 초록 = 정확, 빨강 = 교정 필요",
     "l1Badge": "모국어 빈출",
     "exportPdf": "PDF로 내보내기",
+    "cueTitle": "코칭 노트",
+    "cueNone": "이번 회차는 짚을 페이싱 이슈가 없어요 👍",
+    "cue_pace_fast": "슬라이드 {slide}: 빨라요 ({value} WPM) — 한 박자 쉬어가세요",
+    "cue_pace_slow": "슬라이드 {slide}: 느려요 ({value} WPM) — 또렷하고 힘있게",
+    "cue_time_long": "슬라이드 {slide}: 예산보다 길었어요 ({value}초) — 핵심만 남기세요",
+    "cue_time_short": "슬라이드 {slide}: 너무 빨리 넘어갔어요 ({value}초)",
+    "cue_filler": "슬라이드 {slide}: 필러 {value}개 집중 — 여기서 멈칫했어요",
     "toImprove": "개선 제안 보기 →"
   },
   "qa": {

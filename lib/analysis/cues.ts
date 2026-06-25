@@ -1,0 +1,71 @@
+import type { Cue, FillerWordResult, SlideTimeBreakdown, SlideTransition } from "@/lib/domain";
+
+/**
+ * 처방적 코칭 신호 생성(Pillar ② — 서술적 지표를 "어디서·무엇을"의 행동으로).
+ * 슬라이드 구간별 페이스(WPM)·시간 예산·필러 밀집을 짚어 행동 가능한 cue를 만든다.
+ * 순수 함수 — 오케스트레이션은 report 라우트. 데이터는 이미 저장된 것만 사용.
+ */
+export interface CueInput {
+  breakdown: SlideTimeBreakdown[];
+  transitions: SlideTransition[];
+  totalDurationSec: number;
+  fillerWords: FillerWordResult[];
+  goalWpmMin: number;
+  goalWpmMax: number;
+  /** 발표 목표 시간(초)·덱 슬라이드 수 → 슬라이드당 시간 예산. */
+  targetDurationSec: number;
+  slideCount: number;
+}
+
+const MIN_WORDS_FOR_PACE = 10;
+const PACE_FAST = 1.15;
+const PACE_SLOW = 0.85;
+const TIME_LONG = 1.6;
+const TIME_SHORT = 0.4;
+const FILLER_HOTSPOT = 3;
+const MAX_CUES = 6;
+
+export function generateCues(input: CueInput): Cue[] {
+  const sorted = [...input.transitions].sort((a, b) => a.atSec - b.atSec);
+  // breakdown은 동일 정렬에서 만들어졌으므로 인덱스로 정렬 transitions와 정합.
+  const allFillerTs = input.fillerWords.flatMap((f) => f.timestamps);
+  const budget =
+    input.slideCount > 0 ? input.targetDurationSec / input.slideCount : Number.POSITIVE_INFINITY;
+
+  const cues: Cue[] = [];
+  for (let i = 0; i < sorted.length; i++) {
+    const t = sorted[i];
+    if (!t) continue;
+    const endSec = i + 1 < sorted.length ? (sorted[i + 1]?.atSec ?? 0) : input.totalDurationSec;
+    const bd = input.breakdown[i];
+    const durationSec = bd?.durationSec ?? Math.max(0, endSec - t.atSec);
+    const wordCount = bd?.wordCount;
+
+    // 페이스(슬라이드별 WPM) — 단어가 충분할 때만.
+    if (wordCount !== undefined && wordCount >= MIN_WORDS_FOR_PACE && durationSec > 0) {
+      const slideWpm = Math.round(wordCount / (durationSec / 60));
+      if (slideWpm > input.goalWpmMax * PACE_FAST) {
+        cues.push({ slideIndex: t.slideIndex, kind: "pace_fast", value: slideWpm });
+      } else if (slideWpm < input.goalWpmMin * PACE_SLOW) {
+        cues.push({ slideIndex: t.slideIndex, kind: "pace_slow", value: slideWpm });
+      }
+    }
+
+    // 시간 예산(슬라이드 체류 시간 vs 예산).
+    if (Number.isFinite(budget) && durationSec > 0) {
+      if (durationSec > budget * TIME_LONG) {
+        cues.push({ slideIndex: t.slideIndex, kind: "time_long", value: Math.round(durationSec) });
+      } else if (durationSec < budget * TIME_SHORT) {
+        cues.push({ slideIndex: t.slideIndex, kind: "time_short", value: Math.round(durationSec) });
+      }
+    }
+
+    // 필러 밀집(구간 [atSec, endSec)에 든 필러 타임스탬프 수).
+    const fillerCount = allFillerTs.filter((ts) => ts >= t.atSec && ts < endSec).length;
+    if (fillerCount >= FILLER_HOTSPOT) {
+      cues.push({ slideIndex: t.slideIndex, kind: "filler", value: fillerCount });
+    }
+  }
+
+  return cues.slice(0, MAX_CUES);
+}

@@ -12,6 +12,7 @@ const analysis = {
   pronunciationIssues: [],
   pronunciationScore: 82,
   scores: [],
+  cues: [{ slideIndex: 2, kind: "pace_fast", value: 200 }],
 };
 
 const analysisWithPhonemes = {
@@ -57,6 +58,17 @@ describe("ReportView — PDF export", () => {
     const btn = await screen.findByRole("button", { name: messages.report.exportPdf });
     fireEvent.click(btn);
     expect(printSpy).toHaveBeenCalledOnce();
+  });
+
+  it("처방적 코칭 노트(슬라이드 앵커)를 렌더", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, json: async () => analysis })) as unknown as typeof fetch,
+    );
+    renderReport();
+    expect(await screen.findByText(messages.report.cueTitle)).toBeInTheDocument();
+    // 슬라이드 3(=slideIndex 2 + 1) 페이스 cue 문구
+    expect(screen.getByText(/슬라이드 3.*200 WPM/)).toBeInTheDocument();
   });
 
   it("'다시 연습' CTA가 세션 녹음 화면으로 (루프백)", async () => {

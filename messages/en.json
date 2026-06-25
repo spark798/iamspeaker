@@ -165,6 +165,13 @@
     "pronPhonemeLegend": "Phonemes: green = correct, red = needs work",
     "l1Badge": "L1-common",
     "exportPdf": "Export as PDF",
+    "cueTitle": "Coaching notes",
+    "cueNone": "No pacing issues to flag this take 👍",
+    "cue_pace_fast": "Slide {slide}: too fast ({value} WPM) — take a beat",
+    "cue_pace_slow": "Slide {slide}: slow ({value} WPM) — speak with more energy",
+    "cue_time_long": "Slide {slide}: ran long ({value}s) — keep only the essentials",
+    "cue_time_short": "Slide {slide}: rushed through ({value}s)",
+    "cue_filler": "Slide {slide}: {value} fillers clustered — you hesitated here",
     "toImprove": "View suggestions →"
   },
   "qa": {

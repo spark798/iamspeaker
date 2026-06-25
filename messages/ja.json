@@ -165,6 +165,13 @@
     "pronPhonemeLegend": "音素：緑＝正確、赤＝要改善",
     "l1Badge": "母語頻出",
     "exportPdf": "PDFで書き出す",
+    "cueTitle": "コーチングノート",
+    "cueNone": "今回はペース面で指摘する点はありません 👍",
+    "cue_pace_fast": "スライド{slide}：速すぎ（{value} WPM）— 一拍おきましょう",
+    "cue_pace_slow": "スライド{slide}：遅め（{value} WPM）— はっきり力強く",
+    "cue_time_long": "スライド{slide}：予算より長い（{value}秒）— 要点だけに",
+    "cue_time_short": "スライド{slide}：急ぎすぎ（{value}秒）",
+    "cue_filler": "スライド{slide}：フィラー{value}個が集中 — ここで詰まりました",
     "toImprove": "改善提案を見る →"
   },
   "qa": {

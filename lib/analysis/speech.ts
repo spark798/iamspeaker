@@ -151,14 +151,18 @@ export function detectFillerWords(words: TranscriptWord[], language: string): Fi
 export function computeSlideTimeBreakdown(
   transitions: SlideTransition[],
   totalDurationSec: number,
+  words: TranscriptWord[] = [],
 ): SlideTimeBreakdown[] {
   const sorted = [...transitions].sort((a, b) => a.atSec - b.atSec);
   return sorted.map((t, i) => {
     const end =
       i + 1 < sorted.length ? (sorted[i + 1]?.atSec ?? totalDurationSec) : totalDurationSec;
+    // 슬라이드 구간 [atSec, end)에 시작점이 든 단어 수 → 슬라이드별 WPM 산출용.
+    const wordCount = words.filter((w) => w.startSec >= t.atSec && w.startSec < end).length;
     return {
       slideIndex: t.slideIndex,
       durationSec: Math.max(0, Math.round((end - t.atSec) * 10) / 10),
+      wordCount,
     };
   });
 }
@@ -227,7 +231,11 @@ export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
   return {
     wpm: computeWpm(input.transcript.words.length, input.audioDurationSec),
     fillerWords: detectFillerWords(input.transcript.words, input.language),
-    slideTimeBreakdown: computeSlideTimeBreakdown(input.transitions, input.audioDurationSec),
+    slideTimeBreakdown: computeSlideTimeBreakdown(
+      input.transitions,
+      input.audioDurationSec,
+      input.transcript.words,
+    ),
     pronunciationIssues:
       input.pronunciationIssues ??
       detectPronunciationIssues(input.transcript.words, input.l1Profile),

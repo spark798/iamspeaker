@@ -165,6 +165,13 @@
     "pronPhonemeLegend": "音素：绿色＝正确，红色＝需改进",
     "l1Badge": "母语高频",
     "exportPdf": "导出为 PDF",
+    "cueTitle": "教练笔记",
+    "cueNone": "本次没有需要指出的节奏问题 👍",
+    "cue_pace_fast": "幻灯片 {slide}：太快（{value} WPM）— 停顿一下",
+    "cue_pace_slow": "幻灯片 {slide}：偏慢（{value} WPM）— 更清晰有力",
+    "cue_time_long": "幻灯片 {slide}：超出预算（{value}秒）— 只留要点",
+    "cue_time_short": "幻灯片 {slide}：过快带过（{value}秒）",
+    "cue_filler": "幻灯片 {slide}：{value} 个填充词集中 — 这里卡顿了",
     "toImprove": "查看改进建议 →"
   },
   "qa": {
