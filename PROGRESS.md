@@ -13,12 +13,12 @@
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
 | 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적. 우선순위: ①반복 루프 동기부여(진행 중→일부 완료) → ③실시간 오디오 코칭. ②발표 지표는 이미 강함(GOP 자동 승격 보류). |
-| 다음 액션 | Pillar ① 심화(목표 커스터마이즈·회차 나란히 비교) 또는 **Pillar ③ 실시간 오디오 코칭**(연습 중 라이브 WPM/속도/필러, Web Audio+Web Speech). 품질 Q1·Q2·하드닝·PDF·발음 점수/음소분해는 완료. |
+| 다음 액션 | **처방적 피드백** — 서술적 지표("필러 5개")를 슬라이드/타임스탬프에 묶인 행동 신호("슬라이드 3에서 165wpm로 빨라짐, 여기서 쉬세요")로. 차별화 최대 레버, 데이터(전환 타임스탬프+구간별)는 이미 보유. 실시간 코칭(③)은 폐기. |
 | 최근 갱신 | 2026-06-24 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 225 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 226 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-25** — **재연습 루프백(Pillar ①·④)** — 실시간 코칭(③) 폐기 결정 후 원래 방향(비동기 연습-개선 루프) 확정. "발표용 게임 필름" 비유: 경기 중이 아니라 후에 리뷰. 선형 스텝퍼의 "다시 녹음" 화살표를 실제로 연결: 리포트·개선 화면에 "이 스크립트로 다시 연습" CTA(→/record?session=ID, 녹음기가 /script 최신=개선본 자동 로드), analysis 라우트가 sessionId 반환, improve는 적용 직후 재연습을 1차 CTA로, 추이 표에 "버전" 열(v0→v1→v2 가시화). i18n common.practiceAgain·progress.version 5로케일. 렌더 테스트(CTA→/record). CI 그린, 226 단위테스트, build·E2E OK. **다음**: ② 처방적 피드백(슬라이드/타임스탬프에 묶인 행동 신호 — "슬라이드 3에서 빨라짐, 쉬세요"). 보류: 실시간 코칭·GOP 자동 승격·기능 폭 확장.
 - **2026-06-25** — **제품 방향 재정의 + 반복 루프 동기부여(Pillar ①)**. **방향**: 범용 AI = "한 번 봐주는 선생님", iamspeaker = "매일 함께 훈련하는 코치". 해자 = 내 연습 이력이 시간축으로 축적(챗 AI는 구조적 불가). 4기둥 채점 — ①반복 루프/트래킹=반쯤(데이터·추이 있음, 동기부여 없음) ②발표 특화 지표=가장 강함 ③실시간 코칭=거의 없음(전부 사후) ④워크플로우=구축됨. **결정**: GOP 자동 승격 보류(가장 강한 ② polish라 한계효용 낮음) → ①(싸고 해자 직결) 먼저 → 이후 ③(오디오 실시간, 브라우저 Web Audio+Web Speech, 큰 wedge). **구현(①)**: `lib/analysis/progress.ts summarizeProgress`(첫→최신 개선·베스트 테이크[recordingId 링크]·목표 달성[기준선 WPM구간+필러상한, 비원어민 보정]·연속 연습 스트릭) + progress 라우트가 장르→목표 산출·요약 반환 + ProgressView 요약 카드(🔥스트릭·개선 화살표·목표·베스트 링크, i18n 8키 5로케일). 순수 +7·렌더 테스트. CI 그린, 225 단위테스트, build OK. **다음 후보**: ① 심화(목표 커스터마이즈·회차 나란히 비교) 또는 ③ 실시간 오디오 코칭.
 - **2026-06-25** — **음소별 색 분해(ELSA형, Lane 2)**: 발음 리포트를 단어 점수→음소 단위로 심화. gop.py가 강제정렬·decode-compare로 이미 음소별 status를 계산하므로 출력만 확장(`phones:[{ph,ok}]`). domain `PhonemeScore`+`PronunciationIssue.phonemes?`(wav2vec2 경로만), wav2vec2 GopSchema/gopWordsToIssues 통과, report-view에 음소 칩(초록=정확/빨강=교정)+범례, i18n pronPhonemeLegend 5로케일. **라이브 GOP 검증**(say→ffmpeg→gop.py): "our" 오발음 phones ok:false·"solution" 전부 ok:true 실출력 확인. 부수 발견·수정: gop.py argparse 기본 모델명이 존재하지 않던 `...-espeak-cer`(프로덕션은 어댑터가 --model 전달해 무해, 직접 실행 시 깨지던 잠복 버그) → `...-cv-ft`. 단위 +1·렌더 테스트(칩·범례). CI 그린, 217 단위테스트, build OK. 남은 Lane 2: 억양/강세·GOP 자동 승격.
 - **2026-06-25** — **발음 평가 상용 파리티(Lane 2 준비)**: GOP 기본 승격 전 자체 평가(vs ELSA/Speeko) — 엔진·L1 맞춤은 경쟁력이나 상용 헤드라인인 **발음 점수(0-100)·단어별 심각도 부재**가 핵심 갭으로 진단 → 보강. `PronunciationScorerAdapter.detect`를 `PronunciationResult{issues, score}`로 확장(wav2vec2=모든 GOP 단어 평균 정확도, 휴리스틱=STT confidence 대용). `pronunciationScore()` 순수 헬퍼. `analysis_results.pronunciation_score`(마이그 0007), analyze 핸들러 산출·저장(실패 시 STT 대용). report-view에 발음 점수 헤드라인(NN/100)+이슈별 정확도 %(이진→심각도). i18n pronScoreHint 5로케일. stub/eval-audio/eval-pronunciation 시그니처 정합. 단위 +4·렌더 테스트(82 표시)·어댑터 갱신. **남은 갭(미룸)**: 음소별 색 분해(gop.py 음소 status 출력 확장)·억양/강세(무거움)·GOP 자동 승격(런타임 감지+폴백). CI 그린, 215 단위테스트, build·E2E OK.
