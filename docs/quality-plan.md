@@ -31,10 +31,11 @@
 2. [x] **레이트리밋 · 오디오 magic-byte 검증** — `lib/ratelimit.ts` 인프로세스 고정창(라우트·IP별, 429+Retry-After), enqueue POST 8개 적용, RATE_LIMIT_* env. 오디오 magic-byte(wav/webm/ogg/opus/m4a/mp4/mp3/aac) — 그동안 무검사 통과하던 확장자 위장 차단.
 3. [x] **사용자 친화 에러 메시지** — 상태코드별 현지화(429→tooManyRequests, 413→tooLarge) `errorKeyForStatus` + 5로케일. 서버 한국어 메시지가 멀티로케일 클라이언트에 노출되던 갭 해소.
 
-## Q3 — 확장 (SaaS 추구 시에만)
-9. [ ] 인증·멀티테넌시 10. [ ] Postgres+워커 분리 11. [ ] GPU/클라우드 추론 12. [ ] 리포트 PDF export
+## Q3 — 확장
+12. [x] **리포트 PDF export** — print 기반(의존성 0, 셀프호스트 친화). report-view "PDF로 내보내기" 버튼(window.print) + Tailwind `print:` variant로 chrome(헤더/스테퍼/로케일/액션) 숨김 + globals print 보정(색상 보존·여백) + 인쇄용 브랜드 헤더 + i18n 5로케일. 빌드 CSS에 print 유틸 생성 확인.
+> SaaS 방향(추구 시에만): 9. [ ] 인증·멀티테넌시 10. [ ] Postgres+워커 분리 11. [ ] GPU/클라우드 추론. — 셀프호스트 단일 사용자 원칙과 트레이드오프가 있어 보류.
 
 ## 경쟁 제품 대비 체크(참고)
 - Yoodli/Poised: 필러·페이싱·반복어 실시간 피드백 → 우리 필러 고도화(Q1-2)·추이(완료).
 - Speeko: 발음·억양 → 우리 GOP(완료, 보정 필요 Q1-4).
-- 공통: 깔끔한 리포트·온보딩 → 우리 a11y/반응형(완료), PDF·온보딩(Q3/후속).
+- 공통: 깔끔한 리포트·온보딩 → 우리 a11y/반응형·**PDF export**·인앱 온보딩(완료).

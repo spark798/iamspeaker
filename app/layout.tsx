@@ -15,7 +15,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale}>
       <body className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
         <NextIntlClientProvider>
-          <div className="flex justify-end p-3">
+          <div className="flex justify-end p-3 print:hidden">
             <LocaleSwitcher />
           </div>
           {children}

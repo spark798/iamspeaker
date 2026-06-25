@@ -13,3 +13,18 @@
 body {
   @apply antialiased;
 }
+
+/* PDF 내보내기(window.print): 배경색 보존 + 페이지 여백. 리포트 chrome은 print:hidden으로 숨김. */
+@media print {
+  :root {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  @page {
+    margin: 16mm;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+}

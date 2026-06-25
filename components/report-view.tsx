@@ -59,7 +59,18 @@ export function ReportView({ recordingId }: { recordingId: string }) {
 
   return (
     <div className="mt-4 space-y-6">
-      <div className="flex justify-end">
+      {/* PDF 인쇄 시에만 보이는 브랜드 헤더(화면에선 숨김). */}
+      <div className="hidden border-b border-neutral-300 pb-2 print:block">
+        <span className="text-base font-bold">iamspeaker — {t("title")}</span>
+      </div>
+      <div className="flex justify-end gap-4 print:hidden">
+        <button
+          type="button"
+          onClick={() => window.print()}
+          className="text-sm font-medium text-brand hover:underline"
+        >
+          {t("exportPdf")}
+        </button>
         <Link
           href={`/improve?recording=${recordingId}`}
           className="text-sm font-medium text-brand hover:underline"

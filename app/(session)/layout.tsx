@@ -6,12 +6,14 @@ import type { ReactNode } from "react";
 export default function SessionLayout({ children }: { children: ReactNode }) {
   return (
     <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-8">
-      <header className="mb-8 flex items-center justify-between">
+      <header className="mb-8 flex items-center justify-between print:hidden">
         <Link href="/" className="text-lg font-bold tracking-tight">
           iamspeaker
         </Link>
       </header>
-      <Stepper />
+      <div className="print:hidden">
+        <Stepper />
+      </div>
       <main className="mt-8 flex-1">{children}</main>
     </div>
   );
