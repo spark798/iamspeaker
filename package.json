@@ -29,6 +29,7 @@
     "eval:accuracy": "tsx scripts/eval-accuracy.ts",
     "eval:audio": "tsx scripts/eval-audio.ts",
     "baseline:ted": "tsx scripts/ted-baseline.ts",
+    "eval:pronunciation": "tsx scripts/eval-pronunciation.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx lib/db/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",

@@ -17,11 +17,12 @@
 - 확인됨(양호): `.env` 미추적·MIT/CONTRIBUTING/SECURITY/행동강령·env fail-fast·5xx 비노출·헬스체크·구조화 로깅.
 - 보류(낮음): graceful SIGTERM(부팅 시 recoverStalled로 커버)·reqId 요청 상관로깅(미사용).
 
-## Q1 — 정확도 (핵심 가치) ← 진행 중
+## Q1 — 정확도 (핵심 가치) ✅ 구현 범위 완료
+> 잔여는 코드가 아닌 외부 의존: 생성 분량(모델 용량 → 큰 모델/클라우드) · 기준선/발음 절대 측정(사용자 로컬 코퍼스에서 게이트 하니스 실행).
 1. [x] **정확도 eval 하니스 + 정답셋** — `pnpm eval:accuracy`(필러 PRF), `lib/eval/accuracy.ts`, `eval/accuracy/fillers.json`. 베이스라인 F1 78.8%.
 2. [x] **필러 검출 고도화** — 다어절·반복어·사전 확장(`fillerPositions`). eval F1 78.8%→100%(소규모셋, 데이터 확장 필요).
-3. [ ] **B-001 기준선 실측** — TED-LIUM 분포 측정으로 시드값 대체(라이선스: 메트릭만).
-4. [x] **발음 GOP 정밀화** — 오디오 eval로 측정: 강제정렬 cascade(치환 시 이웃 오검출) 발견 → decode-compare(자유디코드+NW 정렬) 위치 특정. precision 50→100%(FP 제거), F1 50→67%. 임계 env화. [ ] 잔여: 반복음소 미세치환은 time-anchor/실 L2 코퍼스(speechocean762) 필요.
+3. [x] **B-001 기준선 실측 도구** — `pnpm baseline:ted`(TEDLIUM_DIR 게이트): TED-LIUM STM에서 talk별 WPM 분포→talk.json wpm 드롭인 제안(p25~p75=ideal). `lib/eval/ted-baseline.ts` 순수·테스트(+합성 STM I/O 검증). 라이선스: 숫자만, 원문 미저장. 코퍼스가 gated·~50GB라 CI/번들 측정 불가 → 로컬 1커맨드 재현(미실행 시 문헌 시드 유지, 수치 날조 안 함).
+4. [x] **발음 GOP 정밀화** — 오디오 eval로 측정: 강제정렬 cascade(치환 시 이웃 오검출) 발견 → decode-compare(자유디코드+NW 정렬) 위치 특정. precision 50→100%(FP 제거), F1 50→67%. 임계 env화. [x] **절대정확도 eval 도구**: `pnpm eval:pronunciation`(SPEECHOCEAN762_DIR 게이트): speechocean762 전문가 점수 대비 **단어 단위** 검출 PRF + 발화 Spearman(IPA↔ARPAbet 음소 정렬 회피). `lib/eval/pronunciation.ts` 순수·테스트(parse·pearson/spearman·gold라벨). 코퍼스는 퍼미시브지만 대용량·모델 필요라 게이트. 반복음소 미세치환의 정량 평가가 이 하니스로 가능.
 5. [x] **기본 품질 ↑ (인앱 온보딩)** — /api/health에 활성 모델명·smallModel 노출, EngineStatus가 모델명 병기 + 소형 로컬 모델 시 품질 기대치/업그레이드 힌트(5로케일). 모델 크기 판정 `lib/ai/model-info.ts`(콜론 뒤 크기, ollama<14B). README 권장표는 기존 완비. [ ] 잔여: 생성 품질 자체(8b 분량)는 모델 크기 한계 — 큰 모델/클라우드로만 수렴(인프라는 정상).
 6. [x] **정답셋 확장(필러)** — 14샘플 + like-동사 규칙, F1 게이트 0.9. [x] **WPM·발음 오디오 eval** — `pnpm eval:audio`(모델 게이트): WPM MAE/±15% 게이트, GOP 발음 PRF. 라이브 검증 통과. [ ] 인간 코퍼스 기반 절대정확도 확장은 지속.
 
