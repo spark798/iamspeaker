@@ -42,5 +42,6 @@
 
 ## Lane 2 — wav2vec2 GOP 기본 승격 (자체 평가 2026-06-25)
 - **자체 평가**: 엔진(GOP decode-compare)·L1 맞춤은 경쟁력. **갭이던 "발음 점수(0-100)"·단어별 심각도 = 보강 완료**(detect→{issues,score}, analysis_results.pronunciation_score, report 헤드라인). 이제 발음 리포트가 ELSA/Speeko형 점수 제공.
-- **남은 갭**(미루기): 음소별 적/녹 분해(gop.py가 음소 status 내부 보유 → 출력 확장하면 가능), 억양/강세(pitch/energy 분석 필요, 무거움).
+- [x] **음소별 적/녹 분해(ELSA형)** — gop.py가 phones:[{ph,ok}] 출력, PronunciationIssue.phonemes, report에 음소 칩(초록/빨강)+범례. 라이브 GOP로 실출력 검증.
+- **남은 갭**(미루기): 억양/강세(pitch/energy 분석 필요, 무거움).
 - **승격 작업**(다음): PRONUNCIATION_SCORER 미설정 시 wav2vec2 런타임 가용 자동 감지→사용, 불가 시 휴리스틱 폴백(현재는 env 명시 필요). + 셋업 매끄럽게(모델 사전다운로드 안내). 의존성(Python/torch/1GB 모델)이 "clone&run 0-dep" 원칙과 트레이드오프라 **강제가 아닌 자동 권장**.
