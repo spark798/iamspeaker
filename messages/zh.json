@@ -153,6 +153,7 @@
     "pronunciation": "发音",
     "pronNone": "无发音问题",
     "pronScoreHint": "发音评分（单词准确率平均）",
+    "pronPhonemeLegend": "音素：绿色＝正确，红色＝需改进",
     "l1Badge": "母语高频",
     "exportPdf": "导出为 PDF",
     "toImprove": "查看改进建议 →"

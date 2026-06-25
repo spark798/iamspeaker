@@ -13,11 +13,16 @@ interface SlideTime {
   slideIndex: number;
   durationSec: number;
 }
+interface PhonemeScore {
+  ph: string;
+  ok: boolean;
+}
 interface PronIssue {
   word: string;
   expectedSound: string;
   confidence: number;
   l1Related: boolean;
+  phonemes?: PhonemeScore[];
 }
 interface MetricScore {
   metric: string;
@@ -148,22 +153,44 @@ export function ReportView({ recordingId }: { recordingId: string }) {
         {data.pronunciationIssues.length === 0 ? (
           <p className="text-sm text-neutral-500">{t("pronNone")}</p>
         ) : (
-          <ul className="space-y-1 text-sm">
-            {data.pronunciationIssues.map((p) => (
-              <li key={`${p.word}-${p.confidence}`} className="flex items-start gap-2">
-                <span className="font-medium">{p.word}</span>
-                <span className="tabular-nums text-xs text-neutral-400">
-                  {Math.round(p.confidence * 100)}%
-                </span>
-                {p.l1Related && (
-                  <span className="rounded-full bg-brand/15 px-2 py-0.5 text-xs text-brand">
-                    {t("l1Badge")}
+          <>
+            {data.pronunciationIssues.some((p) => p.phonemes && p.phonemes.length > 0) && (
+              <p className="mb-2 text-xs text-neutral-500">{t("pronPhonemeLegend")}</p>
+            )}
+            <ul className="space-y-1.5 text-sm">
+              {data.pronunciationIssues.map((p) => (
+                <li key={`${p.word}-${p.confidence}`} className="flex flex-wrap items-center gap-2">
+                  <span className="font-medium">{p.word}</span>
+                  <span className="tabular-nums text-xs text-neutral-400">
+                    {Math.round(p.confidence * 100)}%
                   </span>
-                )}
-                <span className="text-neutral-500">{p.expectedSound}</span>
-              </li>
-            ))}
-          </ul>
+                  {p.phonemes && p.phonemes.length > 0 && (
+                    <span className="flex flex-wrap gap-0.5">
+                      {p.phonemes.map((ph, i) => (
+                        <span
+                          // biome-ignore lint/suspicious/noArrayIndexKey: 음소 시퀀스 순서 고정
+                          key={i}
+                          className={`rounded px-1 font-mono text-xs ${
+                            ph.ok
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
+                              : "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300"
+                          }`}
+                        >
+                          {ph.ph}
+                        </span>
+                      ))}
+                    </span>
+                  )}
+                  {p.l1Related && (
+                    <span className="rounded-full bg-brand/15 px-2 py-0.5 text-xs text-brand">
+                      {t("l1Badge")}
+                    </span>
+                  )}
+                  <span className="text-neutral-500">{p.expectedSound}</span>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
 

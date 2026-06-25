@@ -153,6 +153,7 @@
     "pronunciation": "발음 교정",
     "pronNone": "발음 이슈 없음",
     "pronScoreHint": "발음 점수 (단어 정확도 평균)",
+    "pronPhonemeLegend": "음소: 초록 = 정확, 빨강 = 교정 필요",
     "l1Badge": "모국어 빈출",
     "exportPdf": "PDF로 내보내기",
     "toImprove": "개선 제안 보기 →"

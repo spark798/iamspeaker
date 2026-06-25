@@ -12,6 +12,14 @@ export interface SlideTimeBreakdown {
   durationSec: number;
 }
 
+/** 단어 내 음소 1개의 발음 정확도(GOP). */
+export interface PhonemeScore {
+  /** IPA 음소(espeak). */
+  ph: string;
+  /** 정확히 발음됐는가(GOP 강제정렬·decode-compare 기준). */
+  ok: boolean;
+}
+
 /** 발음 교정 대상 단어. */
 export interface PronunciationIssue {
   word: string;
@@ -20,6 +28,8 @@ export interface PronunciationIssue {
   timestamp: number;
   /** 사용자 L1Profile 규칙에 매칭되는 이슈인지 (UI 강조용). */
   l1Related: boolean;
+  /** 음소별 정확도(wav2vec2 GOP 경로만; 휴리스틱은 없음). UI 적/녹 분해용. */
+  phonemes?: PhonemeScore[];
 }
 
 /** 녹음 1건의 분석 결과 (SCR-05 리포트). */

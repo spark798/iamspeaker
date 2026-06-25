@@ -17,6 +17,7 @@ const GopSchema = z.object({
       startSec: z.coerce.number(),
       confidence: z.coerce.number(),
       worstPhoneme: z.string().optional(),
+      phones: z.array(z.object({ ph: z.string(), ok: z.boolean() })).optional(),
     }),
   ),
 });
@@ -42,6 +43,7 @@ export function gopWordsToIssues(
       confidence: Math.round(w.confidence * 100) / 100,
       timestamp: w.startSec,
       l1Related: rule !== undefined,
+      phonemes: w.phones, // 음소별 적/녹 분해(있을 때만)
     });
   }
   return out;

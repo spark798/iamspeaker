@@ -13,6 +13,24 @@ const analysis = {
   scores: [],
 };
 
+const analysisWithPhonemes = {
+  ...analysis,
+  pronunciationIssues: [
+    {
+      word: "think",
+      expectedSound: "th 발음 주의",
+      confidence: 0.4,
+      l1Related: true,
+      phonemes: [
+        { ph: "θ", ok: false },
+        { ph: "ɪ", ok: true },
+        { ph: "ŋ", ok: true },
+        { ph: "k", ok: true },
+      ],
+    },
+  ],
+};
+
 function renderReport() {
   return render(
     <NextIntlClientProvider locale="ko" messages={messages}>
@@ -47,5 +65,21 @@ describe("ReportView — PDF export", () => {
     );
     renderReport();
     expect(await screen.findByText("82")).toBeInTheDocument();
+  });
+
+  it("음소별 색 분해(적/녹 칩)와 범례를 렌더", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => analysisWithPhonemes,
+      })) as unknown as typeof fetch,
+    );
+    renderReport();
+    // 음소 칩(IPA)이 개별 렌더되는지
+    expect(await screen.findByText("θ")).toBeInTheDocument();
+    expect(screen.getByText("ŋ")).toBeInTheDocument();
+    // 범례
+    expect(screen.getByText(messages.report.pronPhonemeLegend)).toBeInTheDocument();
   });
 });

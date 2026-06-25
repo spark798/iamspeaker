@@ -6,7 +6,7 @@ GOP(Goodness of Pronunciation) 발음 평가 — wav2vec2 음소 CTC + 강제정
 음소별 음향 사후확률(GOP)을 구한다. STT 타임스탬프에 의존하지 않음.
 
 입력(stdin JSON): {"wav": "<16k mono wav 경로>", "reference": "<대본 텍스트>"}
-출력(stdout JSON): {"words": [{"word", "startSec", "confidence"(0..1), "worstPhoneme"}]}
+출력(stdout JSON): {"words": [{"word", "startSec", "confidence"(0..1), "worstPhoneme", "phones":[{"ph","ok"}]}]}
 
 의존성: scripts/pronunciation/requirements.txt + espeak-ng(시스템).
 실패 시 비정상 종료(호출부가 휴리스틱으로 폴백).
@@ -42,7 +42,7 @@ def log(*a):
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", default="facebook/wav2vec2-lv-60-espeak-cer")
+    ap.add_argument("--model", default="facebook/wav2vec2-lv-60-espeak-cv-ft")
     args = ap.parse_args()
 
     payload = json.load(sys.stdin)
@@ -151,6 +151,8 @@ def main() -> int:
                 "startSec": round(start_frame_of.get(wi, 0) * sec_per_frame, 2),
                 "confidence": round(conf, 3),
                 "worstPhoneme": worst,
+                # 음소별 정확도(UI 적/녹 분해용).
+                "phones": [{"ph": ph, "ok": bool(ok)} for ok, ph in items],
             }
         )
 

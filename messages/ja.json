@@ -153,6 +153,7 @@
     "pronunciation": "発音",
     "pronNone": "発音の問題なし",
     "pronScoreHint": "発音スコア（単語精度の平均）",
+    "pronPhonemeLegend": "音素：緑＝正確、赤＝要改善",
     "l1Badge": "母語頻出",
     "exportPdf": "PDFで書き出す",
     "toImprove": "改善提案を見る →"

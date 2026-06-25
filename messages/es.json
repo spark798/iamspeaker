@@ -153,6 +153,7 @@
     "pronunciation": "Pronunciación",
     "pronNone": "Sin problemas de pronunciación",
     "pronScoreHint": "Puntuación de pronunciación (precisión media de palabras)",
+    "pronPhonemeLegend": "Fonemas: verde = correcto, rojo = a mejorar",
     "l1Badge": "típico L1",
     "exportPdf": "Exportar a PDF",
     "toImprove": "Ver sugerencias →"

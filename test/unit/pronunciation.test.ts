@@ -77,4 +77,17 @@ describe("gopWordsToIssues", () => {
     expect(out[0]?.l1Related).toBe(false);
     expect(out[0]?.expectedSound).toContain("/k/");
   });
+  it("음소별 정확도(phones)를 이슈에 그대로 전달", () => {
+    const phones = [
+      { ph: "θ", ok: false },
+      { ph: "ɪ", ok: true },
+      { ph: "ŋ", ok: true },
+      { ph: "k", ok: true },
+    ];
+    const out = gopWordsToIssues(
+      [{ word: "think", startSec: 0, confidence: 0.4, worstPhoneme: "θ", phones }],
+      rules,
+    );
+    expect(out[0]?.phonemes).toEqual(phones);
+  });
 });
