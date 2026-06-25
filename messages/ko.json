@@ -14,7 +14,8 @@
     "stt": "STT",
     "local": "로컬",
     "cloud": "클라우드",
-    "unreachable": "AI 엔진에 연결할 수 없습니다. Ollama 실행 여부를 확인하세요 (ollama serve) 또는 .env에 클라우드 키를 설정하세요."
+    "unreachable": "AI 엔진에 연결할 수 없습니다. Ollama 실행 여부를 확인하세요 (ollama serve) 또는 .env에 클라우드 키를 설정하세요.",
+    "qualityHint": "소형 로컬 모델 사용 중 — 데모 분량·번역 품질이 제한적일 수 있습니다. 더 나은 품질은 .env에서 더 큰 모델(예: qwen2.5:14b) 또는 클라우드 키를 설정하세요."
   },
   "errors": {
     "uploadFailed": "업로드에 실패했습니다",

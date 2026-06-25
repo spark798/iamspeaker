@@ -1,8 +1,16 @@
+import { isSmallLocalModel } from "@/lib/ai/model-info";
 import { config, engines } from "@/lib/config";
 import { getDb } from "@/lib/db";
 import { sql } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
+
+/** 현재 활성 LLM(script) 엔진의 모델 식별자. */
+function activeModel(): string {
+  if (engines.script === "claude") return config.ANTHROPIC_MODEL;
+  if (engines.script === "openai") return config.OPENAI_MODEL;
+  return config.OLLAMA_MODEL;
+}
 
 /** 활성 LLM 엔진 도달 가능성. 로컬(ollama)은 핑, 클라우드는 키 존재로 판정(과금 호출 회피). */
 async function llmReachable(): Promise<boolean> {
@@ -27,13 +35,20 @@ export async function GET() {
     dbOk = false;
   }
   const llmOk = await llmReachable();
+  const model = activeModel();
 
   return Response.json(
     {
       status: dbOk ? "ok" : "degraded",
       db: dbOk ? "ok" : "error",
       engines,
-      llm: { engine: engines.script, reachable: llmOk },
+      llm: {
+        engine: engines.script,
+        model,
+        reachable: llmOk,
+        // 소형 로컬 모델은 데모 분량·번역 품질이 제한적 → UI에서 기대치/업그레이드 안내.
+        smallModel: isSmallLocalModel(engines.script, model),
+      },
       time: new Date().toISOString(),
     },
     { status: dbOk ? 200 : 503 },

@@ -14,7 +14,8 @@
     "stt": "STT",
     "local": "ローカル",
     "cloud": "クラウド",
-    "unreachable": "AIエンジンに接続できません。Ollamaが起動しているか確認（ollama serve）、または.envにクラウドキーを設定してください。"
+    "unreachable": "AIエンジンに接続できません。Ollamaが起動しているか確認（ollama serve）、または.envにクラウドキーを設定してください。",
+    "qualityHint": "小型のローカルモデルを使用中 — デモの分量や翻訳品質が限定的な場合があります。より高品質にするには、.envで大きめのモデル（例: qwen2.5:14b）またはクラウドキーを設定してください。"
   },
   "errors": {
     "uploadFailed": "アップロードに失敗しました",

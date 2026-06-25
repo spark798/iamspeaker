@@ -14,7 +14,8 @@
     "stt": "STT",
     "local": "local",
     "cloud": "nube",
-    "unreachable": "No se puede conectar con el motor de IA. Asegúrate de que Ollama esté en ejecución (ollama serve) o configura una clave de nube en .env."
+    "unreachable": "No se puede conectar con el motor de IA. Asegúrate de que Ollama esté en ejecución (ollama serve) o configura una clave de nube en .env.",
+    "qualityHint": "Usando un modelo local pequeño — la longitud de la demo y la calidad de traducción pueden ser limitadas. Para mejores resultados, configura un modelo más grande (p. ej. qwen2.5:14b) o una clave de nube en .env."
   },
   "errors": {
     "uploadFailed": "Error al subir",

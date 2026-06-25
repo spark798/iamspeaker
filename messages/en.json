@@ -14,7 +14,8 @@
     "stt": "STT",
     "local": "local",
     "cloud": "cloud",
-    "unreachable": "Can't reach the AI engine. Make sure Ollama is running (ollama serve), or set a cloud key in .env."
+    "unreachable": "Can't reach the AI engine. Make sure Ollama is running (ollama serve), or set a cloud key in .env.",
+    "qualityHint": "Using a small local model — demo length and translation quality may be limited. For better results, set a larger model (e.g. qwen2.5:14b) or a cloud key in .env."
   },
   "errors": {
     "uploadFailed": "Upload failed",

@@ -14,7 +14,8 @@
     "stt": "STT",
     "local": "本地",
     "cloud": "云端",
-    "unreachable": "无法连接 AI 引擎。请确认 Ollama 正在运行（ollama serve），或在 .env 中设置云端密钥。"
+    "unreachable": "无法连接 AI 引擎。请确认 Ollama 正在运行（ollama serve），或在 .env 中设置云端密钥。",
+    "qualityHint": "正在使用小型本地模型 — 演示篇幅和翻译质量可能有限。如需更佳效果，请在 .env 中设置更大的模型（如 qwen2.5:14b）或云端密钥。"
   },
   "errors": {
     "uploadFailed": "上传失败",
