@@ -13,7 +13,7 @@
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
 | 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
 | 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적. **비동기 사후 리뷰**("발표용 게임 필름"). ✅완료: ①반복 루프 동기부여 · ④재연습 루프백 · ②처방적 코칭 노트. **폐기**: ③실시간 코칭. **보류**: GOP 자동 승격(②지표 이미 강함)·기능 폭 확장. |
-| 다음 액션 | 후보: ⓐ처방 cue를 improve 프롬프트에 주입(코치→개선 연결) ⓑ도그푸드(실 발표 3회+ 직접 사용해 루프 검증) ⓒ목표 커스터마이즈. **사람 필요**: Lane 1b 스크린샷·체감품질. |
+| 다음 액션 | ✅ⓐ코치→개선 연결(cue 주입) 완료. 후보: ⓑ**도그푸드**(실 발표 3회+ 직접 사용해 루프 검증 — 가장 중요, 사람 필요) ⓒ목표 커스터마이즈(WPM/필러 직접 설정). |
 | 최근 갱신 | 2026-06-25 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
