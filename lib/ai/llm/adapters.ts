@@ -24,6 +24,7 @@ import type {
 import { ruleBasedCritique } from "@/lib/analysis/critique";
 import type {
   AnalysisResult,
+  Cue,
   GenOptions,
   L1Profile,
   QAFeedback,
@@ -87,8 +88,13 @@ export class LlmScriptGenerator implements ScriptGeneratorAdapter {
     return { version: 0, source: "ai_demo", content: alignSegmentsToSlides(slides, parsed.slides) };
   }
 
-  async improve(script: Script, analysis: AnalysisResult, l1?: L1Profile): Promise<ScriptDiff> {
-    const { system, prompt } = improveScriptPrompt(script, analysis, l1);
+  async improve(
+    script: Script,
+    analysis: AnalysisResult,
+    l1?: L1Profile,
+    cues?: Cue[],
+  ): Promise<ScriptDiff> {
+    const { system, prompt } = improveScriptPrompt(script, analysis, l1, cues);
     const parsed = ScriptDiffSchema.parse(await this.chat({ system, prompt }));
     return { baseVersion: script.version, entries: parsed.entries };
   }

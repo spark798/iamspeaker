@@ -1,5 +1,6 @@
 import type {
   AnalysisResult,
+  Cue,
   GenOptions,
   L1Profile,
   PronunciationIssue,
@@ -33,7 +34,12 @@ export interface SttInput {
 
 export interface ScriptGeneratorAdapter {
   generate(slides: SlideContent[], options: GenOptions): Promise<Script>;
-  improve(script: Script, analysis: AnalysisResult, l1Profile?: L1Profile): Promise<ScriptDiff>;
+  improve(
+    script: Script,
+    analysis: AnalysisResult,
+    l1Profile?: L1Profile,
+    cues?: Cue[],
+  ): Promise<ScriptDiff>;
 }
 
 export interface TtsAdapter {

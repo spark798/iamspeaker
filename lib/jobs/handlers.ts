@@ -4,6 +4,7 @@ import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import { generateWithRefinement } from "@/lib/ai/refine";
 import type { Adapters } from "@/lib/ai/types";
 import { loadBaseline } from "@/lib/analysis/baselines";
+import { generateCues } from "@/lib/analysis/cues";
 import { pronunciationScore } from "@/lib/analysis/pronunciation";
 import { analyzeSpeech } from "@/lib/analysis/speech";
 import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
@@ -216,6 +217,31 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
       ctx.setProgress(30);
       // 모국어 기반 맞춤 교정(Epic 6): nativeLanguage → L1 프로필.
       const l1 = loadL1Profile(session.nativeLanguage);
+      // 처방 cue를 개선에 주입(코치→개선 연결): 측정된 슬라이드별 약점을 직접 겨냥.
+      const baseline = loadBaseline(session.genre);
+      const nonNative = !!session.nativeLanguage && session.nativeLanguage !== session.language;
+      const wpmSpec = baseline.metrics.wpm;
+      const deckCount = db
+        .select()
+        .from(slides)
+        .where(eq(slides.sessionId, rec.sessionId))
+        .all().length;
+      const cues = generateCues({
+        breakdown: analysisRow.slideTimeBreakdown,
+        transitions: rec.transitions,
+        totalDurationSec: rec.durationSec,
+        fillerWords: analysisRow.fillerWords,
+        goalWpmMin:
+          nonNative && wpmSpec?.nonNativeIdealMin !== undefined
+            ? wpmSpec.nonNativeIdealMin
+            : (wpmSpec?.idealMin ?? 110),
+        goalWpmMax:
+          nonNative && wpmSpec?.nonNativeIdealMax !== undefined
+            ? wpmSpec.nonNativeIdealMax
+            : (wpmSpec?.idealMax ?? 150),
+        targetDurationSec: session.targetDurationSec,
+        slideCount: deckCount,
+      });
       const diff = await adapters.script.improve(
         { version: scriptRow.version, source: scriptRow.source, content: scriptRow.content },
         {
@@ -226,6 +252,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           pauseCount: analysisRow.pauseCount,
         },
         l1,
+        cues,
       );
       ctx.setProgress(90);
       return diff;

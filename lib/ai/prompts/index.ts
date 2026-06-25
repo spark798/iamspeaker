@@ -1,11 +1,30 @@
 import type {
   AnalysisResult,
+  Cue,
   GenOptions,
   L1Profile,
   QAItem,
   Script,
   SlideContent,
 } from "@/lib/domain";
+
+/** 처방적 cue → LLM이 겨냥할 영어 지시문(개선이 측정된 약점을 직접 고치게). */
+function cueInstruction(c: Cue): string {
+  const s = c.slideIndex;
+  const v = c.value ?? 0;
+  switch (c.kind) {
+    case "pace_fast":
+      return `Slide ${s} was spoken too fast (${v} WPM): split long sentences and add natural pause points so it's easier to pace.`;
+    case "pace_slow":
+      return `Slide ${s} was slow (${v} WPM): tighten the wording and remove padding.`;
+    case "time_long":
+      return `Slide ${s} ran long (${v}s): cut to the essentials and remove redundancy.`;
+    case "time_short":
+      return `Slide ${s} was rushed (${v}s): add a clearer transition or a bit more substance.`;
+    case "filler":
+      return `Slide ${s} had ${v} filler words clustered: simplify the phrasing so it's easier to say fluently.`;
+  }
+}
 
 /** 프롬프트 템플릿(코드 인라인 금지 — 여기서 버전 관리). 각 빌더는 system+user를 반환. */
 export interface Prompt {
@@ -41,15 +60,21 @@ export function improveScriptPrompt(
   script: Script,
   analysis: AnalysisResult,
   l1?: L1Profile,
+  cues: Cue[] = [],
 ): Prompt {
   const segs = script.content.map((c) => `#${c.slideIndex}: ${c.text}`).join("\n");
   const l1Note = l1
     ? `\nThe speaker's native language is "${l1.language}". Pay special attention to these common ${l1.language}-speaker mistakes and fix them where present:\n${l1.commonExpressionIssues.map((r) => `- ${r.issue} → ${r.suggestion}`).join("\n")}`
     : "";
+  // 측정된 약점(처방 cue)을 슬라이드별 편집 지시로 — 개선이 데이터를 직접 겨냥.
+  const cueNote =
+    cues.length > 0
+      ? `\nThis practice run had these measured issues — prioritize fixing the named slides:\n${cues.map((c) => `- ${cueInstruction(c)}`).join("\n")}`
+      : "";
   return {
     system:
       "You are an expert English presentation editor. Improve clarity, naturalness, and pronounceability. Output STRICT JSON only.",
-    prompt: `Current script:\n${segs}\n\nMeasured speaking pace: ${analysis.wpm} WPM.${l1Note}\nFor each slide that needs improvement, return an entry.\nReturn JSON: {"entries":[{"slideIndex":<number>,"original":"<text>","improved":"<text>","reason":"<short reason>"}]}.`,
+    prompt: `Current script:\n${segs}\n\nMeasured speaking pace: ${analysis.wpm} WPM.${cueNote}${l1Note}\nFor each slide that needs improvement, return an entry.\nReturn JSON: {"entries":[{"slideIndex":<number>,"original":"<text>","improved":"<text>","reason":"<short reason>"}]}.`,
   };
 }
 

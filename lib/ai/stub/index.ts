@@ -14,6 +14,7 @@ import type {
 } from "@/lib/ai/types";
 import type {
   AnalysisResult,
+  Cue,
   GenOptions,
   L1Profile,
   PronunciationIssue,
@@ -69,7 +70,12 @@ export class StubScriptGenerator implements ScriptGeneratorAdapter {
     };
   }
 
-  async improve(script: Script, _analysis: AnalysisResult, _l1?: L1Profile): Promise<ScriptDiff> {
+  async improve(
+    script: Script,
+    _analysis: AnalysisResult,
+    _l1?: L1Profile,
+    _cues?: Cue[],
+  ): Promise<ScriptDiff> {
     return {
       baseVersion: script.version,
       entries: script.content.map((c) => ({
