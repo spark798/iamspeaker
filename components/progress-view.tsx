@@ -12,17 +12,48 @@ interface Attempt {
   wpm: number | null;
   fillerCount: number | null;
 }
+interface MetricDelta {
+  first: number;
+  latest: number;
+  deltaPct: number;
+  improved: boolean;
+}
+interface BestTake {
+  recordingId: string;
+  value: number;
+}
+interface Summary {
+  analyzedCount: number;
+  wpm?: MetricDelta;
+  fillerPerMin?: MetricDelta;
+  bestFiller?: BestTake;
+  bestWpm?: BestTake;
+  goalMetCount: number;
+  latestMeetsGoal: boolean;
+  streakDays: number;
+}
+interface Goal {
+  wpmMin: number;
+  wpmMax: number;
+  fillerPerMinMax: number;
+}
 
 export function ProgressView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("progress");
   const te = useTranslations("errors");
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
+  const [summary, setSummary] = useState<Summary | null>(null);
+  const [goal, setGoal] = useState<Goal | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/progress`)
       .then((r) => r.json())
-      .then((b: { attempts: Attempt[] }) => setAttempts(b.attempts))
+      .then((b: { attempts: Attempt[]; summary?: Summary; goal?: Goal }) => {
+        setAttempts(b.attempts);
+        setSummary(b.summary ?? null);
+        setGoal(b.goal ?? null);
+      })
       .catch(() => setError(te("loadFailed")));
   }, [sessionId, te]);
 
@@ -41,8 +72,80 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
   const wpmSeries = analyzed.map((a) => a.wpm as number);
   const fillerSeries = analyzed.map((a) => a.fillerCount ?? 0);
 
+  // 첫→최신 변화를 화살표·색으로(개선=초록). 필러는 낮을수록, WPM은 목표 근접이 개선.
+  const deltaRow = (label: string, d: MetricDelta, unit: string) => (
+    <div className="flex items-center gap-2 text-sm">
+      <span className="w-12 text-neutral-500">{label}</span>
+      <span className="tabular-nums">
+        {d.first}
+        {unit} <span className="text-neutral-400">→</span> {d.latest}
+        {unit}
+      </span>
+      <span className={d.improved ? "text-green-600" : "text-red-600"}>
+        {d.improved ? "▲" : "▽"} {Math.round(d.deltaPct * 100)}%
+      </span>
+    </div>
+  );
+
   return (
     <div className="mt-4 space-y-6">
+      {summary && summary.analyzedCount > 0 && goal && (
+        <div className="space-y-3 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+          <div className="flex items-center justify-between">
+            <h2 className="font-medium">{t("summaryTitle")}</h2>
+            {summary.streakDays >= 2 && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/40 dark:text-amber-200">
+                🔥 {t("streak", { days: summary.streakDays })}
+              </span>
+            )}
+          </div>
+
+          {(summary.fillerPerMin || summary.wpm) && (
+            <div className="space-y-1">
+              {summary.fillerPerMin && deltaRow(t("fillers"), summary.fillerPerMin, "/m")}
+              {summary.wpm && deltaRow(t("wpm"), summary.wpm, "")}
+              <p className="text-xs text-neutral-400">{t("vsFirst")}</p>
+            </div>
+          )}
+
+          <p className="text-sm">
+            {t("goalLine", {
+              min: goal.wpmMin,
+              max: goal.wpmMax,
+              filler: goal.fillerPerMinMax,
+            })}{" "}
+            ·{" "}
+            <span className={summary.latestMeetsGoal ? "text-green-600" : "text-neutral-500"}>
+              {summary.latestMeetsGoal ? t("latestOk") : t("latestNo")}
+            </span>{" "}
+            · {t("goalMet", { met: summary.goalMetCount, total: summary.analyzedCount })}
+          </p>
+
+          {(summary.bestFiller || summary.bestWpm) && (
+            <p className="text-sm text-neutral-500">
+              {t("best")}:{" "}
+              {summary.bestFiller && (
+                <Link
+                  href={`/report?recording=${summary.bestFiller.recordingId}`}
+                  className="text-brand hover:underline"
+                >
+                  {t("fillers")} {summary.bestFiller.value}/m
+                </Link>
+              )}
+              {summary.bestFiller && summary.bestWpm && " · "}
+              {summary.bestWpm && (
+                <Link
+                  href={`/report?recording=${summary.bestWpm.recordingId}`}
+                  className="text-brand hover:underline"
+                >
+                  {t("wpm")} {summary.bestWpm.value}
+                </Link>
+              )}
+            </p>
+          )}
+        </div>
+      )}
+
       {analyzed.length >= 2 && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <TrendChart values={wpmSeries} band={[110, 150]} label={t("wpmTrend")} />

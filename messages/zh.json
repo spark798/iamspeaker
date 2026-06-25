@@ -115,7 +115,15 @@
     "duration": "时长（秒）",
     "pending": "等待分析",
     "wpmTrend": "WPM 趋势",
-    "fillerTrend": "填充词趋势"
+    "fillerTrend": "填充词趋势",
+    "summaryTitle": "练习摘要",
+    "streak": "连续 {days} 天",
+    "vsFirst": "对比首次",
+    "goalLine": "目标 WPM {min}–{max} · 填充词 ≤{filler}/分",
+    "latestOk": "最近达成 ✓",
+    "latestNo": "最近未达",
+    "goalMet": "{met}/{total} 次达成目标",
+    "best": "最佳"
   },
   "record": {
     "title": "练习录音",

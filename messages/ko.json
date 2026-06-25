@@ -115,7 +115,15 @@
     "duration": "길이(초)",
     "pending": "분석 대기",
     "wpmTrend": "WPM 추이",
-    "fillerTrend": "필러 추이"
+    "fillerTrend": "필러 추이",
+    "summaryTitle": "연습 요약",
+    "streak": "{days}일 연속 연습",
+    "vsFirst": "첫 회차 대비",
+    "goalLine": "목표 WPM {min}–{max} · 필러 ≤{filler}/분",
+    "latestOk": "최근 회차 달성 ✓",
+    "latestNo": "최근 회차 미달",
+    "goalMet": "{met}/{total}회차 목표 달성",
+    "best": "베스트"
   },
   "record": {
     "title": "연습 녹음",

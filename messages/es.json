@@ -115,7 +115,15 @@
     "duration": "Duración (s)",
     "pending": "Pendiente",
     "wpmTrend": "Tendencia WPM",
-    "fillerTrend": "Tendencia de muletillas"
+    "fillerTrend": "Tendencia de muletillas",
+    "summaryTitle": "Resumen de práctica",
+    "streak": "racha de {days} días",
+    "vsFirst": "vs. primer intento",
+    "goalLine": "Meta: PPM {min}–{max} · muletillas ≤{filler}/min",
+    "latestOk": "último cumplió ✓",
+    "latestNo": "último por debajo",
+    "goalMet": "{met}/{total} intentos cumplieron",
+    "best": "Mejor"
   },
   "record": {
     "title": "Grabación de práctica",

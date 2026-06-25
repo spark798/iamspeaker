@@ -115,7 +115,15 @@
     "duration": "長さ（秒）",
     "pending": "分析待ち",
     "wpmTrend": "WPM 推移",
-    "fillerTrend": "フィラー推移"
+    "fillerTrend": "フィラー推移",
+    "summaryTitle": "練習サマリー",
+    "streak": "{days}日連続",
+    "vsFirst": "初回比",
+    "goalLine": "目標 WPM {min}–{max} · フィラー ≤{filler}/分",
+    "latestOk": "直近達成 ✓",
+    "latestNo": "直近未達",
+    "goalMet": "{met}/{total}回 目標達成",
+    "best": "ベスト"
   },
   "record": {
     "title": "練習録音",

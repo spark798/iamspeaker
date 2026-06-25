@@ -115,7 +115,15 @@
     "duration": "Length (s)",
     "pending": "Pending",
     "wpmTrend": "WPM trend",
-    "fillerTrend": "Filler trend"
+    "fillerTrend": "Filler trend",
+    "summaryTitle": "Practice summary",
+    "streak": "{days}-day streak",
+    "vsFirst": "vs. first attempt",
+    "goalLine": "Goal: WPM {min}–{max} · fillers ≤{filler}/min",
+    "latestOk": "latest hit goal ✓",
+    "latestNo": "latest below goal",
+    "goalMet": "{met}/{total} attempts hit goal",
+    "best": "Best"
   },
   "record": {
     "title": "Practice recording",
