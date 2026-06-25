@@ -4,6 +4,7 @@ import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import { generateWithRefinement } from "@/lib/ai/refine";
 import type { Adapters } from "@/lib/ai/types";
 import { loadBaseline } from "@/lib/analysis/baselines";
+import { pronunciationScore } from "@/lib/analysis/pronunciation";
 import { analyzeSpeech } from "@/lib/analysis/speech";
 import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
@@ -144,11 +145,9 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         .get();
       const referenceText = scriptRow?.content.map((c) => c.text).join(" ");
       // 발음 스코어러 실패(모델/Python 등)는 분석 전체를 중단시키지 않도록 휴리스틱 폴백.
-      let pronunciationIssues:
-        | Awaited<ReturnType<typeof adapters.pronunciation.detect>>
-        | undefined;
+      let pronResult: Awaited<ReturnType<typeof adapters.pronunciation.detect>> | undefined;
       try {
-        pronunciationIssues = await adapters.pronunciation.detect({
+        pronResult = await adapters.pronunciation.detect({
           wavFilePath: wavPath,
           words: transcript.words,
           referenceText,
@@ -156,8 +155,12 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         });
       } catch (err) {
         logger.warn({ err }, "발음 스코어러 실패 — 휴리스틱 폴백");
-        pronunciationIssues = undefined; // analyzeSpeech가 휴리스틱으로 폴백
+        pronResult = undefined; // analyzeSpeech가 휴리스틱으로 폴백
       }
+      const pronunciationIssues = pronResult?.issues; // 없으면 analyzeSpeech 휴리스틱
+      // 전체 발음 점수: 스코어러 점수 우선, 실패 시 STT confidence 대용.
+      const pronScore =
+        pronResult?.score ?? pronunciationScore(transcript.words.map((w) => w.confidence));
       ctx.setProgress(85);
 
       const result = analyzeSpeech({
@@ -179,6 +182,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           fillerWords: result.fillerWords,
           slideTimeBreakdown: result.slideTimeBreakdown,
           pronunciationIssues: result.pronunciationIssues,
+          pronunciationScore: pronScore,
           pauseCount: result.pauseCount,
         })
         .run();

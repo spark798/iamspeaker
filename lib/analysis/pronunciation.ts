@@ -1,6 +1,16 @@
 import type { PhonemeRule } from "@/lib/domain";
 
 /**
+ * 전체 발음 점수(0~100) = 평균 단어 정확도(confidence 0~1) ×100. 단어가 없으면 null.
+ * wav2vec2는 GOP 단어 confidence(정확 발음 음소 비율), 휴리스틱은 STT confidence(대용).
+ */
+export function pronunciationScore(confidences: number[]): number | null {
+  if (confidences.length === 0) return null;
+  const mean = confidences.reduce((a, b) => a + b, 0) / confidences.length;
+  return Math.round(Math.max(0, Math.min(1, mean)) * 100);
+}
+
+/**
  * IPA(espeak) 음소 → L1 규칙 targetPhoneme에서 찾을 키워드.
  * wav2vec2 GOP가 낸 실제 오발음 음소를 L1 PhonemeRule과 정밀 매칭하기 위함
  * (기존 "단어에 글자 포함" 휴리스틱보다 음소 근거가 정확함).

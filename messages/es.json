@@ -152,6 +152,7 @@
     "slideTime": "Tiempo por diapositiva (s)",
     "pronunciation": "Pronunciación",
     "pronNone": "Sin problemas de pronunciación",
+    "pronScoreHint": "Puntuación de pronunciación (precisión media de palabras)",
     "l1Badge": "típico L1",
     "exportPdf": "Exportar a PDF",
     "toImprove": "Ver sugerencias →"

@@ -152,6 +152,7 @@
     "slideTime": "Time per slide (s)",
     "pronunciation": "Pronunciation",
     "pronNone": "No pronunciation issues",
+    "pronScoreHint": "Pronunciation score (avg word accuracy)",
     "l1Badge": "L1-common",
     "exportPdf": "Export as PDF",
     "toImprove": "View suggestions →"

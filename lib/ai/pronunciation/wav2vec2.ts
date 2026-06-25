@@ -1,6 +1,10 @@
 import { spawn } from "node:child_process";
-import type { PronunciationInput, PronunciationScorerAdapter } from "@/lib/ai/types";
-import { matchL1RuleByPhoneme } from "@/lib/analysis/pronunciation";
+import type {
+  PronunciationInput,
+  PronunciationResult,
+  PronunciationScorerAdapter,
+} from "@/lib/ai/types";
+import { matchL1RuleByPhoneme, pronunciationScore } from "@/lib/analysis/pronunciation";
 import { config } from "@/lib/config";
 import type { PhonemeRule, PronunciationIssue } from "@/lib/domain";
 import { z } from "zod";
@@ -52,13 +56,17 @@ export class Wav2Vec2PronunciationScorer implements PronunciationScorerAdapter {
   /** 음향 confidence가 이 값 미만이면 발음 이슈로 플래그(env로 보정). */
   private readonly threshold = config.WAV2VEC2_GOP_THRESHOLD;
 
-  async detect(input: PronunciationInput): Promise<PronunciationIssue[]> {
+  async detect(input: PronunciationInput): Promise<PronunciationResult> {
     const reference = (input.referenceText ?? input.words.map((w) => w.word).join(" ")).trim();
-    if (!reference) return [];
+    if (!reference) return { issues: [], score: null };
 
     const parsed = GopSchema.parse(await this.runScorer({ wav: input.wavFilePath, reference }));
     const rules = input.l1Profile?.commonPronunciationIssues ?? [];
-    return gopWordsToIssues(parsed.words, rules, this.threshold);
+    return {
+      issues: gopWordsToIssues(parsed.words, rules, this.threshold),
+      // 전체 점수는 플래그된 단어가 아니라 모든 GOP 단어의 평균 정확도로.
+      score: pronunciationScore(parsed.words.map((w) => w.confidence)),
+    };
   }
 
   private runScorer(payload: { wav: string; reference: string }): Promise<unknown> {

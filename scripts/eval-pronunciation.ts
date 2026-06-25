@@ -89,19 +89,19 @@ for (const utt of utterances) {
     .filter(Boolean)
     .map((w, i) => ({ word: w, startSec: i * 0.5, endSec: i * 0.5 + 0.4, confidence: 1 }));
 
-  let issues: Awaited<ReturnType<typeof scorer.detect>>;
+  let result: Awaited<ReturnType<typeof scorer.detect>>;
   try {
-    issues = await scorer.detect({ wavFilePath: norm, words, referenceText: utt.text });
+    result = await scorer.detect({ wavFilePath: norm, words, referenceText: utt.text });
   } catch {
     continue;
   }
-  const flagged = new Set(issues.map((i) => i.word.toLowerCase()));
+  const flagged = new Set(result.issues.map((i) => i.word.toLowerCase()));
 
   for (const w of utt.words) {
     predicted.push(flagged.has(w.text));
     gold.push(goldWordMispronounced(w));
   }
-  ourUtt.push(1 - issues.length / utt.words.length);
+  ourUtt.push(1 - result.issues.length / utt.words.length);
   expertUtt.push(utt.accuracy);
   evaluated++;
 }

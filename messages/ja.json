@@ -152,6 +152,7 @@
     "slideTime": "スライド別時間（秒）",
     "pronunciation": "発音",
     "pronNone": "発音の問題なし",
+    "pronScoreHint": "発音スコア（単語精度の平均）",
     "l1Badge": "母語頻出",
     "exportPdf": "PDFで書き出す",
     "toImprove": "改善提案を見る →"

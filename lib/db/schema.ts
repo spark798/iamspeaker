@@ -96,6 +96,8 @@ export const analysisResults = sqliteTable("analysis_results", {
   pronunciationIssues: text("pronunciation_issues", { mode: "json" })
     .$type<PronunciationIssue[]>()
     .notNull(),
+  // 전체 발음 점수 0~100(측정 불가 시 null). 단어별 정확도 평균.
+  pronunciationScore: real("pronunciation_score"),
   pauseCount: integer("pause_count").notNull().default(0),
 });
 

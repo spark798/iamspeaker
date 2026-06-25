@@ -111,7 +111,7 @@ async function main() {
     for (const c of pron) {
       const { wav } = await synth(c.audioText, `pron-${c.id}`);
       const t = await stt.transcribe({ wavFilePath: wav });
-      const issues = await scorer.detect({
+      const { issues } = await scorer.detect({
         wavFilePath: wav,
         words: t.words,
         referenceText: c.reference,

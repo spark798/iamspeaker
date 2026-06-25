@@ -9,6 +9,7 @@ const analysis = {
   fillerWords: [],
   slideTimeBreakdown: [],
   pronunciationIssues: [],
+  pronunciationScore: 82,
   scores: [],
 };
 
@@ -37,5 +38,14 @@ describe("ReportView — PDF export", () => {
     const btn = await screen.findByRole("button", { name: messages.report.exportPdf });
     fireEvent.click(btn);
     expect(printSpy).toHaveBeenCalledOnce();
+  });
+
+  it("발음 점수(0-100)를 표시", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, json: async () => analysis })) as unknown as typeof fetch,
+    );
+    renderReport();
+    expect(await screen.findByText("82")).toBeInTheDocument();
   });
 });

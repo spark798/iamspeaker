@@ -1,10 +1,31 @@
 import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import { gopWordsToIssues } from "@/lib/ai/pronunciation/wav2vec2";
-import { matchL1RuleByPhoneme, normalizePhoneme } from "@/lib/analysis/pronunciation";
+import {
+  matchL1RuleByPhoneme,
+  normalizePhoneme,
+  pronunciationScore,
+} from "@/lib/analysis/pronunciation";
 import { describe, expect, it } from "vitest";
 
 const ko = loadL1Profile("ko");
 const rules = ko?.commonPronunciationIssues ?? [];
+
+describe("pronunciationScore", () => {
+  it("평균 confidence ×100, 반올림", () => {
+    expect(pronunciationScore([1, 1, 1])).toBe(100);
+    expect(pronunciationScore([0.5, 1])).toBe(75);
+    expect(pronunciationScore([0.8, 0.6, 0.7])).toBe(70);
+  });
+
+  it("단어 없으면 null", () => {
+    expect(pronunciationScore([])).toBeNull();
+  });
+
+  it("0~100으로 클램프", () => {
+    expect(pronunciationScore([1.5])).toBe(100);
+    expect(pronunciationScore([-0.2])).toBe(0);
+  });
+});
 
 describe("normalizePhoneme", () => {
   it("길이·강세 표시 제거", () => {

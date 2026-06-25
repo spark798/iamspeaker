@@ -68,12 +68,19 @@ export interface PronunciationInput {
   l1Profile?: L1Profile;
 }
 
+/** 발음 평가 결과 — 교정 대상 이슈 + 전체 발음 점수(0~100, 측정 불가 시 null). */
+export interface PronunciationResult {
+  issues: PronunciationIssue[];
+  /** 전체 발음 점수 0~100 = 평균 단어 정확도 ×100. 평가 단어가 없으면 null. */
+  score: number | null;
+}
+
 /**
  * 발음 이슈 검출기. 기본은 휴리스틱(STT confidence + L1 음소 교차, 의존성 0).
  * 선택적으로 wav2vec2 음향 평가로 교체(env 게이트). 항상 로컬 폴백.
  */
 export interface PronunciationScorerAdapter {
-  detect(input: PronunciationInput): Promise<PronunciationIssue[]>;
+  detect(input: PronunciationInput): Promise<PronunciationResult>;
 }
 
 /** 전체 어댑터 묶음. */

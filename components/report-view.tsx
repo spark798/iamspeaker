@@ -30,6 +30,7 @@ interface Analysis {
   fillerWords: FillerWord[];
   slideTimeBreakdown: SlideTime[];
   pronunciationIssues: PronIssue[];
+  pronunciationScore: number | null;
   scores: MetricScore[];
 }
 
@@ -138,6 +139,12 @@ export function ReportView({ recordingId }: { recordingId: string }) {
 
       <div>
         <h2 className="mb-2 font-medium">{t("pronunciation")}</h2>
+        {data.pronunciationScore != null && (
+          <div className="mb-3 flex items-center gap-3">
+            <span className="text-2xl font-bold tabular-nums">{data.pronunciationScore}</span>
+            <span className="text-xs text-neutral-500">/ 100 · {t("pronScoreHint")}</span>
+          </div>
+        )}
         {data.pronunciationIssues.length === 0 ? (
           <p className="text-sm text-neutral-500">{t("pronNone")}</p>
         ) : (
@@ -145,6 +152,9 @@ export function ReportView({ recordingId }: { recordingId: string }) {
             {data.pronunciationIssues.map((p) => (
               <li key={`${p.word}-${p.confidence}`} className="flex items-start gap-2">
                 <span className="font-medium">{p.word}</span>
+                <span className="tabular-nums text-xs text-neutral-400">
+                  {Math.round(p.confidence * 100)}%
+                </span>
                 {p.l1Related && (
                   <span className="rounded-full bg-brand/15 px-2 py-0.5 text-xs text-brand">
                     {t("l1Badge")}

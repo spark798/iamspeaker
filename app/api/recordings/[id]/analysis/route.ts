@@ -55,6 +55,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       fillerWords: row.fillerWords,
       slideTimeBreakdown: row.slideTimeBreakdown,
       pronunciationIssues: row.pronunciationIssues,
+      pronunciationScore: row.pronunciationScore,
       pauseCount: row.pauseCount,
       scores,
       baselineGenre: baseline.genre,

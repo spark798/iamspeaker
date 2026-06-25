@@ -38,12 +38,13 @@ describe("getAdapters", () => {
     expect(typeof a.pronunciation.detect).toBe("function");
   });
 
-  it("기본 발음 스코어러는 휴리스틱(의존성 0)", async () => {
+  it("기본 발음 스코어러는 휴리스틱(의존성 0) — issues 배열 + score", async () => {
     const out = await getAdapters().pronunciation.detect({
       wavFilePath: "x.wav",
       words: [{ word: "think", startSec: 0, endSec: 0.3, confidence: 0.3 }],
       l1Profile: undefined,
     });
-    expect(Array.isArray(out)).toBe(true); // stub은 [], 실제 휴리스틱은 confidence<0.6 검출
+    expect(Array.isArray(out.issues)).toBe(true); // stub은 [], 실제 휴리스틱은 confidence<0.6 검출
+    expect(out.score === null || typeof out.score === "number").toBe(true);
   });
 });

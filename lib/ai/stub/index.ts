@@ -1,6 +1,7 @@
 import type {
   Adapters,
   PronunciationInput,
+  PronunciationResult,
   PronunciationScorerAdapter,
   QaGeneratorAdapter,
   ScriptGeneratorAdapter,
@@ -149,8 +150,8 @@ export class StubTranslator implements TranslatorAdapter {
 }
 
 export class StubPronunciationScorer implements PronunciationScorerAdapter {
-  async detect(_input: PronunciationInput): Promise<PronunciationIssue[]> {
-    return [];
+  async detect(_input: PronunciationInput): Promise<PronunciationResult> {
+    return { issues: [], score: null };
   }
 }
 

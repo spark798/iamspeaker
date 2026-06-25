@@ -50,6 +50,13 @@
       "when": 1782284523220,
       "tag": "0006_cute_runaways",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1782360136836,
+      "tag": "0007_quick_eddie_brock",
+      "breakpoints": true
     }
   ]
 }
