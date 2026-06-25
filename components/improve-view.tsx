@@ -140,10 +140,19 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
         {applied !== null && (
           <span className="text-sm text-green-600">{t("applied", { version: applied })}</span>
         )}
+        {/* 적용 후엔 개선본으로 바로 재연습(루프 닫기)을 1차 CTA로. */}
+        {sessionId && applied !== null && (
+          <Link
+            href={`/record?session=${sessionId}`}
+            className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90"
+          >
+            {tc("practiceAgain")}
+          </Link>
+        )}
         {sessionId && (
           <Link
             href={`/qa?session=${sessionId}`}
-            className="ml-auto text-sm font-medium text-brand hover:underline"
+            className={`text-sm font-medium text-brand hover:underline ${applied !== null ? "" : "ml-auto"}`}
           >
             {t("toQa")}
           </Link>

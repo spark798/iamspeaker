@@ -31,6 +31,7 @@ interface MetricScore {
   band: "ideal" | "low" | "high";
 }
 interface Analysis {
+  sessionId: string | null;
   wpm: number;
   fillerWords: FillerWord[];
   slideTimeBreakdown: SlideTime[];
@@ -42,6 +43,7 @@ interface Analysis {
 export function ReportView({ recordingId }: { recordingId: string }) {
   const t = useTranslations("report");
   const te = useTranslations("errors");
+  const tc = useTranslations("common");
   const [data, setData] = useState<Analysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,7 +71,7 @@ export function ReportView({ recordingId }: { recordingId: string }) {
       <div className="hidden border-b border-neutral-300 pb-2 print:block">
         <span className="text-base font-bold">iamspeaker — {t("title")}</span>
       </div>
-      <div className="flex justify-end gap-4 print:hidden">
+      <div className="flex flex-wrap items-center justify-end gap-4 print:hidden">
         <button
           type="button"
           onClick={() => window.print()}
@@ -83,6 +85,14 @@ export function ReportView({ recordingId }: { recordingId: string }) {
         >
           {t("toImprove")}
         </Link>
+        {data.sessionId && (
+          <Link
+            href={`/record?session=${data.sessionId}`}
+            className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90"
+          >
+            {tc("practiceAgain")}
+          </Link>
+        )}
       </div>
       <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
         <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>

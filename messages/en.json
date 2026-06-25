@@ -110,6 +110,7 @@
     "noData": "No recordings yet. Try a practice recording.",
     "loading": "Loading…",
     "attempt": "Take",
+    "version": "Version",
     "wpm": "WPM",
     "fillers": "Fillers",
     "duration": "Length (s)",
@@ -224,6 +225,7 @@
     "toRecord": "Practice recording →"
   },
   "common": {
-    "slowHint": "Local models can take tens of seconds. Please wait…"
+    "slowHint": "Local models can take tens of seconds. Please wait…",
+    "practiceAgain": "Practice again"
   }
 }

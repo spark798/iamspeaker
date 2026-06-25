@@ -6,8 +6,22 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 const payload = {
   attempts: [
-    { recordingId: "a", createdAt: 86_400_000, durationSec: 60, wpm: 100, fillerCount: 8 },
-    { recordingId: "b", createdAt: 2 * 86_400_000, durationSec: 60, wpm: 140, fillerCount: 3 },
+    {
+      recordingId: "a",
+      createdAt: 86_400_000,
+      durationSec: 60,
+      scriptVersion: 0,
+      wpm: 100,
+      fillerCount: 8,
+    },
+    {
+      recordingId: "b",
+      createdAt: 2 * 86_400_000,
+      durationSec: 60,
+      scriptVersion: 1,
+      wpm: 140,
+      fillerCount: 3,
+    },
   ],
   summary: {
     analyzedCount: 2,

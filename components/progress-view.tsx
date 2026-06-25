@@ -9,6 +9,7 @@ interface Attempt {
   recordingId: string;
   createdAt: number;
   durationSec: number;
+  scriptVersion: number;
   wpm: number | null;
   fillerCount: number | null;
 }
@@ -158,6 +159,7 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
           <thead>
             <tr className="border-b border-neutral-200 text-left text-xs text-neutral-500 dark:border-neutral-800">
               <th className="py-2">{t("attempt")}</th>
+              <th className="py-2">{t("version")}</th>
               <th className="py-2">{t("wpm")}</th>
               <th className="py-2">{t("fillers")}</th>
               <th className="py-2">{t("duration")}</th>
@@ -170,6 +172,7 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
                 className="border-b border-neutral-100 dark:border-neutral-900"
               >
                 <td className="py-2">#{i + 1}</td>
+                <td className="py-2 text-neutral-500">v{a.scriptVersion}</td>
                 <td className="py-2">
                   {a.wpm === null ? (
                     <span className="text-neutral-400">{t("pending")}</span>

@@ -110,6 +110,7 @@
     "noData": "暂无录音。试试练习录音吧。",
     "loading": "加载中…",
     "attempt": "次",
+    "version": "版本",
     "wpm": "WPM",
     "fillers": "填充词",
     "duration": "时长（秒）",
@@ -224,6 +225,7 @@
     "toRecord": "练习录音 →"
   },
   "common": {
-    "slowHint": "本地模型可能需要数十秒，请稍候…"
+    "slowHint": "本地模型可能需要数十秒，请稍候…",
+    "practiceAgain": "用此脚本再次练习"
   }
 }

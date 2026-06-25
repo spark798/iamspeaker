@@ -29,6 +29,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
         recordingId: r.id,
         createdAt: r.createdAt,
         durationSec: r.durationSec,
+        scriptVersion: r.scriptVersion,
         wpm: a?.wpm ?? null,
         fillerCount: a ? a.fillerWords.reduce((n, f) => n + f.count, 0) : null,
       };

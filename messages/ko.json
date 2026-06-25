@@ -110,6 +110,7 @@
     "noData": "아직 녹음 기록이 없습니다. 연습 녹음을 해보세요.",
     "loading": "불러오는 중…",
     "attempt": "회차",
+    "version": "버전",
     "wpm": "WPM",
     "fillers": "필러",
     "duration": "길이(초)",
@@ -224,6 +225,7 @@
     "toRecord": "연습 녹음 →"
   },
   "common": {
-    "slowHint": "로컬 모델은 수십 초 걸릴 수 있어요. 잠시 기다려주세요…"
+    "slowHint": "로컬 모델은 수십 초 걸릴 수 있어요. 잠시 기다려주세요…",
+    "practiceAgain": "이 스크립트로 다시 연습"
   }
 }

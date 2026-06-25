@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 const analysis = {
+  sessionId: "s1",
   wpm: 130,
   fillerWords: [],
   slideTimeBreakdown: [],
@@ -56,6 +57,16 @@ describe("ReportView — PDF export", () => {
     const btn = await screen.findByRole("button", { name: messages.report.exportPdf });
     fireEvent.click(btn);
     expect(printSpy).toHaveBeenCalledOnce();
+  });
+
+  it("'다시 연습' CTA가 세션 녹음 화면으로 (루프백)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, json: async () => analysis })) as unknown as typeof fetch,
+    );
+    renderReport();
+    const again = await screen.findByRole("link", { name: messages.common.practiceAgain });
+    expect(again).toHaveAttribute("href", "/record?session=s1");
   });
 
   it("발음 점수(0-100)를 표시", async () => {

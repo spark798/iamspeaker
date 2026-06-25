@@ -110,6 +110,7 @@
     "noData": "Aún no hay grabaciones. Prueba una grabación de práctica.",
     "loading": "Cargando…",
     "attempt": "Intento",
+    "version": "Versión",
     "wpm": "WPM",
     "fillers": "Muletillas",
     "duration": "Duración (s)",
@@ -224,6 +225,7 @@
     "toRecord": "Grabación de práctica →"
   },
   "common": {
-    "slowHint": "Los modelos locales pueden tardar decenas de segundos. Espera…"
+    "slowHint": "Los modelos locales pueden tardar decenas de segundos. Espera…",
+    "practiceAgain": "Practicar de nuevo"
   }
 }
