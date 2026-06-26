@@ -256,5 +256,12 @@
   "common": {
     "slowHint": "로컬 모델은 수십 초 걸릴 수 있어요. 잠시 기다려주세요…",
     "practiceAgain": "이 스크립트로 다시 연습"
+  },
+  "dashboard": {
+    "title": "내 발표",
+    "untitled": "제목 없는 발표",
+    "open": "열기",
+    "history": "기록",
+    "takes": "{count}회 연습"
   }
 }

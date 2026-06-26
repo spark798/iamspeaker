@@ -256,5 +256,12 @@
   "common": {
     "slowHint": "Los modelos locales pueden tardar decenas de segundos. Espera…",
     "practiceAgain": "Practicar de nuevo"
+  },
+  "dashboard": {
+    "title": "Tus presentaciones",
+    "untitled": "Presentación sin título",
+    "open": "Abrir",
+    "history": "Historial",
+    "takes": "{count} intentos"
   }
 }

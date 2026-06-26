@@ -256,5 +256,12 @@
   "common": {
     "slowHint": "ローカルモデルは数十秒かかることがあります。少々お待ちください…",
     "practiceAgain": "このスクリプトで再練習"
+  },
+  "dashboard": {
+    "title": "あなたの発表",
+    "untitled": "無題の発表",
+    "open": "開く",
+    "history": "記録",
+    "takes": "{count}回練習"
   }
 }

@@ -256,5 +256,12 @@
   "common": {
     "slowHint": "Local models can take tens of seconds. Please wait…",
     "practiceAgain": "Practice again"
+  },
+  "dashboard": {
+    "title": "Your talks",
+    "untitled": "Untitled talk",
+    "open": "Open",
+    "history": "History",
+    "takes": "{count} takes"
   }
 }

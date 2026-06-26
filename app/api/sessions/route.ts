@@ -1,11 +1,52 @@
 import { randomUUID } from "node:crypto";
+import { basename } from "node:path";
 import { getDb } from "@/lib/db";
-import { sessions, slides } from "@/lib/db/schema";
+import { recordings, sessions, slides } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { rateLimitGuard } from "@/lib/ratelimit";
+import { desc } from "drizzle-orm";
 import { z } from "zod";
 
 export const dynamic = "force-dynamic";
+
+/** 대시보드용 세션 목록 — 회차 수·마지막 연습 시각 포함, 최신순. */
+export async function GET() {
+  try {
+    const db = getDb();
+    const ses = db.select().from(sessions).orderBy(desc(sessions.createdAt)).all();
+    const recs = db
+      .select({ sessionId: recordings.sessionId, createdAt: recordings.createdAt })
+      .from(recordings)
+      .all();
+    const bySession = new Map<string, { count: number; last: number }>();
+    for (const r of recs) {
+      const ts = r.createdAt instanceof Date ? r.createdAt.getTime() : Number(r.createdAt);
+      const cur = bySession.get(r.sessionId) ?? { count: 0, last: 0 };
+      cur.count++;
+      cur.last = Math.max(cur.last, ts);
+      bySession.set(r.sessionId, cur);
+    }
+    const list = ses.map((s) => {
+      const agg = bySession.get(s.id);
+      const fileName =
+        s.slideFilePath && s.slideFilePath !== "(inline)" ? basename(s.slideFilePath) : null;
+      return {
+        id: s.id,
+        createdAt: s.createdAt instanceof Date ? s.createdAt.getTime() : Number(s.createdAt),
+        genre: s.genre,
+        targetDurationSec: s.targetDurationSec,
+        language: s.language,
+        nativeLanguage: s.nativeLanguage,
+        slideFileName: fileName,
+        recordingCount: agg?.count ?? 0,
+        lastPracticedAt: agg?.last ?? null,
+      };
+    });
+    return Response.json({ sessions: list });
+  } catch (err) {
+    return errorResponse(err);
+  }
+}
 
 // 셸/Walking Skeleton용: 슬라이드를 인라인으로 받는다. Phase 1에서 파일 업로드+파서로 대체.
 const Body = z.object({

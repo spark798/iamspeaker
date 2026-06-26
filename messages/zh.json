@@ -256,5 +256,12 @@
   "common": {
     "slowHint": "本地模型可能需要数十秒，请稍候…",
     "practiceAgain": "用此脚本再次练习"
+  },
+  "dashboard": {
+    "title": "我的演讲",
+    "untitled": "未命名演讲",
+    "open": "打开",
+    "history": "记录",
+    "takes": "{count} 次练习"
   }
 }
