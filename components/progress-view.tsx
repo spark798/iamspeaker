@@ -3,7 +3,7 @@
 import { TrendChart } from "@/components/trend-chart";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Attempt {
   recordingId: string;
@@ -45,9 +45,10 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [goal, setGoal] = useState<Goal | null>(null);
+  const [editingGoal, setEditingGoal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = useCallback(() => {
     fetch(`/api/sessions/${sessionId}/progress`)
       .then((r) => r.json())
       .then((b: { attempts: Attempt[]; summary?: Summary; goal?: Goal }) => {
@@ -57,6 +58,23 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
       })
       .catch(() => setError(te("loadFailed")));
   }, [sessionId, te]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const saveGoal = useCallback(
+    async (body: Record<string, number | null>) => {
+      await fetch(`/api/sessions/${sessionId}/goals`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      setEditingGoal(false);
+      load();
+    },
+    [sessionId, load],
+  );
 
   if (error)
     return (
@@ -120,7 +138,85 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
               {summary.latestMeetsGoal ? t("latestOk") : t("latestNo")}
             </span>{" "}
             · {t("goalMet", { met: summary.goalMetCount, total: summary.analyzedCount })}
+            {!editingGoal && (
+              <button
+                type="button"
+                onClick={() => setEditingGoal(true)}
+                className="ml-2 text-xs text-brand hover:underline"
+              >
+                {t("editGoal")}
+              </button>
+            )}
           </p>
+
+          {editingGoal && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const f = new FormData(e.currentTarget);
+                void saveGoal({
+                  goalWpmMin: Number(f.get("min")),
+                  goalWpmMax: Number(f.get("max")),
+                  goalFillerPerMin: Number(f.get("filler")),
+                });
+              }}
+              className="flex flex-wrap items-end gap-2 text-sm"
+            >
+              <label className="flex flex-col text-xs text-neutral-500">
+                {t("wpm")} min
+                <input
+                  name="min"
+                  type="number"
+                  min={1}
+                  defaultValue={goal.wpmMin}
+                  className="w-20 rounded border border-neutral-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                />
+              </label>
+              <label className="flex flex-col text-xs text-neutral-500">
+                {t("wpm")} max
+                <input
+                  name="max"
+                  type="number"
+                  min={1}
+                  defaultValue={goal.wpmMax}
+                  className="w-20 rounded border border-neutral-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                />
+              </label>
+              <label className="flex flex-col text-xs text-neutral-500">
+                {t("fillers")} ≤/m
+                <input
+                  name="filler"
+                  type="number"
+                  min={0}
+                  step={0.5}
+                  defaultValue={goal.fillerPerMinMax}
+                  className="w-20 rounded border border-neutral-300 px-2 py-1 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                />
+              </label>
+              <button
+                type="submit"
+                className="rounded-md bg-brand px-3 py-1 text-sm font-medium text-brand-fg hover:opacity-90"
+              >
+                {t("saveGoal")}
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  void saveGoal({ goalWpmMin: null, goalWpmMax: null, goalFillerPerMin: null })
+                }
+                className="text-xs text-neutral-500 hover:underline"
+              >
+                {t("resetGoal")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setEditingGoal(false)}
+                className="text-xs text-neutral-500 hover:underline"
+              >
+                {t("cancelGoal")}
+              </button>
+            </form>
+          )}
 
           {(summary.bestFiller || summary.bestWpm) && (
             <p className="text-sm text-neutral-500">

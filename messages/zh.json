@@ -124,7 +124,11 @@
     "latestOk": "最近达成 ✓",
     "latestNo": "最近未达",
     "goalMet": "{met}/{total} 次达成目标",
-    "best": "最佳"
+    "best": "最佳",
+    "editGoal": "编辑目标",
+    "saveGoal": "保存",
+    "resetGoal": "使用基准",
+    "cancelGoal": "取消"
   },
   "record": {
     "title": "练习录音",

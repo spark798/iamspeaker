@@ -5,6 +5,7 @@ import { generateWithRefinement } from "@/lib/ai/refine";
 import type { Adapters } from "@/lib/ai/types";
 import { loadBaseline } from "@/lib/analysis/baselines";
 import { generateCues } from "@/lib/analysis/cues";
+import { resolveGoal } from "@/lib/analysis/goal";
 import { pronunciationScore } from "@/lib/analysis/pronunciation";
 import { analyzeSpeech } from "@/lib/analysis/speech";
 import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
@@ -220,7 +221,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
       // 처방 cue를 개선에 주입(코치→개선 연결): 측정된 슬라이드별 약점을 직접 겨냥.
       const baseline = loadBaseline(session.genre);
       const nonNative = !!session.nativeLanguage && session.nativeLanguage !== session.language;
-      const wpmSpec = baseline.metrics.wpm;
+      const goal = resolveGoal(session, baseline, nonNative);
       const deckCount = db
         .select()
         .from(slides)
@@ -231,14 +232,8 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         transitions: rec.transitions,
         totalDurationSec: rec.durationSec,
         fillerWords: analysisRow.fillerWords,
-        goalWpmMin:
-          nonNative && wpmSpec?.nonNativeIdealMin !== undefined
-            ? wpmSpec.nonNativeIdealMin
-            : (wpmSpec?.idealMin ?? 110),
-        goalWpmMax:
-          nonNative && wpmSpec?.nonNativeIdealMax !== undefined
-            ? wpmSpec.nonNativeIdealMax
-            : (wpmSpec?.idealMax ?? 150),
+        goalWpmMin: goal.wpmMin,
+        goalWpmMax: goal.wpmMax,
         targetDurationSec: session.targetDurationSec,
         slideCount: deckCount,
       });

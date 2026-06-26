@@ -124,7 +124,11 @@
     "latestOk": "último cumplió ✓",
     "latestNo": "último por debajo",
     "goalMet": "{met}/{total} intentos cumplieron",
-    "best": "Mejor"
+    "best": "Mejor",
+    "editGoal": "Editar meta",
+    "saveGoal": "Guardar",
+    "resetGoal": "Usar base",
+    "cancelGoal": "Cancelar"
   },
   "record": {
     "title": "Grabación de práctica",

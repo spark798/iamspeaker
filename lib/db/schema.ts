@@ -30,6 +30,10 @@ export const sessions = sqliteTable("sessions", {
   nativeLanguage: text("native_language"),
   // 발표 장르 — 품질 기준선(B-001) 선택에 사용. talk(강연)/pitch(피칭)/lecture(강의).
   genre: text("genre").$type<Genre>().notNull().default("talk"),
+  // 사용자 지정 목표(선택). null이면 장르 기준선에서 자동 도출. "내 코치" 개인화.
+  goalWpmMin: integer("goal_wpm_min"),
+  goalWpmMax: integer("goal_wpm_max"),
+  goalFillerPerMin: real("goal_filler_per_min"),
 });
 
 export const slides = sqliteTable("slides", {

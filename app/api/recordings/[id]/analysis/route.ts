@@ -1,5 +1,6 @@
 import { loadBaseline } from "@/lib/analysis/baselines";
 import { generateCues } from "@/lib/analysis/cues";
+import { resolveGoal } from "@/lib/analysis/goal";
 import { scoreAnalysis } from "@/lib/analysis/percentile";
 import { getDb } from "@/lib/db";
 import { analysisResults, recordings, sessions, slides } from "@/lib/db/schema";
@@ -52,20 +53,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     );
 
     // 처방적 코칭 신호: 슬라이드별 페이스·시간예산·필러 밀집(어디서 무엇을).
-    const wpmSpec = baseline.metrics.wpm;
+    const goal = resolveGoal(session ?? {}, baseline, nonNative);
     const cues = generateCues({
       breakdown: row.slideTimeBreakdown,
       transitions: rec?.transitions ?? [],
       totalDurationSec: rec?.durationSec ?? 0,
       fillerWords: row.fillerWords,
-      goalWpmMin:
-        nonNative && wpmSpec?.nonNativeIdealMin !== undefined
-          ? wpmSpec.nonNativeIdealMin
-          : (wpmSpec?.idealMin ?? 110),
-      goalWpmMax:
-        nonNative && wpmSpec?.nonNativeIdealMax !== undefined
-          ? wpmSpec.nonNativeIdealMax
-          : (wpmSpec?.idealMax ?? 150),
+      goalWpmMin: goal.wpmMin,
+      goalWpmMax: goal.wpmMax,
       targetDurationSec: session?.targetDurationSec ?? 0,
       slideCount: deck.length,
     });

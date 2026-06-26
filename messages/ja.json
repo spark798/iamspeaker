@@ -124,7 +124,11 @@
     "latestOk": "直近達成 ✓",
     "latestNo": "直近未達",
     "goalMet": "{met}/{total}回 目標達成",
-    "best": "ベスト"
+    "best": "ベスト",
+    "editGoal": "目標を編集",
+    "saveGoal": "保存",
+    "resetGoal": "基準値に戻す",
+    "cancelGoal": "キャンセル"
   },
   "record": {
     "title": "練習録音",

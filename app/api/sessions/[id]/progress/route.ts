@@ -1,5 +1,6 @@
 import { loadBaseline } from "@/lib/analysis/baselines";
-import { type ProgressGoal, summarizeProgress } from "@/lib/analysis/progress";
+import { resolveGoal } from "@/lib/analysis/goal";
+import { summarizeProgress } from "@/lib/analysis/progress";
 import { getDb } from "@/lib/db";
 import { analysisResults, recordings, sessions } from "@/lib/db/schema";
 import { errorResponse } from "@/lib/errors";
@@ -35,25 +36,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       };
     });
 
-    // 목표(기준선): 세션 장르 + 비원어민 보정. 필러 상한은 ideal~hard 사이의 현실적 "양호" 지점.
+    // 목표: 사용자 지정값 우선, 없으면 장르 기준선(+비원어민 보정).
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     const baseline = loadBaseline(session?.genre ?? "talk");
     const nonNative = !!session?.nativeLanguage && session.nativeLanguage !== session.language;
-    const wpmSpec = baseline.metrics.wpm;
-    const fillerSpec = baseline.metrics.fillerPerMin;
-    const goal: ProgressGoal = {
-      wpmMin:
-        nonNative && wpmSpec?.nonNativeIdealMin !== undefined
-          ? wpmSpec.nonNativeIdealMin
-          : (wpmSpec?.idealMin ?? 110),
-      wpmMax:
-        nonNative && wpmSpec?.nonNativeIdealMax !== undefined
-          ? wpmSpec.nonNativeIdealMax
-          : (wpmSpec?.idealMax ?? 150),
-      fillerPerMinMax: fillerSpec
-        ? Math.round(fillerSpec.ideal + (fillerSpec.hard - fillerSpec.ideal) * 0.4)
-        : 5,
-    };
+    const goal = resolveGoal(session ?? {}, baseline, nonNative);
 
     const summary = summarizeProgress(
       attempts.map((a) => ({

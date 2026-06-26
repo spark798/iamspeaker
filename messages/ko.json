@@ -124,7 +124,11 @@
     "latestOk": "최근 회차 달성 ✓",
     "latestNo": "최근 회차 미달",
     "goalMet": "{met}/{total}회차 목표 달성",
-    "best": "베스트"
+    "best": "베스트",
+    "editGoal": "목표 편집",
+    "saveGoal": "저장",
+    "resetGoal": "기준선으로",
+    "cancelGoal": "취소"
   },
   "record": {
     "title": "연습 녹음",

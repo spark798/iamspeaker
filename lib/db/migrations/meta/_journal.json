@@ -57,6 +57,13 @@
       "when": 1782360136836,
       "tag": "0007_quick_eddie_brock",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1782400559270,
+      "tag": "0008_modern_junta",
+      "breakpoints": true
     }
   ]
 }
