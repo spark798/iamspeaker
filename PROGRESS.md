@@ -18,7 +18,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 241 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 246 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-25** — **회차 나란히 비교 diff 뷰(Pillar ①)**: 두 연습 회차의 지표·점수를 나란히+델타로("내가 나아졌나" 확인). 점수(0~100, 높을수록 좋음) 비교로 WPM 방향 모호성 제거. `lib/analysis/compare.ts`(순수: compareScores 메트릭 합집합·짝지음·델타, valueDelta), analysis 라우트 durationSec 반환, `components/compare-view.tsx`(헤드라인 발음점수·WPM·필러·길이 + 기준선 점수표, 개선 화살표·색) + `app/(session)/compare` 페이지(?a&b), ProgressView에 회차 선택 2셀렉트(기본 첫↔최신)+비교 버튼. i18n compare 네임스페이스+progress.compare* 5로케일. compareScores 단위 +4·렌더 테스트·/compare 빌드. CI 그린, 246 단위테스트, build·E2E OK.
 - **2026-06-25** — **사용자 지정 목표(Pillar ①·ⓒ "내 코치")**: 목표가 장르 기준선 자동도출이던 것을 사용자가 WPM 구간·필러 상한 직접 설정 가능하게(미설정 시 기준선 폴백). sessions += goal_wpm_min/max·goal_filler_per_min(마이그 0008). `lib/analysis/goal.ts resolveGoal`(순수 단일 진실원: 오버라이드 우선/기준선 폴백+비원어민) — progress·analysis(cues)·improve 3곳 중복 제거. `PATCH /api/sessions/[id]/goals`(zod min≤max·null초기화·레이트리밋). ProgressView 요약 카드에 목표 편집 인라인 폼. i18n 4키 5로케일. **라이브(prod)**: 150-170→120-140/필러3 저장·반영, min>max→400. resolveGoal 단위 +5. CI 그린, 241 단위테스트, build·E2E OK. **다음**: 도그푸드(사람) 또는 cue↔improve 추가 다듬기.
 - **2026-06-25** — **코치→개선 연결(Pillar ②)**: 처방 cue를 improve 프롬프트에 슬라이드별 영어 편집 지시로 주입해, 개선 스크립트가 측정된 약점을 직접 겨냥. `ScriptGeneratorAdapter.improve(...cues?)` 확장(llm/stub), `improveScriptPrompt(...cues)`에 cueInstruction 섹션, improve 핸들러가 generateCues 산출(전환·기준선 목표·target·덱)해 주입. **라이브 검증(hermes3:8b)**: 슬라이드 1 pace_fast cue → 모델이 슬라이드 1만 개선(긴 문장 분할+쉼표), 미플래그 슬라이드는 그대로. 프롬프트 단위 +2. CI 그린, 236 단위테스트, build OK. **다음 후보**: 도그푸드(실 발표 3회+) 또는 목표 커스터마이즈.
 - **2026-06-25** — **처방적 코칭 노트(Pillar ②)** — 방향 논의에서 합의한 최대 품질 레버. 서술적 지표를 "어디서·무엇을"의 행동으로. 새 인프라 0(이미 가진 전환 타임스탬프·구간별 단어/필러 조합). SlideTimeBreakdown.wordCount?(JSON, 마이그 불필요) + computeSlideTimeBreakdown이 단어를 슬라이드 구간 버킷팅→슬라이드별 WPM. `lib/analysis/cues.ts generateCues`(순수): 페이스(빠름/느림 vs 목표)·시간예산(길었음/급함 vs target/slide)·필러 밀집(구간 버킷 ≥3), 노이즈 임계(단어≥10)·최대 6. analysis 라우트가 cues 산출·반환, report-view 상단 코칭 노트 카드(슬라이드 앵커 행동 문구, 없으면 격려). i18n cue_* 5종+title+none 5로케일. cues 단위 +6·speech wordCount +1·렌더 테스트. 구버전 기록은 wordCount 없어 페이스 생략(시간/필러는 동작). CI 그린, 234 단위테스트, build·E2E OK. **다음 후보**: 처방 cue를 개선 프롬프트에 주입(코치→개선 연결), 또는 도그푸드.
