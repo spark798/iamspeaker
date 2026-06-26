@@ -128,7 +128,25 @@
     "editGoal": "目標を編集",
     "saveGoal": "保存",
     "resetGoal": "基準値に戻す",
-    "cancelGoal": "キャンセル"
+    "cancelGoal": "キャンセル",
+    "compareLabel": "回を比較",
+    "compare": "比較",
+    "comparePickTwo": "異なる2つの回を選んでください"
+  },
+  "compare": {
+    "title": "回の比較",
+    "noSelection": "比較する2つの回が必要です。進捗ページで選んでください。",
+    "loading": "読み込み中…",
+    "metric": "指標",
+    "takeA": "A",
+    "takeB": "B",
+    "delta": "変化",
+    "pronScore": "発音スコア",
+    "wpm": "WPM",
+    "fillers": "フィラー（計）",
+    "duration": "長さ（秒）",
+    "scoreTitle": "基準値との比較スコア",
+    "scoreHint": "スコアは0〜100、高いほど良い（▲＝Bが改善）"
   },
   "record": {
     "title": "練習録音",

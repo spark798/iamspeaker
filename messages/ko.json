@@ -128,7 +128,25 @@
     "editGoal": "목표 편집",
     "saveGoal": "저장",
     "resetGoal": "기준선으로",
-    "cancelGoal": "취소"
+    "cancelGoal": "취소",
+    "compareLabel": "회차 비교",
+    "compare": "비교",
+    "comparePickTwo": "서로 다른 두 회차를 고르세요"
+  },
+  "compare": {
+    "title": "회차 비교",
+    "noSelection": "비교할 두 회차가 필요합니다. 진행 기록에서 선택하세요.",
+    "loading": "불러오는 중…",
+    "metric": "지표",
+    "takeA": "A",
+    "takeB": "B",
+    "delta": "변화",
+    "pronScore": "발음 점수",
+    "wpm": "WPM",
+    "fillers": "필러(총)",
+    "duration": "길이(초)",
+    "scoreTitle": "기준선 대비 점수",
+    "scoreHint": "점수는 0~100, 높을수록 좋음 (▲=B 개선)"
   },
   "record": {
     "title": "연습 녹음",

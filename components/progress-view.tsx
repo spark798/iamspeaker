@@ -46,6 +46,8 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
   const [summary, setSummary] = useState<Summary | null>(null);
   const [goal, setGoal] = useState<Goal | null>(null);
   const [editingGoal, setEditingGoal] = useState(false);
+  const [cmpA, setCmpA] = useState("");
+  const [cmpB, setCmpB] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(() => {
@@ -249,6 +251,57 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
           <TrendChart values={fillerSeries} color="#d97706" label={t("fillerTrend")} />
         </div>
       )}
+
+      {(() => {
+        // 분석 완료 회차만 비교 대상(전체 목록의 #번호 유지).
+        const opts = attempts.map((at, i) => ({
+          id: at.recordingId,
+          n: i + 1,
+          ok: at.wpm !== null,
+        }));
+        const analyzedOpts = opts.filter((o) => o.ok);
+        if (analyzedOpts.length < 2) return null;
+        const a = cmpA || (analyzedOpts[0]?.id ?? "");
+        const b = cmpB || (analyzedOpts[analyzedOpts.length - 1]?.id ?? "");
+        return (
+          <div className="flex flex-wrap items-center gap-2 text-sm">
+            <span className="text-neutral-500">{t("compareLabel")}</span>
+            <select
+              value={a}
+              onChange={(e) => setCmpA(e.target.value)}
+              className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+            >
+              {analyzedOpts.map((o) => (
+                <option key={o.id} value={o.id}>
+                  #{o.n}
+                </option>
+              ))}
+            </select>
+            <span className="text-neutral-400">↔</span>
+            <select
+              value={b}
+              onChange={(e) => setCmpB(e.target.value)}
+              className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+            >
+              {analyzedOpts.map((o) => (
+                <option key={o.id} value={o.id}>
+                  #{o.n}
+                </option>
+              ))}
+            </select>
+            {a !== b ? (
+              <Link
+                href={`/compare?a=${a}&b=${b}`}
+                className="rounded-md bg-brand px-3 py-1 font-medium text-brand-fg hover:opacity-90"
+              >
+                {t("compare")}
+              </Link>
+            ) : (
+              <span className="text-xs text-neutral-400">{t("comparePickTwo")}</span>
+            )}
+          </div>
+        );
+      })()}
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[20rem] text-sm">

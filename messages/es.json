@@ -128,7 +128,25 @@
     "editGoal": "Editar meta",
     "saveGoal": "Guardar",
     "resetGoal": "Usar base",
-    "cancelGoal": "Cancelar"
+    "cancelGoal": "Cancelar",
+    "compareLabel": "Comparar intentos",
+    "compare": "Comparar",
+    "comparePickTwo": "Elige dos intentos distintos"
+  },
+  "compare": {
+    "title": "Comparar intentos",
+    "noSelection": "Se necesitan dos intentos. Selecciónalos en la página de progreso.",
+    "loading": "Cargando…",
+    "metric": "Métrica",
+    "takeA": "A",
+    "takeB": "B",
+    "delta": "Cambio",
+    "pronScore": "Pronunciación",
+    "wpm": "PPM",
+    "fillers": "Muletillas (total)",
+    "duration": "Duración (s)",
+    "scoreTitle": "Puntuaciones vs base",
+    "scoreHint": "Las puntuaciones son 0–100, más alto es mejor (▲ = B mejoró)"
   },
   "record": {
     "title": "Grabación de práctica",

@@ -128,7 +128,25 @@
     "editGoal": "Edit goal",
     "saveGoal": "Save",
     "resetGoal": "Use baseline",
-    "cancelGoal": "Cancel"
+    "cancelGoal": "Cancel",
+    "compareLabel": "Compare takes",
+    "compare": "Compare",
+    "comparePickTwo": "Pick two different takes"
+  },
+  "compare": {
+    "title": "Compare takes",
+    "noSelection": "Two takes are needed. Pick them on the progress page.",
+    "loading": "Loading…",
+    "metric": "Metric",
+    "takeA": "A",
+    "takeB": "B",
+    "delta": "Change",
+    "pronScore": "Pronunciation",
+    "wpm": "WPM",
+    "fillers": "Fillers (total)",
+    "duration": "Length (s)",
+    "scoreTitle": "Scores vs baseline",
+    "scoreHint": "Scores are 0–100, higher is better (▲ = B improved)"
   },
   "record": {
     "title": "Practice recording",

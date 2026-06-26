@@ -128,7 +128,25 @@
     "editGoal": "编辑目标",
     "saveGoal": "保存",
     "resetGoal": "使用基准",
-    "cancelGoal": "取消"
+    "cancelGoal": "取消",
+    "compareLabel": "比较次数",
+    "compare": "比较",
+    "comparePickTwo": "请选择两个不同的次数"
+  },
+  "compare": {
+    "title": "次数比较",
+    "noSelection": "需要两个次数进行比较。请在进度页选择。",
+    "loading": "加载中…",
+    "metric": "指标",
+    "takeA": "A",
+    "takeB": "B",
+    "delta": "变化",
+    "pronScore": "发音评分",
+    "wpm": "WPM",
+    "fillers": "填充词（总）",
+    "duration": "时长（秒）",
+    "scoreTitle": "相对基准的评分",
+    "scoreHint": "评分为 0–100，越高越好（▲＝B 改进）"
   },
   "record": {
     "title": "练习录音",

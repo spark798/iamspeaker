@@ -67,6 +67,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
 
     return Response.json({
       sessionId: rec?.sessionId ?? null,
+      durationSec: rec?.durationSec ?? 0,
       wpm: row.wpm,
       fillerWords: row.fillerWords,
       slideTimeBreakdown: row.slideTimeBreakdown,
