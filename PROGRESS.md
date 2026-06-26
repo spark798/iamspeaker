@@ -14,11 +14,11 @@
 | 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
 | 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적. **비동기 사후 리뷰**("발표용 게임 필름"). ✅완료: ①반복 루프 동기부여 · ④재연습 루프백 · ②처방적 코칭 노트. **폐기**: ③실시간 코칭. **보류**: GOP 자동 승격(②지표 이미 강함)·기능 폭 확장. |
 | 다음 액션 | ✅ⓐ코치→개선 연결(cue 주입) 완료. 후보: ⓑ**도그푸드**(실 발표 3회+ 직접 사용해 루프 검증 — 가장 중요, 사람 필요) ⓒ✅목표 커스터마이즈 완료. |
-| 최근 갱신 | 2026-06-25 |
+| 최근 갱신 | 2026-06-26 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 246 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 248 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-26** — **세션 목록/대시보드(홈)**: 세션 진입점이 흩어져 있던 것을 홈에서 한눈에 관리. `GET /api/sessions`(최신순 + 회차 수·마지막 연습 시각 집계, 슬라이드 파일명 라벨/(inline)→null), `components/session-list.tsx`(발표별 라벨·장르·회차·마지막연습 + 열기/demo·기록/progress[회차>0]), 홈을 히어로+세션목록+엔진상태로 재구성. i18n dashboard 네임스페이스 5로케일(장르는 uploadForm 재사용). 라이브 GET(32세션 집계 정상)·렌더 테스트. CI 그린, 248 단위테스트, build·E2E OK.
 - **2026-06-25** — **회차 나란히 비교 diff 뷰(Pillar ①)**: 두 연습 회차의 지표·점수를 나란히+델타로("내가 나아졌나" 확인). 점수(0~100, 높을수록 좋음) 비교로 WPM 방향 모호성 제거. `lib/analysis/compare.ts`(순수: compareScores 메트릭 합집합·짝지음·델타, valueDelta), analysis 라우트 durationSec 반환, `components/compare-view.tsx`(헤드라인 발음점수·WPM·필러·길이 + 기준선 점수표, 개선 화살표·색) + `app/(session)/compare` 페이지(?a&b), ProgressView에 회차 선택 2셀렉트(기본 첫↔최신)+비교 버튼. i18n compare 네임스페이스+progress.compare* 5로케일. compareScores 단위 +4·렌더 테스트·/compare 빌드. CI 그린, 246 단위테스트, build·E2E OK.
 - **2026-06-25** — **사용자 지정 목표(Pillar ①·ⓒ "내 코치")**: 목표가 장르 기준선 자동도출이던 것을 사용자가 WPM 구간·필러 상한 직접 설정 가능하게(미설정 시 기준선 폴백). sessions += goal_wpm_min/max·goal_filler_per_min(마이그 0008). `lib/analysis/goal.ts resolveGoal`(순수 단일 진실원: 오버라이드 우선/기준선 폴백+비원어민) — progress·analysis(cues)·improve 3곳 중복 제거. `PATCH /api/sessions/[id]/goals`(zod min≤max·null초기화·레이트리밋). ProgressView 요약 카드에 목표 편집 인라인 폼. i18n 4키 5로케일. **라이브(prod)**: 150-170→120-140/필러3 저장·반영, min>max→400. resolveGoal 단위 +5. CI 그린, 241 단위테스트, build·E2E OK. **다음**: 도그푸드(사람) 또는 cue↔improve 추가 다듬기.
 - **2026-06-25** — **코치→개선 연결(Pillar ②)**: 처방 cue를 improve 프롬프트에 슬라이드별 영어 편집 지시로 주입해, 개선 스크립트가 측정된 약점을 직접 겨냥. `ScriptGeneratorAdapter.improve(...cues?)` 확장(llm/stub), `improveScriptPrompt(...cues)`에 cueInstruction 섹션, improve 핸들러가 generateCues 산출(전환·기준선 목표·target·덱)해 주입. **라이브 검증(hermes3:8b)**: 슬라이드 1 pace_fast cue → 모델이 슬라이드 1만 개선(긴 문장 분할+쉼표), 미플래그 슬라이드는 그대로. 프롬프트 단위 +2. CI 그린, 236 단위테스트, build OK. **다음 후보**: 도그푸드(실 발표 3회+) 또는 목표 커스터마이즈.
