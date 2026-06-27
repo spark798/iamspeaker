@@ -33,6 +33,12 @@ export function SessionList() {
       .catch(() => setSessions([]));
   }, []);
 
+  const del = async (id: string) => {
+    if (!window.confirm(t("confirmDelete"))) return;
+    const res = await fetch(`/api/sessions/${id}`, { method: "DELETE" });
+    if (res.ok) setSessions((cur) => (cur ? cur.filter((s) => s.id !== id) : cur));
+  };
+
   if (!sessions || sessions.length === 0) return null;
 
   return (
@@ -63,6 +69,14 @@ export function SessionList() {
                   {t("history")}
                 </Link>
               )}
+              <button
+                type="button"
+                onClick={() => void del(s.id)}
+                className="text-neutral-400 hover:text-red-600"
+                aria-label={t("delete")}
+              >
+                {t("delete")}
+              </button>
             </div>
           </li>
         ))}

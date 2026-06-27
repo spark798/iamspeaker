@@ -262,6 +262,8 @@
     "untitled": "Presentación sin título",
     "open": "Abrir",
     "history": "Historial",
-    "takes": "{count} intentos"
+    "takes": "{count} intentos",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar esta presentación y todos sus registros de práctica? No se puede deshacer."
   }
 }

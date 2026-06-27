@@ -262,6 +262,8 @@
     "untitled": "未命名演讲",
     "open": "打开",
     "history": "记录",
-    "takes": "{count} 次练习"
+    "takes": "{count} 次练习",
+    "delete": "删除",
+    "confirmDelete": "删除此演讲及其所有练习记录？此操作无法撤销。"
   }
 }

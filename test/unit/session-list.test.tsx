@@ -1,6 +1,6 @@
 import { SessionList } from "@/components/session-list";
 import messages from "@/messages/ko.json";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -54,6 +54,42 @@ describe("SessionList", () => {
     expect(links).toContain("/progress?session=s1");
     expect(links).toContain("/demo?session=s2");
     expect(links).not.toContain("/progress?session=s2");
+  });
+
+  it("삭제: 확인 후 DELETE 호출 + 목록에서 제거", async () => {
+    const fetchMock = vi.fn(async (url: string, opts?: { method?: string }) =>
+      opts?.method === "DELETE"
+        ? { ok: true, json: async () => ({ ok: true }) }
+        : { ok: true, json: async () => ({ sessions }) },
+    );
+    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
+    vi.stubGlobal(
+      "confirm",
+      vi.fn(() => true),
+    );
+
+    renderList();
+    await screen.findByText("deck.pdf");
+    const delButtons = screen.getAllByRole("button", { name: messages.dashboard.delete });
+    fireEvent.click(delButtons[0] as HTMLElement); // s1 삭제
+
+    await waitFor(() => expect(screen.queryByText("deck.pdf")).not.toBeInTheDocument());
+    expect(fetchMock).toHaveBeenCalledWith("/api/sessions/s1", { method: "DELETE" });
+  });
+
+  it("삭제 취소(confirm=false)면 DELETE 호출 안 함", async () => {
+    const fetchMock = vi.fn(async () => ({ ok: true, json: async () => ({ sessions }) }));
+    vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
+    vi.stubGlobal(
+      "confirm",
+      vi.fn(() => false),
+    );
+    renderList();
+    await screen.findByText("deck.pdf");
+    fireEvent.click(
+      screen.getAllByRole("button", { name: messages.dashboard.delete })[0] as HTMLElement,
+    );
+    expect(fetchMock).not.toHaveBeenCalledWith("/api/sessions/s1", { method: "DELETE" });
   });
 
   it("세션이 없으면 아무것도 렌더하지 않음", async () => {

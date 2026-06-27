@@ -262,6 +262,8 @@
     "untitled": "Untitled talk",
     "open": "Open",
     "history": "History",
-    "takes": "{count} takes"
+    "takes": "{count} takes",
+    "delete": "Delete",
+    "confirmDelete": "Delete this talk and all its practice records? This cannot be undone."
   }
 }

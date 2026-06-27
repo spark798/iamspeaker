@@ -262,6 +262,8 @@
     "untitled": "제목 없는 발표",
     "open": "열기",
     "history": "기록",
-    "takes": "{count}회 연습"
+    "takes": "{count}회 연습",
+    "delete": "삭제",
+    "confirmDelete": "이 발표와 모든 연습 기록을 삭제할까요? 되돌릴 수 없습니다."
   }
 }

@@ -262,6 +262,8 @@
     "untitled": "無題の発表",
     "open": "開く",
     "history": "記録",
-    "takes": "{count}回練習"
+    "takes": "{count}回練習",
+    "delete": "削除",
+    "confirmDelete": "この発表とすべての練習記録を削除しますか？元に戻せません。"
   }
 }
