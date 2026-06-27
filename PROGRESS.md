@@ -18,7 +18,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 260 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 263 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-26** — **WPM 일관성 수정(A) + 페이스 변화도(B)**. **A**: WPM 헤드라인 색·힌트·추이 차트 음영이 하드코딩 110–150을 쓰며 장르/목표 기준선을 무시하던 불일치(버그: talk 150–170에서 160이 노란색) → resolved goal로 교체. analysis 라우트가 goal 반환, report-view 힌트 "목표 {min}–{max}", progress 차트 밴드=goal. i18n wpmGoalHint. **B**: 평균 WPM만 보던 것을 슬라이드 간 WPM 분산으로 **단조(monotone) 검출** — 범위/평균<12%이고 빠름/느림 outlier 없으면 플래그(deliberate-pauses 원칙 부합). Cue.kind+=monotone(덱 신호 slideIndex -1), report에 cue+팁, improve엔 "문장 길이 변화" 지시. i18n cue_monotone·cueTip_monotone 5로케일. **WPM 평균치는 재조사 불필요(benchmark.md에 출처 기록 완비) — 대신 일관성+변화도로 한 단계 올림.** 단위 +3. CI 그린, 263 단위테스트, build·E2E OK.
 - **2026-06-26** — **슬라이드 비평에 슬라이드 원칙 주입**: critiqueSlidesPrompt에 `rhetoricGuidance(["slides"])` 주입 — 비평이 명저 기반 디자인 원칙으로 평가. KB 슬라이드 카테고리 5원칙(one-idea-per-slide·slides-support·six-by-six·visual-signal·no-speaker-notes-slide). **라이브(hermes3:8b)**: 텍스트 과다 슬라이드→"one idea per slide 위반·visuals 부재" 직접 지적+"여러 슬라이드 분할·시각자료" 제안. 단위 +1. CI 그린, 260 단위테스트, build OK. **원칙 KB가 이제 4곳에 흐름**: 데모 생성·개선 제안·처방 cue 팁·슬라이드 비평.
 - **2026-06-26** — **처방 cue에 원칙 팁+출처 연결(Pillar ②)**: 코칭 노트 각 cue에 명저 기반 원칙 팁과 출처를 붙여 "왜"의 전문가 근거 제공. `cuePrincipleSource(kind)`(pace→Toastmasters·TED Guide, time_long·filler→Presentation Zen, time_short→TED Guide) + report-view에 cue 아래 로컬라이즈 팁+출처. i18n cueTip_* 5종 5로케일. 단위 +1·렌더 테스트. CI 그린, 259 단위테스트, build·E2E OK.
 - **2026-06-26** — **발표 원칙 KB → self-improve modeling**: 명저들(TED Guide·Talk Like TED·Resonate·Presentation Zen·Confessions·Toastmasters)이 대중화한 일반 발표 기법을 distill해 LLM 프롬프트에 주입 — AI가 데모를 만들 때부터 전문가처럼 쓰도록. `lib/ai/rhetoric/principles.ts`(15원칙: 오프닝/구조/스토리/언어/전달/클로징/슬라이드, 자체표현+출처귀속, **본문 0**=비저작권 기법) + `rhetoricGuidance(카테고리·상한)`. generate·improve 프롬프트에 주입(스크립트 카테고리). **라이브(hermes3:8b)**: 데모가 훅 질문 오프닝·스루라인 조기·what-is→could-be 대조·구체 스토리·대화체 적용(단순 불릿 대비 명확 향상). 단위 +4. CI 그린, 258 단위테스트, build OK. **다음 후보**: 처방리포트 cue에 원칙 팁(출처) 연결, 또는 도그푸드.
