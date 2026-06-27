@@ -11,6 +11,9 @@ describe("smoke", () => {
         <HomePage />
       </NextIntlClientProvider>,
     );
-    expect(screen.getByRole("heading", { name: "iamspeaker" })).toBeInTheDocument();
+    // 히어로 h1은 가치 헤드라인(브랜드명은 전역 헤더에 있음).
+    expect(
+      screen.getByRole("heading", { level: 1, name: messages.home.headline }),
+    ).toBeInTheDocument();
   });
 });

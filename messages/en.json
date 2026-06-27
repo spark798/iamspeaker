@@ -4,8 +4,22 @@
     "tagline": "Open-source presentation practice — upload slides, get an AI demo talk, then record and get feedback."
   },
   "home": {
-    "cta": "Get started",
-    "phase": "In development — start by uploading slides"
+    "headline": "Upload your slides — AI gives the demo talk first",
+    "subhead": "Don't start from a blank page. Get an AI demo talk in minutes, then improve through measured feedback on pace, pronunciation, and fillers — for native and non-native speakers alike.",
+    "cta": "Upload slides to start",
+    "ctaSub": "No API key · 100% local · open source",
+    "stepsTitle": "How it works",
+    "step1Title": "1. Upload slides",
+    "step1Desc": "Drop in a PPTX or PDF and we analyze the slides.",
+    "step2Title": "2. AI demo talk",
+    "step2Desc": "A demo script refined with speaking principles + voice + slide view.",
+    "step3Title": "3. Record & analyze",
+    "step3Desc": "We measure pace, pronunciation, and fillers, then give prescriptive feedback.",
+    "whyTitle": "Why iamspeaker",
+    "why1": "Privacy — uploads, recordings, and analysis stay on your device.",
+    "why2": "Free & open source — clone it and self-host instantly.",
+    "why3": "Local-first models — the whole loop runs without an API key.",
+    "why4": "Native-language coaching — non-native pronunciation and phrasing, fixed with L1 rules."
   },
   "engines": {
     "title": "Active AI engines",

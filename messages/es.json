@@ -4,8 +4,22 @@
     "tagline": "Práctica de presentaciones de código abierto — sube diapositivas, recibe una charla demo con IA, graba y obtén feedback."
   },
   "home": {
-    "cta": "Empezar",
-    "phase": "En desarrollo — empieza subiendo diapositivas"
+    "headline": "Sube tus diapositivas — la IA da la charla de muestra primero",
+    "subhead": "No empieces desde una página en blanco. Recibe una charla demo de IA en minutos y mejora con datos de ritmo, pronunciación y muletillas — para nativos y no nativos.",
+    "cta": "Subir diapositivas y empezar",
+    "ctaSub": "Sin clave API · 100% local · código abierto",
+    "stepsTitle": "Cómo funciona",
+    "step1Title": "1. Sube diapositivas",
+    "step1Desc": "Sube un PPTX o PDF y analizamos las diapositivas.",
+    "step2Title": "2. Charla demo de IA",
+    "step2Desc": "Guion demo pulido con principios de oratoria + voz + vista de diapositivas.",
+    "step3Title": "3. Graba y analiza",
+    "step3Desc": "Medimos ritmo, pronunciación y muletillas, y damos feedback prescriptivo.",
+    "whyTitle": "Por qué iamspeaker",
+    "why1": "Privacidad — subidas, grabaciones y análisis se quedan en tu dispositivo.",
+    "why2": "Gratis y de código abierto — clónalo y autohospédalo al instante.",
+    "why3": "Modelos locales primero — todo el ciclo funciona sin clave API.",
+    "why4": "Coaching en lengua materna — pronunciación y fraseo no nativo, corregidos con reglas L1."
   },
   "engines": {
     "title": "Motores de IA activos",
