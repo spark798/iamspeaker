@@ -143,7 +143,7 @@ export function UploadForm() {
           {t("nativeLanguage")}
           <select
             name="nativeLanguage"
-            defaultValue="ko"
+            defaultValue="en"
             className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
           >
             <option value="ko">{t("nativeKo")}</option>
