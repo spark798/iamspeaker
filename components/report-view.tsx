@@ -1,5 +1,6 @@
 "use client";
 
+import { cuePrincipleSource } from "@/lib/ai/rhetoric/principles";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -111,7 +112,14 @@ export function ReportView({ recordingId }: { recordingId: string }) {
             {data.cues.map((c, i) => (
               <li key={`${c.slideIndex}-${c.kind}-${i}`} className="flex items-start gap-2">
                 <span className="text-brand">▸</span>
-                <span>{t(`cue_${c.kind}`, { slide: c.slideIndex + 1, value: c.value ?? 0 })}</span>
+                <span>
+                  {t(`cue_${c.kind}`, { slide: c.slideIndex + 1, value: c.value ?? 0 })}
+                  {/* 전문가 원칙 팁 + 출처(명저 귀속). */}
+                  <span className="mt-0.5 block text-xs text-neutral-500">
+                    {t(`cueTip_${c.kind}`)}{" "}
+                    <span className="text-neutral-400">— {cuePrincipleSource(c.kind)}</span>
+                  </span>
+                </span>
               </li>
             ))}
           </ul>

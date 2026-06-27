@@ -202,6 +202,11 @@
     "cue_time_long": "幻灯片 {slide}：超出预算（{value}秒）— 只留要点",
     "cue_time_short": "幻灯片 {slide}：过快带过（{value}秒）",
     "cue_filler": "幻灯片 {slide}：{value} 个填充词集中 — 这里卡顿了",
+    "cueTip_pace_fast": "在关键句前后留出有意停顿 — 强调胜于速度",
+    "cueTip_pace_slow": "去掉冗余，表达更清晰（信噪比）",
+    "cueTip_time_long": "只留要点，删去枝节",
+    "cueTip_time_short": "增加更清晰的过渡或一句要点",
+    "cueTip_filler": "简化措辞 — 让它一口气说完",
     "toImprove": "查看改进建议 →"
   },
   "qa": {

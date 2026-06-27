@@ -129,6 +129,28 @@ export const PRINCIPLES: Principle[] = [
   },
 ];
 
+/**
+ * 처방 cue 종류 → 관련 원칙의 출처(표시용). 코칭 노트에 전문가 근거를 붙인다.
+ * 연계 원칙: pace_*→deliberate-pauses/signal-to-noise, time_long·filler→signal-to-noise,
+ * time_short→throughline-early.
+ */
+export function cuePrincipleSource(
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler",
+): string {
+  switch (kind) {
+    case "pace_fast":
+      return "Toastmasters · TED Guide";
+    case "pace_slow":
+      return "Presentation Zen";
+    case "time_long":
+      return "Presentation Zen";
+    case "time_short":
+      return "TED Guide";
+    case "filler":
+      return "Presentation Zen";
+  }
+}
+
 /** 스크립트(말하기) 생성·개선에 쓰는 카테고리(슬라이드 디자인 제외). */
 export const SCRIPT_CATEGORIES: PrincipleCategory[] = [
   "opening",

@@ -202,6 +202,11 @@
     "cue_time_long": "Slide {slide}: ran long ({value}s) — keep only the essentials",
     "cue_time_short": "Slide {slide}: rushed through ({value}s)",
     "cue_filler": "Slide {slide}: {value} fillers clustered — you hesitated here",
+    "cueTip_pace_fast": "Plant deliberate pauses around key lines — emphasis over speed",
+    "cueTip_pace_slow": "Trim filler for clarity (signal-to-noise)",
+    "cueTip_time_long": "Keep the essentials, cut the tangents",
+    "cueTip_time_short": "Add a clearer transition or a key takeaway line",
+    "cueTip_filler": "Simplify the phrasing so it flows in one breath",
     "toImprove": "View suggestions →"
   },
   "qa": {

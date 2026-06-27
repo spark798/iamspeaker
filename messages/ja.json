@@ -202,6 +202,11 @@
     "cue_time_long": "スライド{slide}：予算より長い（{value}秒）— 要点だけに",
     "cue_time_short": "スライド{slide}：急ぎすぎ（{value}秒）",
     "cue_filler": "スライド{slide}：フィラー{value}個が集中 — ここで詰まりました",
+    "cueTip_pace_fast": "重要な一文の前後に意図的な間を — 速さより強調",
+    "cueTip_pace_slow": "余計な言葉を削って明瞭に（信号対雑音）",
+    "cueTip_time_long": "要点だけ残し、脱線は削る",
+    "cueTip_time_short": "より明確な転換や要点の一文を追加",
+    "cueTip_filler": "言い回しを簡潔に — 一息で言えるように",
     "toImprove": "改善提案を見る →"
   },
   "qa": {

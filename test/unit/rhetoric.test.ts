@@ -1,7 +1,23 @@
 import { generateScriptPrompt, improveScriptPrompt } from "@/lib/ai/prompts";
-import { PRINCIPLES, SCRIPT_CATEGORIES, rhetoricGuidance } from "@/lib/ai/rhetoric/principles";
+import {
+  PRINCIPLES,
+  SCRIPT_CATEGORIES,
+  cuePrincipleSource,
+  rhetoricGuidance,
+} from "@/lib/ai/rhetoric/principles";
 import type { AnalysisResult, GenOptions, Script, SlideContent } from "@/lib/domain";
 import { describe, expect, it } from "vitest";
+
+describe("cuePrincipleSource", () => {
+  it("cue 종류마다 출처를 귀속", () => {
+    expect(cuePrincipleSource("pace_fast")).toMatch(/TED Guide/);
+    expect(cuePrincipleSource("time_long")).toBe("Presentation Zen");
+    expect(cuePrincipleSource("filler")).toBe("Presentation Zen");
+    for (const k of ["pace_fast", "pace_slow", "time_long", "time_short", "filler"] as const) {
+      expect(cuePrincipleSource(k).length).toBeGreaterThan(0);
+    }
+  });
+});
 
 describe("발표 원칙 KB", () => {
   it("모든 원칙이 id·카테고리·문구·출처를 가진다", () => {
