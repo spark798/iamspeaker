@@ -1,129 +1,131 @@
-# iamspeaker — 스토리보드 (Screen Flow & User Story)
+# iamspeaker — Storyboard (Screen Flow & User Story)
 
-> 출처: `AI_발표보조에이전트_스토리보드.docx`를 마크다운으로 변환.
-> 화면 ID(SCR-XX)와 Epic 번호는 코드/이슈/PR에서 동일하게 참조한다.
-> CLAUDE.md에서 신규 정의한 **SCR-01b / SCR-08 / Epic 6 / Epic 7**은 본 문서 §6에 병기한다.
+**English** · [한국어](storyboard.ko.md)
+
+> Source: converted from `AI_발표보조에이전트_스토리보드.docx` to Markdown.
+> Screen IDs (SCR-XX) and Epic numbers are referenced consistently across code/issues/PRs.
+> **SCR-01b / SCR-08 / Epic 6 / Epic 7**, newly defined in CLAUDE.md, are annotated in §6 of this document.
 
 ---
 
-## 1. 개요
+## 1. Overview
 
-비영어권 발표자가 슬라이드를 업로드하면, AI가 먼저 시범 발표(데모)를 생성해 보여주고, 사용자가 이를 참고해 연습 녹음을 하면 속도·발음·필러워드를 분석해 피드백을 제공하고 스크립트를 자동 개선해주는 에이전트.
+An agent where a non-native presenter uploads slides, the AI generates and shows a demo talk first, and once the user records a practice run for reference, it analyzes pace, pronunciation, and filler words to give feedback and automatically improve the script.
 
-### 핵심 가치 제안
-- 발표자가 백지 상태에서 시작하지 않도록 AI가 먼저 시범을 보여줌 (콜드 스타트 해소)
-- 객관적 데이터(속도·발음·시간 배분·필러워드) 기반 피드백
-- 스크립트를 반복 개선하며 점진적 향상
-- 다국어/접근성 버전(번역·음성·자막) 자동 생성
+### Core value proposition
+- The AI demos first so the presenter doesn't start from a blank page (cold-start removal)
+- Feedback grounded in objective data (pace, pronunciation, time allocation, filler words)
+- Gradual improvement by iterating on the script
+- Auto-generated multilingual/accessibility versions (translation, voice, subtitles)
 
-### 타겟 페르소나
-| 구분 | 내용 |
+### Target persona
+| Item | Description |
 |------|------|
-| 주 사용자 | 해외 투자자 앞에서 영어로 피칭해야 하는 한국 스타트업 창업자 |
-| 페인포인트 | 영어 발표 경험 부족, 발음/속도/표현 자신감 부족, 피드백 받을 곳이 없음 |
-| 목표 | 투자자 피칭 전 AI 데모를 참고해 스크립트를 만들고 반복 연습으로 완성도를 높임 |
+| Primary user | A Korean startup founder who has to pitch in English to overseas investors |
+| Pain points | Limited English presentation experience; low confidence in pronunciation/pace/phrasing; nowhere to get feedback |
+| Goal | Build a script using the AI demo before the investor pitch and raise polish through repeated practice |
 
 ---
 
-## 2. 전체 사용자 플로우
+## 2. End-to-end user flow
 
-두 가지 진입 경로:
-- **경로 A (콜드 스타트)**: 슬라이드만 있음 → AI 데모 발표 생성 → 사용자가 다듬음 → 연습/피드백 루프
-- **경로 B (스크립트 보유)**: 기존 스크립트+녹음 업로드 → 분석/피드백 루프
+Two entry paths:
+- **Path A (cold start)**: slides only → generate AI demo talk → user refines → practice/feedback loop
+- **Path B (existing script)**: upload existing script + recording → analysis/feedback loop
 
-### 단계 요약
-1. 슬라이드 업로드 (PPTX/PDF)
-2. [AI 데모 발표] 슬라이드 분석 → 스크립트 자동 생성 → TTS 음성/시범 발표 제공
-3. 사용자가 AI 데모를 참고해 자신의 스크립트 작성/수정
-4. 사용자가 실제 음성으로 연습 녹음
-5. [분석 엔진] WPM, 발음 정확도, 필러워드, 슬라이드별 시간 배분 분석
-6. [피드백 리포트] 시각화 결과 + 개선 스크립트 제안
-7. 사용자가 개선안을 반영해 재연습 (반복)
-8. [선택] 최종 스크립트의 다국어 버전 + 자막(SRT) 생성
+### Step summary
+1. Upload slides (PPTX/PDF)
+2. [AI demo talk] analyze slides → auto-generate script → provide TTS voice / demo talk
+3. The user writes/edits their own script using the AI demo for reference
+4. The user records a practice run in their own voice
+5. [Analysis engine] analyze WPM, pronunciation accuracy, filler words, per-slide time allocation
+6. [Feedback report] visualized results + improved-script suggestions
+7. The user applies the suggestions and re-practices (repeat)
+8. [Optional] generate a multilingual version of the final script + subtitles (SRT)
 
 ---
 
-## 3. 화면별 스토리보드
+## 3. Per-screen storyboard
 
-| 화면 ID | 이름 | 목적 | 다음 화면 |
+| Screen ID | Name | Purpose | Next screen |
 |---------|------|------|-----------|
-| SCR-01 | 슬라이드 업로드 | 슬라이드 파일 업로드 + 발표 설정(목표 시간·톤·언어·**모국어**) | SCR-01b |
-| SCR-01b | 슬라이드 분석 *(신규)* | 정보 밀도·시간 대비 슬라이드 수·구조 피드백 | SCR-02 |
-| SCR-02 | AI 데모 발표 | 생성된 스크립트+음성을 슬라이드와 동기화 재생 | SCR-03 |
-| SCR-03 | 스크립트 편집기 | AI 데모를 베이스로 사용자 스크립트 작성/수정 | SCR-04 |
-| SCR-04 | 연습 녹음 | 실제 음성으로 발표 녹음 | SCR-05 |
-| SCR-05 | 피드백 리포트 | 녹음 분석 결과 시각화 (L1 맞춤 포함) | SCR-06 |
-| SCR-06 | 스크립트 개선 제안 | 원본/개선본 diff 비교, 부분/전체 적용 | 재연습→SCR-04 / SCR-08 |
-| SCR-08 | Q&A 대비 *(신규)* | 예상 질문 생성 + 답변 녹음/분석 | SCR-07 |
-| SCR-07 | 진행 기록 / 다국어 출력 | 회차별 추이 + 번역·TTS·SRT 생성 | 종료 / SCR-01 |
+| SCR-01 | Slide upload | Upload the slide file + presentation settings (target time · tone · language · **native language**) | SCR-01b |
+| SCR-01b | Slide critique *(new)* | Feedback on information density · slide count vs. time · structure | SCR-02 |
+| SCR-02 | AI demo talk | Play the generated script + voice synced to slides | SCR-03 |
+| SCR-03 | Script editor | Write/edit the user script using the AI demo as a base | SCR-04 |
+| SCR-04 | Practice recording | Record the talk in the user's own voice | SCR-05 |
+| SCR-05 | Feedback report | Visualize the recording analysis (incl. L1-tailored) | SCR-06 |
+| SCR-06 | Script improvement suggestions | Original/improved diff comparison, partial/full apply | re-practice→SCR-04 / SCR-08 |
+| SCR-08 | Q&A prep *(new)* | Generate expected questions + record/analyze answers | SCR-07 |
+| SCR-07 | Progress history / multilingual output | Per-take trend + translation·TTS·SRT generation | end / SCR-01 |
 
-### 화면별 상세
+### Per-screen detail
 
-**SCR-01 슬라이드 업로드** — 드래그앤드롭 업로드, 지원 형식 안내(PPTX/PDF), 발표 설정(목표 시간 예: 5분, 톤 formal/casual, 발표 언어, **모국어 선택**). '데모 생성' 클릭 → SCR-01b.
+**SCR-01 Slide upload** — drag-and-drop upload, supported formats (PPTX/PDF), presentation settings (target time e.g. 5 min, tone formal/casual, presentation language, **native-language selection**). Click "Generate demo" → SCR-01b.
 
-**SCR-01b 슬라이드 분석 (신규)** — 업로드 직후 슬라이드 자체 피드백(정보 밀도, 시간 대비 슬라이드 수, 구조). SCR-01과 SCR-02 사이.
+**SCR-01b Slide critique (new)** — slide-level feedback right after upload (information density, slide count vs. time, structure). Between SCR-01 and SCR-02.
 
-**SCR-02 AI 데모 발표** — 슬라이드 뷰어, 슬라이드별 생성 스크립트, 재생/일시정지, 슬라이드별 강조 포인트 하이라이트. '내 스크립트로 가져오기' 또는 '직접 작성'.
+**SCR-02 AI demo talk** — slide viewer, per-slide generated script, play/pause, per-slide emphasis-point highlights. "Import to my script" or "Write my own".
 
-**SCR-03 스크립트 편집기** — 슬라이드별 스크립트 입력, AI 데모 원문 참조(토글), 예상 발표 시간 자동 계산.
+**SCR-03 Script editor** — per-slide script input, AI-demo source reference (toggle), automatic estimated-time calculation.
 
-**SCR-04 연습 녹음** — 녹음 시작/정지, 슬라이드 진행 컨트롤, 실시간 타이머, (선택) 화면/웹캠 녹화.
+**SCR-04 Practice recording** — record start/stop, slide-advance controls, live timer, (optional) screen/webcam capture.
 
-**SCR-05 피드백 리포트** — 전체 요약(WPM, 총 시간, 필러워드 횟수), 슬라이드별 시간 배분 차트, 발음 교정 단어 목록(원어민 발음 듣기), 필러워드 발생 위치 타임라인.
+**SCR-05 Feedback report** — overall summary (WPM, total time, filler-word count), per-slide time-allocation chart, list of words to fix in pronunciation (listen to native pronunciation), filler-word occurrence timeline.
 
-**SCR-06 스크립트 개선 제안 (비교 뷰)** — 원본/개선본 좌우 diff, 개선 이유 설명, 부분/전체 적용. 재연습 시 SCR-04 복귀, 완료 시 SCR-08/SCR-07.
+**SCR-06 Script improvement suggestions (comparison view)** — left/right original/improved diff, explanation of the improvement, partial/full apply. Re-practice returns to SCR-04; on completion, SCR-08/SCR-07.
 
-**SCR-08 Q&A 대비 (신규)** — SCR-06 이후 접근. 슬라이드+스크립트 기반 예상 질문(쉬운 질문/약점 질문) 생성, 답변 녹음 시 WPM/필러워드/답변 관련성 평가 + 개선 답변 예시.
+**SCR-08 Q&A prep (new)** — accessible after SCR-06. Generate expected questions (easy questions / weakness-probing questions) from slides + script; when an answer is recorded, evaluate WPM/filler words/answer relevance + show an improved-answer example.
 
-**SCR-07 진행 기록 / 다국어 출력** — 회차별 WPM/필러워드 추이 그래프, 최종 스크립트 다국어 번역+TTS, 자막(SRT) 다운로드.
-
----
-
-## 4. Epic 및 User Story 백로그
-
-### Epic 0 — AI 데모 발표
-- 슬라이드만 업로드하면 AI가 자동으로 발표 스크립트와 시범 음성을 생성
-- 슬라이드별 AI 추천 핵심 메시지/강조점 확인
-- AI 데모의 톤(formal/casual)·발표 시간(5분/10분) 설정
-- AI 데모 스크립트를 베이스로 직접 수정해 내 버전 생성
-
-### Epic 1 — 발표 업로드/분석
-- 발표 영상/음성 업로드 시 자동 분석 리포트
-- 슬라이드별 사용 시간 확인
-
-### Epic 2 — 피드백 제공
-- 말이 너무 빠른 구간 시각 표시
-- 발음 부정확 단어 목록 + 교정 발음 듣기
-- 필러워드 사용 빈도·위치
-
-### Epic 3 — 스크립트 개선
-- 더 자연스러운 영어 표현으로 재작성
-- 개선 전/후 비교
-
-### Epic 4 — 다국어/접근성
-- 완성 스크립트 번역 + TTS 음성
-- 자막(SRT) 자동 생성
-
-### Epic 5 — 반복 학습
-- 여러 연습 기록 비교로 개선 추이 확인
+**SCR-07 Progress history / multilingual output** — per-take WPM/filler-word trend graph, multilingual translation + TTS of the final script, subtitle (SRT) download.
 
 ---
 
-## 5. MVP 범위 (원문)
+## 4. Epic & user-story backlog
 
-**MVP 포함**: 슬라이드 업로드 / AI 데모 발표 생성 / 사용자 연습 녹음 / 분석(WPM·필러워드·시간 배분·발음) / 피드백 리포트 + 개선 스크립트 제안(1버전).
+### Epic 0 — AI demo talk
+- Upload slides only and the AI automatically generates a presentation script and demo voice
+- Review the AI-recommended key message/emphasis per slide
+- Set the AI demo's tone (formal/casual) and talk length (5 min / 10 min)
+- Edit the AI demo script as a base to create your own version
 
-**Phase 2 이후**: 영상 기반 분석 / 다국어 번역+TTS+SRT / 회차별 추이 분석.
+### Epic 1 — Talk upload/analysis
+- Auto analysis report when uploading a talk video/audio
+- See the time spent per slide
+
+### Epic 2 — Feedback
+- Visually mark sections spoken too fast
+- List of imprecisely pronounced words + listen to corrected pronunciation
+- Filler-word frequency · location
+
+### Epic 3 — Script improvement
+- Rewrite into more natural English phrasing
+- Before/after comparison
+
+### Epic 4 — Multilingual/accessibility
+- Translate the finished script + TTS voice
+- Auto-generate subtitles (SRT)
+
+### Epic 5 — Iterative learning
+- Compare multiple practice records to see the improvement trend
 
 ---
 
-## 6. 신규 정의 (CLAUDE.md에서 추가)
+## 5. MVP scope (original)
 
-**Epic 6 — 모국어 기반 맞춤 피드백 (L1 Profile)**
-- 모국어(예: 한국어)를 입력하면 그 언어 화자가 자주 틀리는 발음/표현 위주 피드백 (SCR-01 선택 → SCR-05/06 반영)
-- 일반 발음 교정과 "내 모국어 특성상 자주 틀리는 부분"을 구분 표시
+**MVP includes**: slide upload / AI demo-talk generation / user practice recording / analysis (WPM · filler words · time allocation · pronunciation) / feedback report + improved-script suggestion (1 version).
 
-**Epic 7 — 슬라이드 분석 및 Q&A 대비**
-- 업로드 직후 정보 밀도/시간 대비 슬라이드 수 피드백 (SCR-01b)
-- 슬라이드+스크립트 기반 예상 질문(쉬운 질문 + 약점 질문) 생성 (SCR-08)
-- 예상 질문 답변 녹음 시 속도/필러워드/답변 관련성 피드백 + 개선 답변 예시 (SCR-08)
+**After Phase 2**: video-based analysis / multilingual translation + TTS + SRT / per-take trend analysis.
+
+---
+
+## 6. Newly defined (added in CLAUDE.md)
+
+**Epic 6 — Native-language-based tailored feedback (L1 Profile)**
+- Enter your native language (e.g. Korean) to get feedback focused on the pronunciation/phrasing that speakers of that language commonly get wrong (SCR-01 selection → reflected in SCR-05/06)
+- Distinguish general pronunciation correction from "parts I commonly get wrong due to my native language"
+
+**Epic 7 — Slide critique and Q&A prep**
+- Information density / slide count vs. time feedback right after upload (SCR-01b)
+- Generate expected questions (easy + weakness-probing) from slides + script (SCR-08)
+- Pace/filler-word/answer-relevance feedback + improved-answer example when recording answers to expected questions (SCR-08)

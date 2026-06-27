@@ -1,19 +1,19 @@
-# 보안 정책 (Security Policy)
+# Security Policy
 
-## 취약점 신고
-보안 취약점은 **공개 이슈로 올리지 말고** 비공개로 신고해주세요:
-- GitHub **Security Advisories**(Security 탭 → "Report a vulnerability"), 또는
-- 메인테이너에게 비공개 연락.
+## Reporting a vulnerability
+Please report security vulnerabilities **privately, not as a public issue**:
+- GitHub **Security Advisories** (Security tab → "Report a vulnerability"), or
+- Contact the maintainer privately.
 
-합리적 범위 내에서 신속히 확인·수정하겠습니다.
+We'll confirm and fix promptly within reason.
 
-## 범위 메모 (셀프호스팅 전제)
-iamspeaker는 1인 셀프호스팅을 기준으로 설계됐습니다. 운영 시 유의:
-- **인증 없음** — 신뢰된 네트워크/로컬에서만 노출하세요. 공개 인터넷에 그대로 띄우지 마세요.
-- **파일 업로드** — PPTX/PDF는 확장자 화이트리스트 + 매직바이트 검증, 경로는 `DATA_DIR` 하위로 정규화(path-traversal 방지).
-- **외부 프로세스**(ffmpeg/whisper/piper)는 배열 인자 spawn — 셸 인젝션 없음.
-- **데이터는 로컬 저장**(`data/`). 클라우드 어댑터를 켜면 해당 입력이 외부 API로 전송됨에 유의.
-- 클라우드 키는 `.env`로만 관리(UI 입력 없음). `.env`를 커밋하지 마세요.
+## Scope notes (self-hosting assumption)
+iamspeaker is designed for single-user self-hosting. When operating it:
+- **No authentication** — expose it only on a trusted network/locally. Don't put it directly on the public internet.
+- **File uploads** — PPTX/PDF go through an extension whitelist + magic-byte validation, and paths are normalized under `DATA_DIR` (path-traversal prevention).
+- **External processes** (ffmpeg/whisper/piper) are spawned with array arguments — no shell injection.
+- **Data is stored locally** (`data/`). Note that enabling a cloud adapter sends the relevant input to an external API.
+- Cloud keys are managed only via `.env` (no UI input). Don't commit your `.env`.
 
-## 지원 버전
-최신 릴리스 라인에 보안 수정을 적용합니다.
+## Supported versions
+Security fixes are applied to the latest release line.
