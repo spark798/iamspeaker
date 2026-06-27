@@ -35,6 +35,21 @@
       "targetPhoneme": "語強勢",
       "commonSubstitution": "平坦な抑揚",
       "description": "英語は強勢のある音節を長く強く発音する。強勢の位置を守る (deVELoped, inVESTor)"
+    },
+    {
+      "targetPhoneme": "f",
+      "commonSubstitution": "h / ɸ",
+      "description": "f を「フ(ɸ)」で代用しやすい。上の歯を下唇に当てて息を出す (coffee, fund, profit)"
+    },
+    {
+      "targetPhoneme": "母音 /æ/ /ʌ/ /ɑ/",
+      "commonSubstitution": "「ア」に統合",
+      "description": "cat/cut/cot を同じ「ア」にしない。口の開きと舌の位置で区別する (bad, bus, box)"
+    },
+    {
+      "targetPhoneme": "短母音 /ɪ/ と /iː/",
+      "commonSubstitution": "「イー」に統合",
+      "description": "ship と sheep を区別。/ɪ/ は短く緩く、/iː/ は長く緊張させる (it/eat, live/leave)"
     }
   ],
   "commonExpressionIssues": [
@@ -62,6 +77,21 @@
       "pattern": "前置詞の誤り",
       "issue": "in/on/at, to/for の混同",
       "suggestion": "時・場所・方向の前置詞を確認 (‘discuss about it’ → ‘discuss it’)"
+    },
+    {
+      "pattern": "不可算名詞の複数化",
+      "issue": "information/advice/equipment を複数形や a で使う",
+      "suggestion": "不可算名詞は -s や a をつけない (‘many informations’ → ‘much information’)"
+    },
+    {
+      "pattern": "存在文 there is/are",
+      "issue": "「〜がある」を have で表しがち",
+      "suggestion": "存在は There is/are を使う (‘In Japan have many users’ → ‘There are many users in Japan’)"
+    },
+    {
+      "pattern": "修飾語の語順",
+      "issue": "長い修飾を名詞の前に置く（日本語の語順）",
+      "suggestion": "関係詞で名詞の後ろに置く (‘the I made app’ → ‘the app I made’)"
     }
   ]
 }

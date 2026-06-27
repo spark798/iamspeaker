@@ -35,6 +35,21 @@
       "targetPhoneme": "词重音",
       "commonSubstitution": "平均用力",
       "description": "英语重读音节要更长更重，不要每个音节平均用力 (deVELoped, inVESTor)"
+    },
+    {
+      "targetPhoneme": "英语 r",
+      "commonSubstitution": "普通话卷舌 r",
+      "description": "英语 r 不摩擦：圆唇、舌身后缩且不触上颚 (red, right, around)"
+    },
+    {
+      "targetPhoneme": "短长元音 /ɪ/ 与 /iː/",
+      "commonSubstitution": "都发成「衣」",
+      "description": "区分 ship 和 sheep：/ɪ/ 短而松，/iː/ 长而紧 (it/eat, live/leave)"
+    },
+    {
+      "targetPhoneme": "元音 /æ/",
+      "commonSubstitution": "发成 e 或 ai",
+      "description": "普通话无 /æ/：嘴张大、舌位低前 (cat, bad, map)"
     }
   ],
   "commonExpressionIssues": [
@@ -62,6 +77,21 @@
       "pattern": "介词误用",
       "issue": "in/on/at, to/for 混淆",
       "suggestion": "检查表示时间·地点·方向的介词 (‘discuss about it’ → ‘discuss it’)"
+    },
+    {
+      "pattern": "be 动词(系动词)遗漏",
+      "issue": "中文形容词谓语不用系动词",
+      "suggestion": "形容词前加 be 动词 (‘He very busy’ → ‘He is very busy’)"
+    },
+    {
+      "pattern": "存在句 there is/are",
+      "issue": "用 have 表示「有」",
+      "suggestion": "存在用 There is/are (‘Here have many users’ → ‘There are many users here’)"
+    },
+    {
+      "pattern": "不可数名词复数",
+      "issue": "information/advice 加 -s 或 a",
+      "suggestion": "不可数名词不加 -s/a (‘many informations’ → ‘much information’)"
     }
   ]
 }
