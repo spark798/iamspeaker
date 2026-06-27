@@ -23,8 +23,15 @@
 화면·기능 명세는 [`docs/storyboard.md`](docs/storyboard.md), 설계는 [`DEVELOPMENT.md`](DEVELOPMENT.md) 참고.
 
 ## 스크린샷
-> _준비 중 — `docs/img/`에 추가 예정._
-<!-- ![업로드](docs/img/upload.png) ![리포트](docs/img/report.png) -->
+
+**홈 — 슬라이드만 올리면 AI가 먼저 시범 발표**
+![홈 화면](docs/img/home.png)
+
+**AI 데모 발표 — 실제 슬라이드를 보며 스크립트·음성을 리뷰**
+![슬라이드 뷰어](docs/img/demo-slide-viewer.png)
+
+**피드백 리포트 — 속도·발음·점수를 게이지로, 슬라이드별 처방 코칭 노트**
+![리포트](docs/img/report-gauges.png)
 
 ## 라이선스
 [MIT](LICENSE) © Seung Park. TED 등 외부 코퍼스는 비저작권 메트릭만 내재화([`docs/benchmark.md`](docs/benchmark.md) 참고).
