@@ -58,6 +58,13 @@ describe("프롬프트 원칙 주입", () => {
     expect(prompt).toMatch(/hook/i); // 오프닝 훅 원칙
   });
 
+  it("generateScriptPrompt에 위험 표현 회피 가이드 포함(데모가 hedging을 안 쓰게)", () => {
+    const { prompt } = generateScriptPrompt(slides, opts);
+    expect(prompt).toMatch(/weaken your authority/i);
+    expect(prompt).toMatch(/Hedging/);
+    expect(prompt).toContain('"i think"'); // 사전 예시 주입
+  });
+
   it("improveScriptPrompt에 원칙 가이드 포함", () => {
     const script: Script = { version: 1, source: "user", content: [{ slideIndex: 0, text: "x" }] };
     const analysis: AnalysisResult = {

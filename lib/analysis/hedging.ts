@@ -62,6 +62,28 @@ const RISK_EN: RiskEntry[] = [
 
 const RISK_LEXICON: Record<string, RiskEntry[]> = { en: RISK_EN };
 
+/** 카테고리별 대표 예시(사전에서 추출) — 프롬프트 회피 가이드용. 사전과 자동 동기화. */
+function riskExamples(category: RiskCategory, max = 3): string {
+  return RISK_EN.filter((e) => e.category === category)
+    .slice(0, max)
+    .map((e) => `"${e.tokens.join(" ")}"`)
+    .join(", ");
+}
+
+/**
+ * 데모/개선 프롬프트에 끼울 "신뢰도 낮추는 표현 회피" 가이드(en).
+ * 사전(RISK_EN)에서 예시를 뽑아 생성 — 사전이 바뀌면 가이드도 따라간다.
+ * 피치 언어 코퍼스 연구 기반(hedging·신뢰도).
+ */
+export function riskAvoidanceGuidance(): string {
+  return [
+    "Speak with credibility — avoid expressions that weaken your authority in front of an audience:",
+    `- Hedging / uncertainty (e.g. ${riskExamples("hedge")}) → state claims directly and confidently.`,
+    `- Vague words (e.g. ${riskExamples("vague")}) → be specific and quantify.`,
+    `- Apologies / self-deprecation (e.g. ${riskExamples("apology")}) → own your expertise.`,
+  ].join("\n");
+}
+
 /** 단어 양끝 문장부호 제거 + 소문자(아포스트로피는 보존: i'm). */
 function normalize(word: string): string {
   return word.toLowerCase().replace(/^[^\p{L}']+|[^\p{L}']+$/gu, "");

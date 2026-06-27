@@ -1,4 +1,5 @@
 import { rhetoricGuidance } from "@/lib/ai/rhetoric/principles";
+import { riskAvoidanceGuidance } from "@/lib/analysis/hedging";
 import type {
   AnalysisResult,
   Cue,
@@ -57,7 +58,7 @@ export function generateScriptPrompt(slides: SlideContent[], o: GenOptions): Pro
   return {
     system:
       "You are an expert presentation coach for non-native English speakers. Write a natural spoken script, one segment per slide. Output STRICT JSON only, no prose.",
-    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}".\nThe talk must fill about ${o.targetDurationSec} seconds (~${minutes.toFixed(1)} min). At a natural ~150 words/min pace, write roughly ${targetWords} words TOTAL (about ${perSlide} words per slide) — enough spoken content to actually fill the time, not just bullet summaries.${biasNote}\n\nWrite like a great speaker — apply these expert public-speaking principles:\n${rhetoricGuidance()}\n\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]}.\nIMPORTANT: produce EXACTLY ${slides.length} entries — one per input slide, reusing the same slideIndex values (${slides.map((s) => s.index).join(", ")}). Do NOT add extra intro or conclusion segments; fold any opening/closing remarks into the first/last slide.`,
+    prompt: `Slides:\n${slideList(slides)}\n\nWrite a spoken presentation script in language="${o.language}", tone="${o.tone}".\nThe talk must fill about ${o.targetDurationSec} seconds (~${minutes.toFixed(1)} min). At a natural ~150 words/min pace, write roughly ${targetWords} words TOTAL (about ${perSlide} words per slide) — enough spoken content to actually fill the time, not just bullet summaries.${biasNote}\n\nWrite like a great speaker — apply these expert public-speaking principles:\n${rhetoricGuidance()}\n\n${riskAvoidanceGuidance()}\n\nReturn JSON: {"slides":[{"slideIndex":<number>,"text":"<spoken script>"}]}.\nIMPORTANT: produce EXACTLY ${slides.length} entries — one per input slide, reusing the same slideIndex values (${slides.map((s) => s.index).join(", ")}). Do NOT add extra intro or conclusion segments; fold any opening/closing remarks into the first/last slide.`,
   };
 }
 
@@ -79,7 +80,7 @@ export function improveScriptPrompt(
   return {
     system:
       "You are an expert English presentation editor. Improve clarity, naturalness, and pronounceability. Output STRICT JSON only.",
-    prompt: `Current script:\n${segs}\n\nMeasured speaking pace: ${analysis.wpm} WPM.${cueNote}${l1Note}\n\nApply these expert public-speaking principles in your edits:\n${rhetoricGuidance()}\n\nFor each slide that needs improvement, return an entry.\nReturn JSON: {"entries":[{"slideIndex":<number>,"original":"<text>","improved":"<text>","reason":"<short reason>"}]}.`,
+    prompt: `Current script:\n${segs}\n\nMeasured speaking pace: ${analysis.wpm} WPM.${cueNote}${l1Note}\n\nApply these expert public-speaking principles in your edits:\n${rhetoricGuidance()}\n\n${riskAvoidanceGuidance()}\n\nFor each slide that needs improvement, return an entry.\nReturn JSON: {"entries":[{"slideIndex":<number>,"original":"<text>","improved":"<text>","reason":"<short reason>"}]}.`,
   };
 }
 
