@@ -280,6 +280,8 @@
     "history": "记录",
     "takes": "{count} 次练习",
     "delete": "删除",
-    "confirmDelete": "删除此演讲及其所有练习记录？此操作无法撤销。"
+    "confirmDelete": "删除此演讲及其所有练习记录？此操作无法撤销。",
+    "search": "搜索演讲…",
+    "noMatches": "没有匹配的演讲。"
   }
 }

@@ -92,6 +92,34 @@ describe("SessionList", () => {
     expect(fetchMock).not.toHaveBeenCalledWith("/api/sessions/s1", { method: "DELETE" });
   });
 
+  it("검색: 라벨로 필터링(6개 초과 시 검색창 노출)", async () => {
+    const many = Array.from({ length: 7 }, (_, i) => ({
+      id: `s${i}`,
+      createdAt: 1_700_000_000_000 - i,
+      genre: "talk",
+      targetDurationSec: 300,
+      slideFileName: i === 0 ? "investor-pitch.pdf" : `deck-${i}.pdf`,
+      recordingCount: 0,
+      lastPracticedAt: null,
+    }));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({ sessions: many }),
+      })) as unknown as typeof fetch,
+    );
+    renderList();
+    const box = await screen.findByRole("searchbox", { name: messages.dashboard.search });
+    expect(screen.getByText("investor-pitch.pdf")).toBeInTheDocument();
+    fireEvent.change(box, { target: { value: "investor" } });
+    expect(screen.getByText("investor-pitch.pdf")).toBeInTheDocument();
+    expect(screen.queryByText("deck-1.pdf")).not.toBeInTheDocument();
+    // 일치 없음
+    fireEvent.change(box, { target: { value: "zzzz" } });
+    expect(screen.getByText(messages.dashboard.noMatches)).toBeInTheDocument();
+  });
+
   it("세션이 없으면 아무것도 렌더하지 않음", async () => {
     vi.stubGlobal(
       "fetch",

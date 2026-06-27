@@ -280,6 +280,8 @@
     "history": "記録",
     "takes": "{count}回練習",
     "delete": "削除",
-    "confirmDelete": "この発表とすべての練習記録を削除しますか？元に戻せません。"
+    "confirmDelete": "この発表とすべての練習記録を削除しますか？元に戻せません。",
+    "search": "発表を検索…",
+    "noMatches": "一致する発表がありません。"
   }
 }

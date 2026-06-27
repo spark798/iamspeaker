@@ -280,6 +280,8 @@
     "history": "Historial",
     "takes": "{count} intentos",
     "delete": "Eliminar",
-    "confirmDelete": "¿Eliminar esta presentación y todos sus registros de práctica? No se puede deshacer."
+    "confirmDelete": "¿Eliminar esta presentación y todos sus registros de práctica? No se puede deshacer.",
+    "search": "Buscar presentaciones…",
+    "noMatches": "Sin presentaciones coincidentes."
   }
 }

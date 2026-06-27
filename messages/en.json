@@ -280,6 +280,8 @@
     "history": "History",
     "takes": "{count} takes",
     "delete": "Delete",
-    "confirmDelete": "Delete this talk and all its practice records? This cannot be undone."
+    "confirmDelete": "Delete this talk and all its practice records? This cannot be undone.",
+    "search": "Search talks…",
+    "noMatches": "No matching talks."
   }
 }
