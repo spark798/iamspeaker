@@ -1,4 +1,4 @@
-import { generateScriptPrompt, improveScriptPrompt } from "@/lib/ai/prompts";
+import { critiqueSlidesPrompt, generateScriptPrompt, improveScriptPrompt } from "@/lib/ai/prompts";
 import {
   PRINCIPLES,
   SCRIPT_CATEGORIES,
@@ -69,5 +69,14 @@ describe("프롬프트 원칙 주입", () => {
     };
     const { prompt } = improveScriptPrompt(script, analysis);
     expect(prompt).toContain("expert public-speaking principles");
+  });
+
+  it("critiqueSlidesPrompt에 슬라이드 디자인 원칙 포함(말하기 원칙 아님)", () => {
+    const { prompt } = critiqueSlidesPrompt(slides, 300);
+    expect(prompt).toContain("slide-design principles");
+    expect(prompt).toMatch(/one idea per slide/i);
+    expect(prompt).toMatch(/6×6|6x6/i);
+    // 스크립트 전용 원칙(훅/threes)은 슬라이드 비평에 끼지 않음
+    expect(prompt).not.toMatch(/threes/i);
   });
 });

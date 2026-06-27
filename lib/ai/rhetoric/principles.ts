@@ -127,6 +127,24 @@ export const PRINCIPLES: Principle[] = [
     text: "Slides support the speaker — they should not duplicate the spoken words.",
     source: "PresZen",
   },
+  {
+    id: "six-by-six",
+    category: "slides",
+    text: "Keep it to roughly six lines or fewer with a few words each — not paragraphs (6×6 guideline).",
+    source: "PresZen",
+  },
+  {
+    id: "visual-signal",
+    category: "slides",
+    text: "Use high-contrast, readable type and let visuals carry meaning; cut chartjunk and decoration.",
+    source: "PresZen",
+  },
+  {
+    id: "no-speaker-notes-slide",
+    category: "slides",
+    text: "If a slide is just your speaker notes, cut it or turn it into one image plus a headline.",
+    source: "PresZen",
+  },
 ];
 
 /**

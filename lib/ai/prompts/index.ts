@@ -83,7 +83,7 @@ export function critiqueSlidesPrompt(slides: SlideContent[], targetDurationSec: 
   return {
     system:
       "You are a presentation design critic. Assess each slide's information density and structure. Output STRICT JSON only.",
-    prompt: `Slides:\n${slideList(slides)}\n\nTotal target time: ${targetDurationSec} seconds.\nReturn JSON: {"critiques":[{"slideIndex":<number>,"textDensity":"low|medium|high","estimatedReadTimeSec":<number>,"issues":["..."],"suggestions":["..."]}]}, exactly one per slide.`,
+    prompt: `Slides:\n${slideList(slides)}\n\nTotal target time: ${targetDurationSec} seconds.\n\nJudge each slide against these expert slide-design principles, and let your issues/suggestions reflect them:\n${rhetoricGuidance(["slides"], 6)}\n\nReturn JSON: {"critiques":[{"slideIndex":<number>,"textDensity":"low|medium|high","estimatedReadTimeSec":<number>,"issues":["..."],"suggestions":["..."]}]}, exactly one per slide.`,
   };
 }
 
