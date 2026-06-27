@@ -53,6 +53,7 @@
     "genrePitch": "Pitch/IR",
     "genreLecture": "Lecture",
     "language": "Presentation language",
+    "langEnglish": "English",
     "nativeLanguage": "Native language",
     "nativeKo": "Korean",
     "nativeJa": "Japanese",
