@@ -4,7 +4,7 @@
 
 ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.3.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
 
-비영어권 발표자(예: 해외 투자자 앞에서 영어로 피칭하는 스타트업 창업자)가 백지 상태에서 시작하지 않도록 AI가 먼저 시범을 보여주고, 객관적 데이터 기반으로 반복 개선하도록 돕는다.
+영어로 발표·피칭하는 **누구나** — 백지 상태에서 시작하지 않도록 AI가 먼저 시범 발표를 보여주고, 속도·필러·페이스·발음 등 객관적 데이터로 반복 개선하도록 돕는다. 코치 루프(측정→처방→재연습→추이)는 원어민·비원어민 모두에게 유효하며, **영어가 모국어가 아니면** 모국어(L1) 기반 발음·표현 교정까지 더해진다.
 
 > **상태: v0.3.0 — "코치" 루프 완성.** 대시보드·처방적 코칭 노트·회차 비교·목표 설정·발표 원칙 기반 self-improve. 로컬 모델만으로 전체 루프 완주 가능. 개발 기록은 [`PROGRESS.md`](PROGRESS.md), 기여는 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
