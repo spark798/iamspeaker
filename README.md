@@ -33,6 +33,15 @@
 **피드백 리포트 — 속도·발음·점수를 게이지로, 슬라이드별 처방 코칭 노트**
 ![리포트](docs/img/report-gauges.png)
 
+<details>
+<summary><b>English UI</b> (UI 5개 언어 지원 — ko/en/ja/zh/es)</summary>
+
+![Home](docs/img/home-en.png)
+![AI demo slide viewer](docs/img/demo-slide-viewer-en.png)
+![Feedback report](docs/img/report-gauges-en.png)
+
+</details>
+
 ## 라이선스
 [MIT](LICENSE) © Seung Park. TED 등 외부 코퍼스는 비저작권 메트릭만 내재화([`docs/benchmark.md`](docs/benchmark.md) 참고).
 
