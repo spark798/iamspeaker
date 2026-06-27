@@ -186,6 +186,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           pronunciationIssues: result.pronunciationIssues,
           pronunciationScore: pronScore,
           pauseCount: result.pauseCount,
+          riskExpressions: result.riskExpressions,
         })
         .run();
       db.update(recordings)
@@ -236,6 +237,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         goalWpmMax: goal.wpmMax,
         targetDurationSec: session.targetDurationSec,
         slideCount: deckCount,
+        riskExpressions: analysisRow.riskExpressions ?? [],
       });
       const diff = await adapters.script.improve(
         { version: scriptRow.version, source: scriptRow.source, content: scriptRow.content },
@@ -245,6 +247,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           slideTimeBreakdown: analysisRow.slideTimeBreakdown,
           pronunciationIssues: analysisRow.pronunciationIssues,
           pauseCount: analysisRow.pauseCount,
+          riskExpressions: analysisRow.riskExpressions ?? [],
         },
         l1,
         cues,

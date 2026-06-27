@@ -16,11 +16,26 @@ export interface SlideTimeBreakdown {
 
 /** 처방적 코칭 신호 — 어느 슬라이드에서 무엇을 고칠지(서술적 지표를 행동으로). */
 export interface Cue {
-  /** 슬라이드 인덱스. 덱 전체 신호(monotone)는 -1. */
+  /** 슬라이드 인덱스. 덱 전체 신호(monotone·risk)는 -1. */
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone";
-  /** i18n 보간용 값(슬라이드별 wpm·필러 수, monotone=WPM 범위 등). */
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone" | "risk";
+  /** i18n 보간용 값(슬라이드별 wpm·필러 수, monotone=WPM 범위, risk=위험표현 수 등). */
   value?: number;
+  /** 보조 텍스트(risk: 검출된 위험 표현 예시 "I think, maybe"). i18n 보간용. */
+  text?: string;
+}
+
+/** 단어 사용 적합성 위험 표현의 범주. */
+export type RiskCategory = "hedge" | "vague" | "apology";
+
+/** 신뢰도를 낮추는 위험 표현(hedging/모호어/사과) 집계 1건. */
+export interface RiskExpressionResult {
+  /** 정규화 라벨("i think", "maybe"). */
+  label: string;
+  category: RiskCategory;
+  /** 코칭 힌트 키(claim/evidence/precise/specific/quantify/own). */
+  hint: string;
+  count: number;
 }
 
 /** 단어 내 음소 1개의 발음 정확도(GOP). */
@@ -51,4 +66,6 @@ export interface AnalysisResult {
   pronunciationIssues: PronunciationIssue[];
   /** 단어 사이 묵음 구간(임계 이상) 개수 — 페이싱 메트릭(B-001). */
   pauseCount: number;
+  /** 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 필러와 별개 축. */
+  riskExpressions: RiskExpressionResult[];
 }

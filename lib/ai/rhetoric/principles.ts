@@ -153,7 +153,7 @@ export const PRINCIPLES: Principle[] = [
  * time_short→throughline-early.
  */
 export function cuePrincipleSource(
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone",
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone" | "risk",
 ): string {
   switch (kind) {
     case "pace_fast":
@@ -168,6 +168,9 @@ export function cuePrincipleSource(
       return "Presentation Zen";
     case "monotone":
       return "Toastmasters · TED Guide";
+    case "risk":
+      // 피치 언어 코퍼스 연구(hedging·신뢰도) 기반.
+      return "Pitch language research";
   }
 }
 

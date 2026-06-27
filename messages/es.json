@@ -214,6 +214,8 @@
     "cueTip_time_short": "Añade una transición más clara o una frase clave",
     "cueTip_filler": "Simplifica la redacción para que fluya de un tirón",
     "cueTip_monotone": "Reduce y pausa en los puntos clave — la variación crea énfasis",
+    "cue_risk": "{value} expresiones que restan credibilidad ({text}) — sé firme, concreto y con datos",
+    "cueTip_risk": "Cambia vacilaciones, palabras vagas y disculpas por afirmaciones firmes y con datos — genera confianza",
     "toImprove": "Ver sugerencias →"
   },
   "qa": {

@@ -12,8 +12,7 @@
  * 이 모듈은 필러 카운트에 합산하지 않는다.
  */
 
-/** 위험 표현 범주. */
-export type RiskCategory = "hedge" | "vague" | "apology";
+import type { RiskCategory, RiskExpressionResult } from "@/lib/domain";
 
 /** 한 위험 표현 사전 항목: 정규화 토큰 시퀀스 + 범주 + 코칭 힌트 키. */
 interface RiskEntry {
@@ -106,13 +105,6 @@ export function riskExpressionPositions(words: string[], language: string): Risk
     }
   }
   return [...flagged.entries()].sort((a, b) => a[0] - b[0]).map(([index, v]) => ({ index, ...v }));
-}
-
-export interface RiskExpressionResult {
-  label: string;
-  category: RiskCategory;
-  hint: string;
-  count: number;
 }
 
 /** 위험 표현을 라벨별로 집계(다어절은 1회 occurrence로 묶음). */

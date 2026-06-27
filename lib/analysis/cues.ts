@@ -1,4 +1,10 @@
-import type { Cue, FillerWordResult, SlideTimeBreakdown, SlideTransition } from "@/lib/domain";
+import type {
+  Cue,
+  FillerWordResult,
+  RiskExpressionResult,
+  SlideTimeBreakdown,
+  SlideTransition,
+} from "@/lib/domain";
 
 /**
  * 처방적 코칭 신호 생성(Pillar ② — 서술적 지표를 "어디서·무엇을"의 행동으로).
@@ -15,6 +21,8 @@ export interface CueInput {
   /** 발표 목표 시간(초)·덱 슬라이드 수 → 슬라이드당 시간 예산. */
   targetDurationSec: number;
   slideCount: number;
+  /** 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 덱 단위 cue로 요약. */
+  riskExpressions?: RiskExpressionResult[];
 }
 
 const MIN_WORDS_FOR_PACE = 10;
@@ -24,6 +32,9 @@ const TIME_LONG = 1.6;
 const TIME_SHORT = 0.4;
 const FILLER_HOTSPOT = 3;
 const MAX_CUES = 6;
+// 위험 표현 덱 cue: 전체 발생 수가 이 값 이상이면 신뢰도 코칭 1건을 띄움.
+const RISK_MIN = 2;
+const RISK_EXAMPLES = 3;
 // 페이스 변화도: 슬라이드 WPM 범위(max−min)가 평균의 이 비율 미만이면 단조(monotone).
 const MONOTONE_REL_SPREAD = 0.12;
 const MIN_SLIDES_FOR_VARIETY = 3;
@@ -81,6 +92,18 @@ export function generateCues(input: CueInput): Cue[] {
     if (mean > 0 && spread / mean < MONOTONE_REL_SPREAD) {
       cues.push({ slideIndex: -1, kind: "monotone", value: Math.round(spread) });
     }
+  }
+
+  // 단어 사용 적합성(덱 단위): 신뢰도를 낮추는 위험 표현이 잦으면 1건 요약.
+  const risks = input.riskExpressions ?? [];
+  const riskTotal = risks.reduce((sum, r) => sum + r.count, 0);
+  if (riskTotal >= RISK_MIN) {
+    const examples = [...risks]
+      .sort((a, b) => b.count - a.count)
+      .slice(0, RISK_EXAMPLES)
+      .map((r) => r.label)
+      .join(", ");
+    cues.push({ slideIndex: -1, kind: "risk", value: riskTotal, text: examples });
   }
 
   return cues.slice(0, MAX_CUES);

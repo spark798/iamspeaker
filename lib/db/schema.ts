@@ -9,6 +9,7 @@ import type {
   JobType,
   PronunciationIssue,
   QACategory,
+  RiskExpressionResult,
   ScriptSource,
   SlideScript,
   SlideTimeBreakdown,
@@ -103,6 +104,8 @@ export const analysisResults = sqliteTable("analysis_results", {
   // 전체 발음 점수 0~100(측정 불가 시 null). 단어별 정확도 평균.
   pronunciationScore: real("pronunciation_score"),
   pauseCount: integer("pause_count").notNull().default(0),
+  // 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 기존 행 호환 위해 nullable.
+  riskExpressions: text("risk_expressions", { mode: "json" }).$type<RiskExpressionResult[]>(),
 });
 
 export const slideCritiques = sqliteTable("slide_critiques", {

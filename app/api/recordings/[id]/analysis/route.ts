@@ -63,6 +63,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       goalWpmMax: goal.wpmMax,
       targetDurationSec: session?.targetDurationSec ?? 0,
       slideCount: deck.length,
+      riskExpressions: row.riskExpressions ?? [],
     });
 
     return Response.json({

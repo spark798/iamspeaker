@@ -1,3 +1,4 @@
+import { detectRiskExpressions } from "@/lib/analysis/hedging";
 import type {
   AnalysisResult,
   FillerWordResult,
@@ -240,5 +241,9 @@ export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
       input.pronunciationIssues ??
       detectPronunciationIssues(input.transcript.words, input.l1Profile),
     pauseCount: input.pauseCount ?? 0,
+    riskExpressions: detectRiskExpressions(
+      input.transcript.words.map((w) => w.word),
+      input.language,
+    ),
   };
 }

@@ -26,6 +26,8 @@ function cueInstruction(c: Cue): string {
       return `Slide ${s} had ${v} filler words clustered: simplify the phrasing so it's easier to say fluently.`;
     case "monotone":
       return "The pace stayed almost uniform across slides: vary sentence length — mix short, punchy lines with longer ones — to invite natural pace variation and emphasis.";
+    case "risk":
+      return `The script used ${v} credibility-weakening expressions (${c.text ?? ""}): replace hedging ("I think", "maybe", "sort of"), vague words ("stuff", "a lot of"), and apologies with confident, specific, evidence-backed claims.`;
   }
 }
 

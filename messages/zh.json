@@ -214,6 +214,8 @@
     "cueTip_time_short": "增加更清晰的过渡或一句要点",
     "cueTip_filler": "简化措辞 — 让它一口气说完",
     "cueTip_monotone": "在关键处放慢并停顿 — 节奏变化制造强调",
+    "cue_risk": "削弱可信度的表达 {value} 处 ({text}) — 改用肯定·具体·有据",
+    "cueTip_risk": "用有据的肯定句替换模糊推测·含糊词·道歉 — 提升信任",
     "toImprove": "查看改进建议 →"
   },
   "qa": {

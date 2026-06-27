@@ -33,8 +33,9 @@ interface MetricScore {
 }
 interface Cue {
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone";
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone" | "risk";
   value?: number;
+  text?: string;
 }
 interface Goal {
   wpmMin: number;
@@ -122,7 +123,11 @@ export function ReportView({ recordingId }: { recordingId: string }) {
               <li key={`${c.slideIndex}-${c.kind}-${i}`} className="flex items-start gap-2">
                 <span className="text-brand">▸</span>
                 <span>
-                  {t(`cue_${c.kind}`, { slide: c.slideIndex + 1, value: c.value ?? 0 })}
+                  {t(`cue_${c.kind}`, {
+                    slide: c.slideIndex + 1,
+                    value: c.value ?? 0,
+                    text: c.text ?? "",
+                  })}
                   {/* 전문가 원칙 팁 + 출처(명저 귀속). */}
                   <span className="mt-0.5 block text-xs text-neutral-500">
                     {t(`cueTip_${c.kind}`)}{" "}

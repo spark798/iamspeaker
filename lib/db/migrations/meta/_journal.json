@@ -64,6 +64,13 @@
       "when": 1782400559270,
       "tag": "0008_modern_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1782589744597,
+      "tag": "0009_wealthy_angel",
+      "breakpoints": true
     }
   ]
 }

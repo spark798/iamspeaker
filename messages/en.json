@@ -214,6 +214,8 @@
     "cueTip_time_short": "Add a clearer transition or a key takeaway line",
     "cueTip_filler": "Simplify the phrasing so it flows in one breath",
     "cueTip_monotone": "Slow down and pause at key points — variation creates emphasis",
+    "cue_risk": "{value} credibility-weakening expressions ({text}) — be confident, specific, evidence-backed",
+    "cueTip_risk": "Swap hedges, vague words, and apologies for confident, evidence-backed claims — it builds trust",
     "toImprove": "View suggestions →"
   },
   "qa": {

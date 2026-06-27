@@ -16,6 +16,7 @@ const analysis: AnalysisResult = {
   slideTimeBreakdown: [],
   pronunciationIssues: [],
   pauseCount: 0,
+  riskExpressions: [],
 };
 
 describe("improveScriptPrompt — cue 주입", () => {

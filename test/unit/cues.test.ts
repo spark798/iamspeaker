@@ -75,6 +75,26 @@ describe("generateCues", () => {
     expect(cues.some((c) => c.slideIndex === 1 && c.kind === "filler")).toBe(false);
   });
 
+  it("위험 표현이 잦으면 덱 단위 risk cue(빈도순 예시)", () => {
+    const cues = generateCues({
+      ...base,
+      riskExpressions: [
+        { label: "i think", category: "hedge", hint: "claim", count: 2 },
+        { label: "maybe", category: "hedge", hint: "claim", count: 1 },
+      ],
+    });
+    const risk = cues.find((c) => c.kind === "risk");
+    expect(risk).toMatchObject({ slideIndex: -1, kind: "risk", value: 3, text: "i think, maybe" });
+  });
+
+  it("위험 표현이 임계 미만(1개)이면 risk cue 없음", () => {
+    const cues = generateCues({
+      ...base,
+      riskExpressions: [{ label: "maybe", category: "hedge", hint: "claim", count: 1 }],
+    });
+    expect(cues.some((c) => c.kind === "risk")).toBe(false);
+  });
+
   it("페이스가 거의 일정하면 monotone(덱 전체, slideIndex -1)", () => {
     // 3 슬라이드 모두 ~150 WPM(범위 작음) → 단조. 페이스 outlier 없음.
     const transitions = [
