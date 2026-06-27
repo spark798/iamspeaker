@@ -18,7 +18,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 258 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 259 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-26** — **처방 cue에 원칙 팁+출처 연결(Pillar ②)**: 코칭 노트 각 cue에 명저 기반 원칙 팁과 출처를 붙여 "왜"의 전문가 근거 제공. `cuePrincipleSource(kind)`(pace→Toastmasters·TED Guide, time_long·filler→Presentation Zen, time_short→TED Guide) + report-view에 cue 아래 로컬라이즈 팁+출처. i18n cueTip_* 5종 5로케일. 단위 +1·렌더 테스트. CI 그린, 259 단위테스트, build·E2E OK.
 - **2026-06-26** — **발표 원칙 KB → self-improve modeling**: 명저들(TED Guide·Talk Like TED·Resonate·Presentation Zen·Confessions·Toastmasters)이 대중화한 일반 발표 기법을 distill해 LLM 프롬프트에 주입 — AI가 데모를 만들 때부터 전문가처럼 쓰도록. `lib/ai/rhetoric/principles.ts`(15원칙: 오프닝/구조/스토리/언어/전달/클로징/슬라이드, 자체표현+출처귀속, **본문 0**=비저작권 기법) + `rhetoricGuidance(카테고리·상한)`. generate·improve 프롬프트에 주입(스크립트 카테고리). **라이브(hermes3:8b)**: 데모가 훅 질문 오프닝·스루라인 조기·what-is→could-be 대조·구체 스토리·대화체 적용(단순 불릿 대비 명확 향상). 단위 +4. CI 그린, 258 단위테스트, build OK. **다음 후보**: 처방리포트 cue에 원칙 팁(출처) 연결, 또는 도그푸드.
 - **2026-06-26** — **슬라이드별 코칭 노트 변화 비교(Pillar ②)**: 회차 비교에 처방 cue 변화 추가 — 어느 슬라이드가 개선/지속/신규인지("짚인 약점을 고쳤나"). `lib/analysis/compare.ts compareCues`((슬라이드×종류) 대조→resolved/persisting/new, 개선→지속→신규 정렬)+`cueCategory`(pace/time/filler 그룹). compare-view에 "코칭 노트 변화" 섹션(개선=초록✓/지속·/신규=빨강▸), Analysis에 cues(응답에 이미 포함). i18n cueChange*·cueCat_*·cueStatus_* 5로케일. 단위 +4·렌더 테스트. CI 그린, 254 단위테스트, build·E2E OK.
 - **2026-06-26** — **세션 삭제(대시보드)**: 프라이버시 도구답게 DB+디스크 모두 정리. `DELETE /api/sessions/[id]`(세션 행→FK cascade로 slides/scripts/recordings/analysis/qa, 비-FK 잡 직접 정리, 세션 스코프 디스크 디렉토리 업로드·녹음·TTS rmSync[assertSafeSegment 검증], 레이트리밋·404 가드) + session-list 행별 삭제 버튼(confirm→DELETE→목록 제거). i18n delete·confirmDelete 5로케일. **라이브(prod)**: 생성→삭제→재삭제 404. 렌더 테스트 +2. CI 그린, 250 단위테스트, build·E2E OK.
