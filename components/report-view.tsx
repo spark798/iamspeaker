@@ -154,7 +154,7 @@ export function ReportView({ recordingId }: { recordingId: string }) {
       </div>
 
       {/* 헤드라인 게이지 카드 — WPM·발음·전달점수를 한눈에(Pillar ②: 직관적 진척). */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div id="reportGauges" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
           <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>
           <div

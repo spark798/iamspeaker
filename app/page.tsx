@@ -4,9 +4,9 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 
 const STEPS = [
-  { icon: "📤", key: "step1" },
-  { icon: "🎬", key: "step2" },
-  { icon: "📊", key: "step3" },
+  { img: "step1.png", key: "step1" },
+  { img: "step2.png", key: "step2" },
+  { img: "step3.png", key: "step3" },
 ] as const;
 
 const WHYS = ["why1", "why2", "why3", "why4"] as const;
@@ -34,16 +34,17 @@ export default function HomePage() {
           {t("home.stepsTitle")}
         </h2>
         <ol className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {STEPS.map(({ icon, key }) => (
+          {STEPS.map(({ img, key }) => (
             <li
               key={key}
-              className="rounded-lg border border-neutral-200 p-4 text-center dark:border-neutral-800"
+              className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800"
             >
-              <div className="text-2xl" aria-hidden>
-                {icon}
+              {/* 실제 제품 화면 썸네일(영어 UI). 정적 자산 — next/image 불필요. */}
+              <div className="mb-3 flex h-28 items-center justify-center overflow-hidden rounded-md border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
+                <img src={`/landing/${img}`} alt="" className="h-full w-full object-contain" />
               </div>
-              <div className="mt-2 font-medium">{t(`home.${key}Title`)}</div>
-              <p className="mt-1 text-sm text-neutral-500">{t(`home.${key}Desc`)}</p>
+              <div className="text-center font-medium">{t(`home.${key}Title`)}</div>
+              <p className="mt-1 text-center text-sm text-neutral-500">{t(`home.${key}Desc`)}</p>
             </li>
           ))}
         </ol>
