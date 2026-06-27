@@ -1,16 +1,10 @@
 import { Stepper } from "@/components/stepper";
-import Link from "next/link";
 import type { ReactNode } from "react";
 
-/** 세션 플로우(SCR-01~08) 공용 셸: 헤더 + 진행 스테퍼 + 본문. */
+/** 세션 플로우(SCR-01~08) 공용 셸: 진행 스테퍼 + 본문. (브랜드/홈 링크는 전역 상단바) */
 export default function SessionLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 py-8">
-      <header className="mb-8 flex items-center justify-between print:hidden">
-        <Link href="/" className="text-lg font-bold tracking-tight">
-          iamspeaker
-        </Link>
-      </header>
+    <div className="mx-auto flex min-h-screen max-w-5xl flex-col px-6 pt-2 pb-8">
       <div className="print:hidden">
         <Stepper />
       </div>
