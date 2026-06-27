@@ -1,6 +1,6 @@
 {
   "name": "iamspeaker",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "description": "오픈소스 발표 연습 웹앱 — 슬라이드 업로드 → AI 시범 발표 → 연습 녹음 분석(속도·발음·필러) → 개선 스크립트·Q&A. 로컬 모델 우선.",
   "license": "MIT",
