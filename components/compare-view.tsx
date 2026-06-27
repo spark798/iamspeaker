@@ -1,6 +1,6 @@
 "use client";
 
-import { compareScores } from "@/lib/analysis/compare";
+import { type CueChange, compareCues, compareScores, cueCategory } from "@/lib/analysis/compare";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -14,13 +14,25 @@ interface MetricScore {
   score: number;
   band: "ideal" | "low" | "high";
 }
+interface Cue {
+  slideIndex: number;
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
+  value?: number;
+}
 interface Analysis {
   durationSec: number;
   wpm: number;
   fillerWords: FillerWord[];
   pronunciationScore: number | null;
   scores: MetricScore[];
+  cues: Cue[];
 }
+
+const STATUS_STYLE: Record<CueChange["status"], string> = {
+  resolved: "text-green-600",
+  persisting: "text-neutral-500",
+  new: "text-red-600",
+};
 
 const totalFillers = (a: Analysis) => a.fillerWords.reduce((n, f) => n + f.count, 0);
 
@@ -62,6 +74,7 @@ export function CompareView({ a, b }: { a: string; b: string }) {
   if (!data) return <p className="text-sm text-neutral-500">{t("loading")}</p>;
   const [A, B] = data;
   const pairs = compareScores(A.scores, B.scores);
+  const cueChanges = compareCues(A.cues ?? [], B.cues ?? []);
 
   const headline = (label: string, av: number | null, bv: number | null, lowerBetter = false) => (
     <tr className="border-b border-neutral-100 dark:border-neutral-900">
@@ -124,6 +137,29 @@ export function CompareView({ a, b }: { a: string; b: string }) {
             </tbody>
           </table>
           <p className="mt-2 text-xs text-neutral-400">{t("scoreHint")}</p>
+        </div>
+      )}
+
+      {/* 슬라이드별 처방 코칭 노트의 변화 — 무엇이 개선/지속/신규인지. */}
+      {cueChanges.length > 0 && (
+        <div>
+          <h2 className="mb-2 font-medium">{t("cueChangeTitle")}</h2>
+          <ul className="space-y-1 text-sm">
+            {cueChanges.map((c, i) => (
+              <li key={`${c.slideIndex}-${c.kind}-${i}`} className="flex items-start gap-2">
+                <span className={STATUS_STYLE[c.status]}>
+                  {c.status === "resolved" ? "✓" : c.status === "new" ? "▸" : "·"}
+                </span>
+                <span>
+                  {t("cueChangeLine", {
+                    slide: c.slideIndex + 1,
+                    cat: t(`cueCat_${cueCategory(c.kind)}`),
+                    status: t(`cueStatus_${c.status}`),
+                  })}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

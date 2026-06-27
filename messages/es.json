@@ -146,7 +146,15 @@
     "fillers": "Muletillas (total)",
     "duration": "Duración (s)",
     "scoreTitle": "Puntuaciones vs base",
-    "scoreHint": "Las puntuaciones son 0–100, más alto es mejor (▲ = B mejoró)"
+    "scoreHint": "Las puntuaciones son 0–100, más alto es mejor (▲ = B mejoró)",
+    "cueChangeTitle": "Cambios en notas del coach",
+    "cueChangeLine": "Diapositiva {slide}: {cat} — {status}",
+    "cueCat_pace": "ritmo",
+    "cueCat_time": "tiempo",
+    "cueCat_filler": "muletillas",
+    "cueStatus_resolved": "mejoró",
+    "cueStatus_persisting": "sigue",
+    "cueStatus_new": "nuevo"
   },
   "record": {
     "title": "Grabación de práctica",

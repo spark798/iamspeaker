@@ -146,7 +146,15 @@
     "fillers": "フィラー（計）",
     "duration": "長さ（秒）",
     "scoreTitle": "基準値との比較スコア",
-    "scoreHint": "スコアは0〜100、高いほど良い（▲＝Bが改善）"
+    "scoreHint": "スコアは0〜100、高いほど良い（▲＝Bが改善）",
+    "cueChangeTitle": "コーチングノートの変化",
+    "cueChangeLine": "スライド{slide}：{cat} — {status}",
+    "cueCat_pace": "ペース",
+    "cueCat_time": "時間配分",
+    "cueCat_filler": "フィラー",
+    "cueStatus_resolved": "改善",
+    "cueStatus_persisting": "継続",
+    "cueStatus_new": "新規"
   },
   "record": {
     "title": "練習録音",

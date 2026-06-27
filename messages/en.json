@@ -146,7 +146,15 @@
     "fillers": "Fillers (total)",
     "duration": "Length (s)",
     "scoreTitle": "Scores vs baseline",
-    "scoreHint": "Scores are 0–100, higher is better (▲ = B improved)"
+    "scoreHint": "Scores are 0–100, higher is better (▲ = B improved)",
+    "cueChangeTitle": "Coaching-note changes",
+    "cueChangeLine": "Slide {slide}: {cat} — {status}",
+    "cueCat_pace": "pace",
+    "cueCat_time": "timing",
+    "cueCat_filler": "fillers",
+    "cueStatus_resolved": "improved",
+    "cueStatus_persisting": "still",
+    "cueStatus_new": "new issue"
   },
   "record": {
     "title": "Practice recording",

@@ -146,7 +146,15 @@
     "fillers": "填充词（总）",
     "duration": "时长（秒）",
     "scoreTitle": "相对基准的评分",
-    "scoreHint": "评分为 0–100，越高越好（▲＝B 改进）"
+    "scoreHint": "评分为 0–100，越高越好（▲＝B 改进）",
+    "cueChangeTitle": "教练笔记变化",
+    "cueChangeLine": "幻灯片 {slide}：{cat} — {status}",
+    "cueCat_pace": "节奏",
+    "cueCat_time": "时间分配",
+    "cueCat_filler": "填充词",
+    "cueStatus_resolved": "改进",
+    "cueStatus_persisting": "持续",
+    "cueStatus_new": "新问题"
   },
   "record": {
     "title": "练习录音",

@@ -1,5 +1,5 @@
-import { compareScores, valueDelta } from "@/lib/analysis/compare";
-import type { MetricScore } from "@/lib/domain";
+import { compareCues, compareScores, cueCategory, valueDelta } from "@/lib/analysis/compare";
+import type { Cue, MetricScore } from "@/lib/domain";
 import { describe, expect, it } from "vitest";
 
 const s = (metric: string, score: number): MetricScore => ({
@@ -40,5 +40,42 @@ describe("valueDelta", () => {
     expect(valueDelta(10, 14)).toBe(4);
     expect(valueDelta(null, 5)).toBeNull();
     expect(valueDelta(5, null)).toBeNull();
+  });
+});
+
+describe("cueCategory", () => {
+  it("종류를 카테고리로 그룹", () => {
+    expect(cueCategory("pace_fast")).toBe("pace");
+    expect(cueCategory("pace_slow")).toBe("pace");
+    expect(cueCategory("time_long")).toBe("time");
+    expect(cueCategory("time_short")).toBe("time");
+    expect(cueCategory("filler")).toBe("filler");
+  });
+});
+
+describe("compareCues", () => {
+  const c = (slideIndex: number, kind: Cue["kind"]): Cue => ({ slideIndex, kind });
+
+  it("개선(resolved)·지속(persisting)·신규(new) 분류", () => {
+    const a = [c(0, "pace_fast"), c(2, "filler")];
+    const b = [c(2, "filler"), c(3, "time_long")];
+    const out = compareCues(a, b);
+    // slide0 pace_fast: A만 → resolved, slide2 filler: 양쪽 → persisting, slide3 time_long: B만 → new
+    expect(out).toEqual([
+      { slideIndex: 0, kind: "pace_fast", status: "resolved" },
+      { slideIndex: 2, kind: "filler", status: "persisting" },
+      { slideIndex: 3, kind: "time_long", status: "new" },
+    ]);
+  });
+
+  it("정렬: resolved→persisting→new, 그 안 슬라이드 순", () => {
+    const a = [c(5, "filler")];
+    const b = [c(1, "pace_fast"), c(5, "filler")];
+    const statuses = compareCues(a, b).map((x) => x.status);
+    expect(statuses).toEqual(["persisting", "new"]); // filler 지속, slide1 신규
+  });
+
+  it("둘 다 비면 빈 배열", () => {
+    expect(compareCues([], [])).toEqual([]);
   });
 });

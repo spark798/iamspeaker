@@ -10,6 +10,7 @@ const takeA = {
   fillerWords: [{ word: "um", count: 8 }],
   pronunciationScore: 70,
   scores: [{ metric: "wpm", value: 100, score: 60, band: "low" }],
+  cues: [{ slideIndex: 1, kind: "pace_slow", value: 90 }], // A에만 → 개선됨
 };
 const takeB = {
   durationSec: 290,
@@ -17,6 +18,7 @@ const takeB = {
   fillerWords: [{ word: "um", count: 3 }],
   pronunciationScore: 84,
   scores: [{ metric: "wpm", value: 135, score: 95, band: "ideal" }],
+  cues: [{ slideIndex: 4, kind: "filler", value: 3 }], // B에만 → 새 이슈
 };
 
 afterEach(() => vi.restoreAllMocks());
@@ -42,5 +44,9 @@ describe("CompareView", () => {
     expect(screen.getByText(/\+14/)).toBeInTheDocument();
     // 필러 감소(8→3)는 개선 델타 -5
     expect(screen.getByText(/-5/)).toBeInTheDocument();
+    // 코칭 노트 변화: 슬라이드2 페이스 개선됨 + 슬라이드5 필러 새 이슈
+    expect(screen.getByText(messages.compare.cueChangeTitle)).toBeInTheDocument();
+    expect(screen.getByText(/슬라이드 2.*페이스.*개선됨/)).toBeInTheDocument();
+    expect(screen.getByText(/슬라이드 5.*필러.*새 이슈/)).toBeInTheDocument();
   });
 });

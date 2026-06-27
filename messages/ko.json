@@ -146,7 +146,15 @@
     "fillers": "필러(총)",
     "duration": "길이(초)",
     "scoreTitle": "기준선 대비 점수",
-    "scoreHint": "점수는 0~100, 높을수록 좋음 (▲=B 개선)"
+    "scoreHint": "점수는 0~100, 높을수록 좋음 (▲=B 개선)",
+    "cueChangeTitle": "코칭 노트 변화",
+    "cueChangeLine": "슬라이드 {slide}: {cat} — {status}",
+    "cueCat_pace": "페이스",
+    "cueCat_time": "시간 배분",
+    "cueCat_filler": "필러",
+    "cueStatus_resolved": "개선됨",
+    "cueStatus_persisting": "지속",
+    "cueStatus_new": "새 이슈"
   },
   "record": {
     "title": "연습 녹음",
