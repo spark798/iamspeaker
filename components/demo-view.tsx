@@ -15,6 +15,9 @@ interface SlideScript {
   text: string;
 }
 
+/** 데모 음성 선택 기억용 localStorage 키. */
+const VOICE_PREF_KEY = "iamspeaker.demoVoice";
+
 export function DemoView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("demo");
   const te = useTranslations("errors");
@@ -26,7 +29,12 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
   const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
+  // 선택한 음성은 localStorage에 저장 → 다음에도 같은 음성이 기본값(로컬 우선, 서버 불필요).
+  // SSR 하이드레이션 불일치 방지를 위해 초기값은 female, 마운트 후 저장된 선호를 적용.
   const [voice, setVoice] = useState<"female" | "male">("female");
+  useEffect(() => {
+    if (window.localStorage.getItem(VOICE_PREF_KEY) === "male") setVoice("male");
+  }, []);
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/slides`)
@@ -128,7 +136,9 @@ export function DemoView({ sessionId }: { sessionId: string }) {
               <select
                 value={voice}
                 onChange={(e) => {
-                  setVoice(e.target.value as "female" | "male");
+                  const next = e.target.value as "female" | "male";
+                  setVoice(next);
+                  window.localStorage.setItem(VOICE_PREF_KEY, next); // 다음 방문의 기본값으로 기억
                   setAudioErr(new Set()); // 음성 변경 시 이전 실패 상태 초기화
                 }}
                 className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
