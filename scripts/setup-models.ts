@@ -50,19 +50,26 @@ async function download(url: string, dest: string): Promise<void> {
 function piperUrls(voice: string): { onnx: string; json: string } {
   const [locale, name, quality] = voice.split("-");
   if (!locale || !name || !quality) {
-    throw new Error(`PIPER_DEFAULT_VOICE 형식 오류: ${voice} (예: en_US-amy-medium)`);
+    throw new Error(`Piper voice 형식 오류: ${voice} (예: en_US-amy-medium)`);
   }
   const lang = locale.split("_")[0];
   const base = `https://huggingface.co/rhasspy/piper-voices/resolve/main/${lang}/${locale}/${name}/${quality}`;
   return { onnx: `${base}/${voice}.onnx`, json: `${base}/${voice}.onnx.json` };
 }
 
+/** voice 모델(.onnx + .onnx.json)을 PIPER_VOICE_DIR로 받는다. */
+async function downloadVoice(voice: string): Promise<void> {
+  const { onnx, json } = piperUrls(voice);
+  await download(onnx, path.join(config.PIPER_VOICE_DIR, `${voice}.onnx`));
+  await download(json, path.join(config.PIPER_VOICE_DIR, `${voice}.onnx.json`));
+}
+
 const whisperUrl = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin";
-const voice = config.PIPER_DEFAULT_VOICE;
-const { onnx, json } = piperUrls(voice);
 
 await download(whisperUrl, config.WHISPER_MODEL_PATH);
-await download(onnx, path.join(config.PIPER_VOICE_DIR, `${voice}.onnx`));
-await download(json, path.join(config.PIPER_VOICE_DIR, `${voice}.onnx.json`));
+// 데모 음성: 여성(기본) + 남성. 중복은 동일하면 1회만.
+for (const voice of new Set([config.PIPER_DEFAULT_VOICE, config.PIPER_MALE_VOICE])) {
+  await downloadVoice(voice);
+}
 
 console.log("\n✅ 모델 준비 완료. 'pnpm preflight'로 점검하세요.\n");

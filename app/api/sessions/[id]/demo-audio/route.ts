@@ -24,6 +24,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       throw Errors.badRequest("slide는 0 이상의 정수여야 합니다");
     }
 
+    const voiceParam = url.searchParams.get("voice");
+    if (voiceParam !== null && voiceParam !== "female" && voiceParam !== "male") {
+      throw Errors.badRequest("voice는 female 또는 male이어야 합니다");
+    }
+    const voice: "female" | "male" = voiceParam === "male" ? "male" : "female";
+
     const db = getDb();
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     if (!session) throw Errors.notFound("세션을 찾을 수 없습니다");
@@ -49,12 +55,12 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       throw Errors.notFound("해당 슬라이드의 스크립트가 없습니다");
     }
 
-    const cachePath = demoAudioPath(id, scriptRow.version, slideIndex);
+    const cachePath = demoAudioPath(id, scriptRow.version, slideIndex, voice);
     let audio: Uint8Array;
     if (existsSync(cachePath)) {
       audio = new Uint8Array(readFileSync(cachePath));
     } else {
-      const result = await getAdapters().tts.synthesize(slideScript.text, session.language);
+      const result = await getAdapters().tts.synthesize(slideScript.text, session.language, voice);
       audio = result.audio;
       mkdirSync(dirname(cachePath), { recursive: true });
       writeFileSync(cachePath, audio);

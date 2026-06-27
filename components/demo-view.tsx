@@ -26,6 +26,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
   const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
+  const [voice, setVoice] = useState<"female" | "male">("female");
 
   useEffect(() => {
     fetch(`/api/sessions/${sessionId}/slides`)
@@ -122,6 +123,20 @@ export function DemoView({ sessionId }: { sessionId: string }) {
         )}
         {hasScript && !busy && (
           <div className="ml-auto flex items-center gap-3">
+            <label className="flex items-center gap-1 text-sm font-medium">
+              <span className="text-neutral-500">{t("voiceLabel")}</span>
+              <select
+                value={voice}
+                onChange={(e) => {
+                  setVoice(e.target.value as "female" | "male");
+                  setAudioErr(new Set()); // 음성 변경 시 이전 실패 상태 초기화
+                }}
+                className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+              >
+                <option value="female">{t("voiceFemale")}</option>
+                <option value="male">{t("voiceMale")}</option>
+              </select>
+            </label>
             <button
               type="button"
               onClick={() => void toggleTranslation()}
@@ -184,10 +199,11 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                     <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
                   ) : (
                     <audio
+                      key={voice}
                       controls
                       preload="none"
                       className="h-8 w-full max-w-md"
-                      src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}`}
+                      src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}&voice=${voice}`}
                       onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
                     >
                       <track kind="captions" />

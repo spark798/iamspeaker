@@ -101,6 +101,9 @@
     "downloadSrt": "SRT 자막 내려받기",
     "translating": "번역 중…",
     "listen": "🔊 데모 음성 듣기",
+    "voiceLabel": "목소리",
+    "voiceFemale": "여성",
+    "voiceMale": "남성",
     "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요.",
     "toEditor": "스크립트 편집 →",
     "audioUnavailable": "음성을 불러올 수 없습니다 (TTS 미설정일 수 있어요)"

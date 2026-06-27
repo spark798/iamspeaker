@@ -80,8 +80,17 @@ export function ttsDir(sessionId: string): string {
   return safeResolve(BASE, StorageDirs.tts, assertSafeSegment(sessionId));
 }
 
-/** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>.wav` (스크립트 버전·슬라이드별). */
-export function demoAudioPath(sessionId: string, version: number, slideIndex: number): string {
-  const filename = `v${assertSafeSegment(String(version))}-${assertSafeSegment(String(slideIndex))}.wav`;
+/** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>[-<voice>].wav` (버전·슬라이드·음성별). */
+export function demoAudioPath(
+  sessionId: string,
+  version: number,
+  slideIndex: number,
+  voice?: "female" | "male",
+): string {
+  const v = assertSafeSegment(String(version));
+  const s = assertSafeSegment(String(slideIndex));
+  // female은 기존 캐시 호환을 위해 접미사 없음. male만 `-male` 접미사.
+  const suffix = voice === "male" ? "-male" : "";
+  const filename = `v${v}-${s}${suffix}.wav`;
   return safeResolve(ttsDir(sessionId), filename);
 }

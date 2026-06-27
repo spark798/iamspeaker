@@ -42,8 +42,11 @@ export interface ScriptGeneratorAdapter {
   ): Promise<ScriptDiff>;
 }
 
+/** 데모 음성 성별. 논리적 식별자 — 실제 Piper voice 모델은 어댑터/설정이 매핑. */
+export type TtsVoice = "female" | "male";
+
 export interface TtsAdapter {
-  synthesize(text: string, lang: string): Promise<TtsResult>;
+  synthesize(text: string, lang: string, voice?: TtsVoice): Promise<TtsResult>;
 }
 
 export interface SttAdapter {

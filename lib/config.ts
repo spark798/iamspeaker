@@ -31,6 +31,7 @@ const EnvSchema = z.object({
   PIPER_BIN: z.string().min(1).default("piper"),
   PIPER_VOICE_DIR: z.string().min(1).default("./data/models/piper"),
   PIPER_DEFAULT_VOICE: z.string().min(1).default("en_US-amy-medium"),
+  PIPER_MALE_VOICE: z.string().min(1).default("en_US-ryan-medium"),
   WHISPER_BIN: z.string().min(1).default("whisper-cli"),
   WHISPER_MODEL_PATH: z.string().min(1).default("./data/models/whisper/ggml-base.en.bin"),
   FFMPEG_BIN: z.string().min(1).default("ffmpeg"),

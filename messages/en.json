@@ -101,6 +101,9 @@
     "downloadSrt": "Download SRT",
     "translating": "Translating…",
     "listen": "🔊 Listen to demo voice",
+    "voiceLabel": "Voice",
+    "voiceFemale": "Female",
+    "voiceMale": "Male",
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →",
     "audioUnavailable": "Audio unavailable (TTS may not be set up)"
