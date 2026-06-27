@@ -10,16 +10,16 @@
 | 항목 | 값 |
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
-| 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **v0.3.0 — "코치" 루프 완성**: 대시보드(관리·검색·삭제)·반복 루프 동기부여·목표 설정·재연습 루프백·처방 코칭 노트(원칙 팁)·회차 비교(점수+cue 변화)·발표 원칙 KB(생성/개선/비평/처방). 도그푸드 + 대상 청중 넓히기 단계. |
-| 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적 + **프라이버시(100% 로컬)·무료·OSS**. **비동기 사후 리뷰**. **대상=영어 발표를 연습·개선하려는 누구나(원어민 포함)** — 코치 루프(속도·필러·페이스·처방·원칙)는 보편, **L1 발음/표현 교정은 비원어민 보너스**(앱은 nativeLanguage=en이면 native로 정상 동작). ✅완료: ①동기부여 ④루프백 ②처방 코칭. **폐기**: ③실시간. **보류**: GOP 자동 승격·기능 폭 확장. |
-| 다음 액션 | **도그푸드**(실 발표 3회+ 직접 — 가장 중요, 사람) + **대상 넓히기 다듬기**(① README 메시징 ② 모국어 기본값 ③ 발음 톤). **대중 확장의 핵심 레버 = 설치 마찰 제거(원클릭 Docker / Tauri·Electron 데스크톱 앱)** — 기능·품질보다 *유통*이 병목. niche(프라이버시·기술가능·비용민감)에선 이미 경쟁력 있음. |
+| 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private — 공개 준비 완료, GitHub 설정만 수동)**, **CI 그린** |
+| 현재 단계 | **v0.4.0 — 코치 루프 + 슬라이드 뷰어·리포트 시각화·단어 적합성 + 공개 준비**: (v0.3.0 코치 루프 위에) ①데모 **남성 음성** 옵션(기본 기억) ②**단어 사용 적합성** 축=위험표현/hedging 검출(필러와 별개 — 리포트 cue·improve 주입·데모 생성 회피, 라이브 0건) ③**슬라이드 썸네일 뷰어**(PDF=unpdf+@napi-rs/canvas, PPTX=LibreOffice→PDF, lazy 렌더+캐시 — 핵심 차별점 완성) ④**리포트 게이지 카드**(WPM 범위게이지·발음/전달점수 링, 의존성 0 SVG) ⑤**홈 랜딩**(히어로·3단계·신뢰포인트) ⑥**공개 준비**(README/CONTRIBUTING/storyboard 영어화+.ko 보존·`.github` 영어·한영 스크린샷·소셜카드·메타데이터 정합). |
+| 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적 + **프라이버시(100% 로컬)·무료·OSS**. **비동기 사후 리뷰**. **대상=영어 발표를 연습·개선하려는 누구나(원어민 포함)** — 코치 루프(속도·필러·페이스·처방·원칙·**단어 적합성**)는 보편, **L1 발음/표현 교정은 비원어민 보너스**(앱은 nativeLanguage=en이면 native로 정상 동작). ✅완료: ①동기부여 ④루프백 ②처방 코칭 ⑤슬라이드 뷰어·시각화. **폐기**: 실시간. **보류**: GOP 자동 승격·CEFR 어휘수준(자료 확보). |
+| 다음 액션 | **GitHub public 전환**(수동: private→public, 소셜프리뷰 업로드[`docs/img/social-preview.png`], About·Topics) + **도그푸드**(실 발표 3회+ — 가장 중요, 사람). **대중 확장의 핵심 레버 = 설치 마찰 제거(원클릭 Docker / Tauri·Electron 데스크톱 앱)** — 기능·품질보다 *유통*이 병목. niche(프라이버시·기술가능·비용민감)에선 이미 경쟁력 있음. |
 | 최근 갱신 | 2026-06-27 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 264 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
-| 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
+| 테스트 | 275 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md`(EN, +`.ko`) · 공개 문서 영어 기본: `README.md`·`CONTRIBUTING.md`(각 `.ko.md` 보존) · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
 ---
@@ -46,11 +46,13 @@
 | **SCR-07 진행 기록**(회차별 WPM/필러 추이) | ✅ (다국어 출력은 Phase 2) |
 | **L1 프로필(ko.json)** — improve에 모국어 규칙 주입(Epic 6) | ✅ (실 LLM: 복수/수일치 교정 검증) |
 | 발음분석(-ojf 토큰confidence + L1 음소교차) | ✅ |
-| TTS(PiperTts + 데모 음성 재생, SCR-02) | ✅ |
-| 다국어 출력 · 추가 언어팩(ja/zh) | ⏳ 대기 |
-| SCR-06 개선(improve 잡) · SCR-07 진행/다국어 · SCR-08 Q&A · TTS(piper) | ⏳ 대기 |
+| TTS(PiperTts + 데모 음성 재생, SCR-02) — **여성/남성 음성 선택**(localStorage 기본 기억) | ✅ |
+| **슬라이드 썸네일 뷰어**(SCR-02): PDF=unpdf+@napi-rs/canvas, PPTX=LibreOffice→PDF, lazy 렌더+디스크 캐시, 데모뷰 1/4 썸네일+클릭 확대, 폴백=텍스트 | ✅ (라이브 PDF 렌더 검증) |
+| **리포트 시각화**(SCR-05): 헤드라인 게이지 카드(WPM 범위게이지·발음/전달점수 링, 경량 SVG 의존성 0) | ✅ |
+| **단어 사용 적합성**(SCR-05/06): 위험표현(hedging/모호어/사과) 검출 — 리포트 cue·improve 주입·데모 생성 회피 | ✅ (라이브 데모 위험표현 0건) |
+| 다국어 출력 · 추가 언어팩(ja/zh) | ✅ (ja/zh L1 확장 완료, 출력은 기존) |
 
-> 화면 시각 렌더(LibreOffice PPTX→PDF + PDF.js)는 추후. Phase 2/3 백로그는 `DEVELOPMENT.md` §14.
+> Phase 2/3 백로그는 `DEVELOPMENT.md` §14. 슬라이드 시각 렌더는 D8대로 구현 완료(서버 사이드 PNG).
 
 ---
 
@@ -110,7 +112,12 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
-- **2026-06-27** — **전략 기록: 대상 청중 확장 + 유통(마찰) 통찰**(도그푸드 중 발견). ①**원어민도 대상**: 코치 루프의 핵심 가치(녹음→속도·필러·페이스 변화·슬라이드 타이밍 측정→슬라이드별 처방→재연습→추이)는 **모국어 무관·보편**. 미국인도 필러("um/like")·과속·단조 다 해당. **비원어민 전용은 L1 발음 교정(~20%)뿐**이고, 앱은 이미 nativeLanguage=en이면 native로 정상 동작 → **시장이 '비영어권'→'영어 발표하는 누구나'로 확장**. 메시징만 좁게 못박혀 있었음(아래 다듬기). ②**경쟁력/유통 통찰**: 방어 wedge=프라이버시(100% 로컬)·무료·OSS·L1(이 조합 주는 경쟁자 없음, niche best-in-class). **단 하나의 병목=설치 마찰**(clone·ffmpeg/whisper/ollama·서버 = 개발자 작업) → 비기술 대중엔 장점이 닿지 못함. **대중 확장 = 기능 아니라 원클릭/데스크톱 앱(Tauri·Electron) 유통이 핵심 레버**(프라이버시 wedge 유지하며). 본인(US 직장)이 쓸모 느끼면 niche 검증 신호. → 다듬기 착수: ①README 메시징 넓히기 ②모국어 기본값 ko→en ③발음 톤(선택).
+- **2026-06-27** — **v0.4.0 + 공개(public) 준비 완료**. ①**문서 영어화**: `README`·`CONTRIBUTING`·`docs/storyboard`를 영어 기본 + `.ko.md` 보존(언어 상호링크), `.github`(PR/이슈 템플릿·config)·`CODE_OF_CONDUCT`·`SECURITY` 영어 전환(기여자 대면 표준), 로케일 표기 4→5(ko/en/ja/zh/es) 정정. ②**스크린샷·소셜카드**: Playwright로 실행 중 dev에 연결만 해서 홈·슬라이드뷰어·리포트 한·영 6장 캡처(`docs/img`) + README 연결(영어판=영어 UI 우선/접이식 반대언어), 소셜 프리뷰 1280×640 카드(HTML→Playwright 렌더, 브랜드 #2563eb). ③**안전 점검**: `.env`/`data/`(녹음·키) 전부 git 미추적 확인(공개 시 유출 0), 하드코딩 키 0. ④**메타데이터 정합**: repo 경로 전부 `spark798/iamspeaker`, `package.json` bugs 추가·description 영어화. v0.4.0 태그. **남은 건 GitHub 웹 설정뿐**(private→public·소셜프리뷰 업로드·About·Topics).
+- **2026-06-27** — **홈 화면 카피 고도화(SCR-01)**: "이름+태그라인+개발중" 개발자 툴 화면 → 제품 랜딩. 히어로 헤드라인("슬라이드만 올리면 AI가 먼저 시범 발표")+CTA+신뢰 한 줄, 3단계 작동방식(📤업로드→🎬AI 데모→📊녹음·분석), 신뢰 포인트 4종(프라이버시·무료OSS·로컬·L1). 브랜드명은 전역 헤더로 위임. i18n home.* 5로케일(phase 제거). smoke 테스트=가치 헤드라인으로 갱신. 라이브 홈 200·신규 카피 노출 확인.
+- **2026-06-27** — **리포트 시각화 고도화(SCR-05)**: 텍스트 중심 리포트에 헤드라인 게이지 카드(Orai/Yoodli 스타일). `components/report-charts.tsx`(RingGauge 원형 점수·RangeGauge 목표구간+마커, **차트 라이브러리 없이 경량 SVG 의존성 0**, 다크모드·인쇄 안전). report-view 상단 3카드(WPM 범위게이지·발음 링·전달점수 링=지표 평균)+지표 막대 green/amber/red 일관화. i18n deliveryScore* 5로케일. 275 테스트(report-view 렌더 테스트가 게이지 통과 확인).
+- **2026-06-27** — **슬라이드 썸네일 뷰어(SCR-02) — 핵심 차별점 완성**. AI 데모를 실제 슬라이드와 함께 리뷰. 설계="무엇이든 →PDF→PNG": **PDF=unpdf+@napi-rs/canvas**(프리빌트, 시스템 라이브러리 0, 네이티브 빌드 없음), **PPTX=LibreOffice headless→PDF** 후 동일 렌더러(미설치 시 텍스트 카드 폴백). lazy 렌더+디스크 캐시(데모-오디오 패턴, 마이그 불필요), `lib/slides/{render,convert}.ts`·`slide-image` 라우트·storage `slides*`·config LIBREOFFICE_BIN/SLIDE_RENDER_SCALE·next serverExternalPackages(@napi-rs/canvas). 데모뷰 1/4 폭 썸네일+클릭 원본, onError 폴백. **라이브 검증**: Airbnb 피치 PDF slide 0/1/4 렌더 200·캐시·이미지 육안 확인(색·폰트·레이아웃 원본 그대로). 단위 +1(storage). 의존성 +1(@napi-rs/canvas).
+- **2026-06-27** — **단어 사용 적합성 축(SCR-05/06) — Seung 연구 피드 기반**. 피치 코퍼스 연구로 **위험표현(hedging/모호어/사과)** 검출을 필러와 **별개 축**으로 추가(필러=disfluency 빈도 vs 위험표현=신뢰도 레지스터, 강한 대안 제시). `lib/analysis/hedging.ts`(riskExpressionPositions/detect, en 정밀도 우선 다어절, 사전 RISK_EN)+정답셋 `eval/accuracy/risk-expressions.json`(P/R=1.0). **검출→저장**(analysis_results.risk_expressions 마이그 0009)**→리포트 cue**(덱 단위 risk cue, slideIndex -1, 출처=Pitch language research, 5로케일)**→improve 주입**(cueInstruction risk)**→데모 생성 회피**(riskAvoidanceGuidance를 generate/improve 프롬프트에, 사전 동기화 예시). **라이브(hermes3:8b)**: 데모 출력 위험표현 detector 재검사 0건. CEFR 어휘수준 분포는 별도 큰 NLP 피처로 분리(메모리 기록). 단위 +다수.
+- **2026-06-27** — **데모 TTS 남성 음성 옵션(SCR-02·SCR-03)**: 단일 여성(amy)에 남성 추가. TtsVoice("female"|"male")+synthesize(voice?), Piper voice→PIPER_DEFAULT_VOICE/PIPER_MALE_VOICE 매핑, demo-audio `?voice=` 검증·음성별 캐시, 데모뷰 음성 셀렉터(localStorage로 기본값 기억, SSR 안전). 남성 voice **A/B 비교 후 ryan→joe**(199→185 WPM 차분, 명료도 98.9→99.5%, 음량은 낮음). **라이브 검증**: 동일 텍스트 합성 후 Whisper STT 재인식 99.5% 정확도(WER 0.5%), 라우트 200. setup:models가 여성+남성 다운로드. i18n voice* 5로케일. 마이그 0009 외 추가. ①**원어민도 대상**: 코치 루프의 핵심 가치(녹음→속도·필러·페이스 변화·슬라이드 타이밍 측정→슬라이드별 처방→재연습→추이)는 **모국어 무관·보편**. 미국인도 필러("um/like")·과속·단조 다 해당. **비원어민 전용은 L1 발음 교정(~20%)뿐**이고, 앱은 이미 nativeLanguage=en이면 native로 정상 동작 → **시장이 '비영어권'→'영어 발표하는 누구나'로 확장**. 메시징만 좁게 못박혀 있었음(아래 다듬기). ②**경쟁력/유통 통찰**: 방어 wedge=프라이버시(100% 로컬)·무료·OSS·L1(이 조합 주는 경쟁자 없음, niche best-in-class). **단 하나의 병목=설치 마찰**(clone·ffmpeg/whisper/ollama·서버 = 개발자 작업) → 비기술 대중엔 장점이 닿지 못함. **대중 확장 = 기능 아니라 원클릭/데스크톱 앱(Tauri·Electron) 유통이 핵심 레버**(프라이버시 wedge 유지하며). 본인(US 직장)이 쓸모 느끼면 niche 검증 신호. → 다듬기 착수: ①README 메시징 넓히기 ②모국어 기본값 ko→en ③발음 톤(선택).
 - **2026-06-27** — **도그푸드 전 다듬기**: ①**ja/zh L1 언어팩 확장**(발음 7→10·표현 5→8 — ja: f·모음 구분·수식어순·불가산·존재문 / zh: 영어 r·장단모음·æ·be동사·존재문·불가산. 라이브로 zh 새 표현이 improve 프롬프트 주입 확인). ②**대시보드 세션 검색**(라벨·장르, 6개 초과 시, i18n 5로케일). ③**점검·다듬기**: `valueDelta` 죽은 코드→compare-view에서 실사용(DRY), README 기능줄을 "코치" 흐름(대시보드·코칭노트·회차비교·원칙·프라이버시)로 현행화, PROGRESS §0 갱신. 렌더 테스트 +1. CI 그린, 264 단위테스트, build·E2E OK.
 - **2026-06-26** — **WPM 일관성 수정(A) + 페이스 변화도(B)**. **A**: WPM 헤드라인 색·힌트·추이 차트 음영이 하드코딩 110–150을 쓰며 장르/목표 기준선을 무시하던 불일치(버그: talk 150–170에서 160이 노란색) → resolved goal로 교체. analysis 라우트가 goal 반환, report-view 힌트 "목표 {min}–{max}", progress 차트 밴드=goal. i18n wpmGoalHint. **B**: 평균 WPM만 보던 것을 슬라이드 간 WPM 분산으로 **단조(monotone) 검출** — 범위/평균<12%이고 빠름/느림 outlier 없으면 플래그(deliberate-pauses 원칙 부합). Cue.kind+=monotone(덱 신호 slideIndex -1), report에 cue+팁, improve엔 "문장 길이 변화" 지시. i18n cue_monotone·cueTip_monotone 5로케일. **WPM 평균치는 재조사 불필요(benchmark.md에 출처 기록 완비) — 대신 일관성+변화도로 한 단계 올림.** 단위 +3. CI 그린, 263 단위테스트, build·E2E OK.
 - **2026-06-26** — **슬라이드 비평에 슬라이드 원칙 주입**: critiqueSlidesPrompt에 `rhetoricGuidance(["slides"])` 주입 — 비평이 명저 기반 디자인 원칙으로 평가. KB 슬라이드 카테고리 5원칙(one-idea-per-slide·slides-support·six-by-six·visual-signal·no-speaker-notes-slide). **라이브(hermes3:8b)**: 텍스트 과다 슬라이드→"one idea per slide 위반·visuals 부재" 직접 지적+"여러 슬라이드 분할·시각자료" 제안. 단위 +1. CI 그린, 260 단위테스트, build OK. **원칙 KB가 이제 4곳에 흐름**: 데모 생성·개선 제안·처방 cue 팁·슬라이드 비평.

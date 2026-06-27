@@ -4,11 +4,11 @@
 
 > 슬라이드를 업로드하면 AI가 먼저 시범 발표(데모)를 생성하고, 사용자가 참고해 연습 녹음을 하면 **속도·발음·필러워드**를 분석해 피드백과 개선 스크립트를 제공하는 **오픈소스 발표 연습 웹앱**.
 
-![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.3.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.4.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
 
 영어로 발표·피칭하는 **누구나** — 백지 상태에서 시작하지 않도록 AI가 먼저 시범 발표를 보여주고, 속도·필러·페이스·발음 등 객관적 데이터로 반복 개선하도록 돕는다. 코치 루프(측정→처방→재연습→추이)는 원어민·비원어민 모두에게 유효하며, **영어가 모국어가 아니면** 모국어(L1) 기반 발음·표현 교정까지 더해진다.
 
-> **상태: v0.3.0 — "코치" 루프 완성.** 대시보드·처방적 코칭 노트·회차 비교·목표 설정·발표 원칙 기반 self-improve. 로컬 모델만으로 전체 루프 완주 가능. 개발 기록은 [`PROGRESS.md`](PROGRESS.md), 기여는 [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> **상태: v0.4.0 — 코치 루프 + 슬라이드 뷰어·리포트 시각화·단어 사용 적합성.** v0.3.0 코치 루프 위에 AI 데모 **슬라이드 뷰어**(실제 슬라이드를 스크립트와 함께), **게이지 기반 리포트 시각화**, **단어 사용 적합성**(신뢰도를 낮추는 hedging 검출), 데모 남성 음성 추가. 로컬 모델만으로 전체 루프 완주 가능. 개발 기록은 [`PROGRESS.md`](PROGRESS.md), 기여는 [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## 핵심 원칙
 - **오픈소스 / 셀프호스팅 우선** — 누구나 클론해서 띄울 수 있다.

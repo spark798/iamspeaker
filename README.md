@@ -4,11 +4,11 @@
 
 > An **open-source presentation-practice web app**: upload your slides, the AI gives a demo talk first, then you record your own run and it analyzes your **pace, pronunciation, and filler words** to return feedback and an improved script.
 
-![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.3.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.4.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
 
 For **anyone** who presents or pitches in English — instead of starting from a blank page, the AI shows a demo talk first, then helps you improve through objective data: pace, fillers, rhythm, pronunciation. The coach loop (measure → prescribe → re-practice → trend) works for native and non-native speakers alike, and **if English isn't your first language**, it adds native-language (L1) pronunciation and phrasing coaching on top.
 
-> **Status: v0.3.0 — the "coach" loop is complete.** Dashboard, prescriptive coaching notes, take-to-take comparison, goal setting, and self-improvement grounded in public-speaking principles. The whole loop runs on local models alone. Dev log in [`PROGRESS.md`](PROGRESS.md), contributing in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> **Status: v0.4.0 — coach loop + slide viewer, report visualization, and word-usage coaching.** On top of the v0.3.0 coach loop: an AI-demo **slide viewer** (render your actual slides next to the script), **gauge-based report visualization**, **word-usage appropriateness** (catches credibility-weakening hedging), and a male demo voice. The whole loop runs on local models alone. Dev log in [`PROGRESS.md`](PROGRESS.md), contributing in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Core principles
 - **Open source / self-host first** — anyone can clone and run it.
