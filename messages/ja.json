@@ -184,6 +184,8 @@
     "wpmGoalHint": "目標 {min}–{max}",
     "scoreTitle": "基準値に対するスコア",
     "scoreHint": "良い発表の分布（ジャンル・母語補正）に対する 0–100",
+    "deliveryScore": "デリバリースコア",
+    "deliveryScoreHint": "計測した指標スコアの平均",
     "metric_wpm": "話す速さ",
     "metric_fillerPerMin": "フィラー/分",
     "metric_pausePerMin": "ポーズ/分",

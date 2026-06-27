@@ -1,9 +1,17 @@
 "use client";
 
+import { RangeGauge, RingGauge } from "@/components/report-charts";
 import { cuePrincipleSource } from "@/lib/ai/rhetoric/principles";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
+/** 0~100 점수 → 신호색 클래스(text-* — gauge stroke/숫자 공용). */
+function scoreColorClass(score: number): string {
+  if (score >= 75) return "text-green-600";
+  if (score >= 50) return "text-amber-500";
+  return "text-red-600";
+}
 
 interface FillerWord {
   word: string;
@@ -77,10 +85,15 @@ export function ReportView({ recordingId }: { recordingId: string }) {
   if (!data) return <p className="text-sm text-neutral-500">{t("loading")}</p>;
 
   // WPM 헤드라인 색은 해석된 목표(장르·비원어민·사용자지정) 기준 — 하드코딩 밴드 제거.
-  const wpmOk = data.goal
-    ? data.wpm >= data.goal.wpmMin && data.wpm <= data.goal.wpmMax
-    : data.wpm >= 110 && data.wpm <= 150;
+  const wpmZoneMin = data.goal?.wpmMin ?? 110;
+  const wpmZoneMax = data.goal?.wpmMax ?? 150;
+  const wpmOk = data.wpm >= wpmZoneMin && data.wpm <= wpmZoneMax;
   const maxSlide = Math.max(1, ...data.slideTimeBreakdown.map((s) => s.durationSec));
+  // 전달 점수(헤드라인) = 측정 지표 점수들의 평균(0~100). 아래 지표별 막대가 근거를 보여줌.
+  const deliveryScore =
+    data.scores.length > 0
+      ? Math.round(data.scores.reduce((sum, s) => sum + s.score, 0) / data.scores.length)
+      : null;
 
   return (
     <div className="mt-4 space-y-6">
@@ -140,16 +153,63 @@ export function ReportView({ recordingId }: { recordingId: string }) {
         )}
       </div>
 
-      <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
-        <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>
-        <div className={`text-3xl font-bold ${wpmOk ? "text-green-600" : "text-amber-600"}`}>
-          {data.wpm}
+      {/* 헤드라인 게이지 카드 — WPM·발음·전달점수를 한눈에(Pillar ②: 직관적 진척). */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+          <div className="text-xs font-medium text-neutral-500">{t("wpm")}</div>
+          <div
+            className={`mt-1 text-3xl font-bold tabular-nums ${wpmOk ? "text-green-600" : "text-amber-500"}`}
+          >
+            {data.wpm}
+          </div>
+          <div className="mt-3">
+            <RangeGauge
+              value={data.wpm}
+              axisMin={60}
+              axisMax={220}
+              zoneMin={wpmZoneMin}
+              zoneMax={wpmZoneMax}
+              inZone={wpmOk}
+              ariaLabel={t("wpmGoalHint", { min: wpmZoneMin, max: wpmZoneMax })}
+            />
+            <div className="mt-1 flex justify-between text-[10px] tabular-nums text-neutral-400">
+              <span>60</span>
+              <span>220</span>
+            </div>
+          </div>
+          <div className="mt-1 text-xs text-neutral-500">
+            {data.goal ? t("wpmGoalHint", { min: wpmZoneMin, max: wpmZoneMax }) : t("wpmHint")}
+          </div>
         </div>
-        <div className="text-xs text-neutral-500">
-          {data.goal
-            ? t("wpmGoalHint", { min: data.goal.wpmMin, max: data.goal.wpmMax })
-            : t("wpmHint")}
-        </div>
+
+        {data.pronunciationScore != null && (
+          <div className="flex items-center gap-4 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+            <RingGauge
+              value={data.pronunciationScore}
+              colorClass={scoreColorClass(data.pronunciationScore)}
+              ariaLabel={`${t("pronunciation")} ${data.pronunciationScore}/100`}
+            />
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-neutral-500">{t("pronunciation")}</div>
+              <div className="text-xs text-neutral-400">/ 100</div>
+              <div className="mt-1 text-xs text-neutral-500">{t("pronScoreHint")}</div>
+            </div>
+          </div>
+        )}
+
+        {deliveryScore != null && (
+          <div className="flex items-center gap-4 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+            <RingGauge
+              value={deliveryScore}
+              colorClass={scoreColorClass(deliveryScore)}
+              ariaLabel={`${t("deliveryScore")} ${deliveryScore}/100`}
+            />
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-neutral-500">{t("deliveryScore")}</div>
+              <div className="mt-1 text-xs text-neutral-500">{t("deliveryScoreHint")}</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {data.scores.length > 0 && (
@@ -158,21 +218,15 @@ export function ReportView({ recordingId }: { recordingId: string }) {
           <p className="mb-2 text-xs text-neutral-500">{t("scoreHint")}</p>
           <ul className="space-y-2">
             {data.scores.map((s) => {
-              const color =
-                s.band === "ideal"
-                  ? "text-green-600"
-                  : s.score >= 60
-                    ? "text-amber-600"
-                    : "text-red-600";
+              const color = scoreColorClass(s.score);
+              const barBg =
+                s.score >= 75 ? "bg-green-500" : s.score >= 50 ? "bg-amber-500" : "bg-red-500";
               return (
                 <li key={s.metric} className="flex items-center gap-3 text-sm">
                   <span className="w-28 text-neutral-500">{t(`metric_${s.metric}`)}</span>
                   <span className="w-12 tabular-nums">{s.value}</span>
                   <div className="h-2 flex-1 overflow-hidden rounded bg-neutral-200 dark:bg-neutral-800">
-                    <div
-                      className={`h-full ${s.band === "ideal" ? "bg-green-500" : "bg-amber-500"}`}
-                      style={{ width: `${s.score}%` }}
-                    />
+                    <div className={`h-full ${barBg}`} style={{ width: `${s.score}%` }} />
                   </div>
                   <span className={`w-20 text-right font-medium ${color}`}>
                     {s.score} · {t(`band_${s.band}`)}
@@ -204,12 +258,6 @@ export function ReportView({ recordingId }: { recordingId: string }) {
 
       <div>
         <h2 className="mb-2 font-medium">{t("pronunciation")}</h2>
-        {data.pronunciationScore != null && (
-          <div className="mb-3 flex items-center gap-3">
-            <span className="text-2xl font-bold tabular-nums">{data.pronunciationScore}</span>
-            <span className="text-xs text-neutral-500">/ 100 · {t("pronScoreHint")}</span>
-          </div>
-        )}
         {data.pronunciationIssues.length === 0 ? (
           <p className="text-sm text-neutral-500">{t("pronNone")}</p>
         ) : (

@@ -184,6 +184,8 @@
     "wpmGoalHint": "目标 {min}–{max}",
     "scoreTitle": "相对基准的分数",
     "scoreHint": "相对优秀演讲分布（按类型·母语校正）的 0–100",
+    "deliveryScore": "表达评分",
+    "deliveryScoreHint": "各项指标评分的平均值",
     "metric_wpm": "语速",
     "metric_fillerPerMin": "填充词/分",
     "metric_pausePerMin": "停顿/分",

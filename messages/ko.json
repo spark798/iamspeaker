@@ -184,6 +184,8 @@
     "wpmGoalHint": "목표 {min}–{max}",
     "scoreTitle": "기준선 대비 점수",
     "scoreHint": "좋은 발표 분포(장르·모국어 보정) 대비 0–100점",
+    "deliveryScore": "전달 점수",
+    "deliveryScoreHint": "측정 지표 점수의 평균",
     "metric_wpm": "말하기 속도",
     "metric_fillerPerMin": "필러/분",
     "metric_pausePerMin": "휴지/분",

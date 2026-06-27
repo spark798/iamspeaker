@@ -184,6 +184,8 @@
     "wpmGoalHint": "Goal {min}–{max}",
     "scoreTitle": "Score vs. baseline",
     "scoreHint": "0–100 vs. good-talk distribution (genre + native-language adjusted)",
+    "deliveryScore": "Delivery score",
+    "deliveryScoreHint": "Average of the measured metric scores",
     "metric_wpm": "Speaking pace",
     "metric_fillerPerMin": "Fillers/min",
     "metric_pausePerMin": "Pauses/min",
