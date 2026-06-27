@@ -176,6 +176,7 @@
     "loading": "Loading…",
     "wpm": "Speaking pace (WPM)",
     "wpmHint": "Recommended 110–150",
+    "wpmGoalHint": "Goal {min}–{max}",
     "scoreTitle": "Score vs. baseline",
     "scoreHint": "0–100 vs. good-talk distribution (genre + native-language adjusted)",
     "metric_wpm": "Speaking pace",

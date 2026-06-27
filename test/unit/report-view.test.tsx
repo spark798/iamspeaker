@@ -13,6 +13,7 @@ const analysis = {
   pronunciationScore: 82,
   scores: [],
   cues: [{ slideIndex: 2, kind: "pace_fast", value: 200 }],
+  goal: { wpmMin: 130, wpmMax: 150, fillerPerMinMax: 5 },
 };
 
 const analysisWithPhonemes = {
@@ -91,6 +92,17 @@ describe("ReportView — PDF export", () => {
     );
     renderReport();
     expect(await screen.findByText("82")).toBeInTheDocument();
+  });
+
+  it("WPM 힌트가 해석된 목표 구간을 반영(하드코딩 아님)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: true, json: async () => analysis })) as unknown as typeof fetch,
+    );
+    renderReport();
+    // goal 130–150 → "목표 130–150" (옛 "권장 110–150" 아님)
+    expect(await screen.findByText(/목표 130–150/)).toBeInTheDocument();
+    expect(screen.queryByText(/110–150/)).not.toBeInTheDocument();
   });
 
   it("음소별 색 분해(적/녹 칩)와 범례를 렌더", async () => {

@@ -176,6 +176,7 @@
     "loading": "読み込み中…",
     "wpm": "話す速さ (WPM)",
     "wpmHint": "推奨 110–150",
+    "wpmGoalHint": "目標 {min}–{max}",
     "scoreTitle": "基準値に対するスコア",
     "scoreHint": "良い発表の分布（ジャンル・母語補正）に対する 0–100",
     "metric_wpm": "話す速さ",

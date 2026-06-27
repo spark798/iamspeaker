@@ -76,6 +76,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       pauseCount: row.pauseCount,
       scores,
       cues,
+      goal, // WPM 목표 구간(장르·비원어민·사용자지정) — 헤드라인 색 등 UI 일관성용
       baselineGenre: baseline.genre,
     });
   } catch (err) {

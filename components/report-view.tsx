@@ -36,6 +36,11 @@ interface Cue {
   kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
   value?: number;
 }
+interface Goal {
+  wpmMin: number;
+  wpmMax: number;
+  fillerPerMinMax: number;
+}
 interface Analysis {
   sessionId: string | null;
   wpm: number;
@@ -45,6 +50,7 @@ interface Analysis {
   pronunciationScore: number | null;
   scores: MetricScore[];
   cues: Cue[];
+  goal?: Goal;
 }
 
 export function ReportView({ recordingId }: { recordingId: string }) {
@@ -69,7 +75,10 @@ export function ReportView({ recordingId }: { recordingId: string }) {
     );
   if (!data) return <p className="text-sm text-neutral-500">{t("loading")}</p>;
 
-  const wpmOk = data.wpm >= 110 && data.wpm <= 150;
+  // WPM 헤드라인 색은 해석된 목표(장르·비원어민·사용자지정) 기준 — 하드코딩 밴드 제거.
+  const wpmOk = data.goal
+    ? data.wpm >= data.goal.wpmMin && data.wpm <= data.goal.wpmMax
+    : data.wpm >= 110 && data.wpm <= 150;
   const maxSlide = Math.max(1, ...data.slideTimeBreakdown.map((s) => s.durationSec));
 
   return (
@@ -131,7 +140,11 @@ export function ReportView({ recordingId }: { recordingId: string }) {
         <div className={`text-3xl font-bold ${wpmOk ? "text-green-600" : "text-amber-600"}`}>
           {data.wpm}
         </div>
-        <div className="text-xs text-neutral-500">{t("wpmHint")}</div>
+        <div className="text-xs text-neutral-500">
+          {data.goal
+            ? t("wpmGoalHint", { min: data.goal.wpmMin, max: data.goal.wpmMax })
+            : t("wpmHint")}
+        </div>
       </div>
 
       {data.scores.length > 0 && (

@@ -176,6 +176,7 @@
     "loading": "Cargando…",
     "wpm": "Ritmo al hablar (WPM)",
     "wpmHint": "Recomendado 110–150",
+    "wpmGoalHint": "Meta {min}–{max}",
     "scoreTitle": "Puntuación vs. referencia",
     "scoreHint": "0–100 vs. distribución de buenas charlas (ajustado por tipo e idioma nativo)",
     "metric_wpm": "Ritmo al hablar",

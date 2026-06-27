@@ -176,6 +176,7 @@
     "loading": "加载中…",
     "wpm": "语速 (WPM)",
     "wpmHint": "推荐 110–150",
+    "wpmGoalHint": "目标 {min}–{max}",
     "scoreTitle": "相对基准的分数",
     "scoreHint": "相对优秀演讲分布（按类型·母语校正）的 0–100",
     "metric_wpm": "语速",

@@ -247,7 +247,12 @@ export function ProgressView({ sessionId }: { sessionId: string }) {
 
       {analyzed.length >= 2 && (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <TrendChart values={wpmSeries} band={[110, 150]} label={t("wpmTrend")} />
+          {/* 추이 차트 "좋은 구간" 음영도 해석된 목표(장르·비원어민·사용자지정) 기준. */}
+          <TrendChart
+            values={wpmSeries}
+            band={goal ? [goal.wpmMin, goal.wpmMax] : undefined}
+            label={t("wpmTrend")}
+          />
           <TrendChart values={fillerSeries} color="#d97706" label={t("fillerTrend")} />
         </div>
       )}

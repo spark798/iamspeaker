@@ -176,6 +176,7 @@
     "loading": "불러오는 중…",
     "wpm": "말하기 속도 (WPM)",
     "wpmHint": "권장 110–150",
+    "wpmGoalHint": "목표 {min}–{max}",
     "scoreTitle": "기준선 대비 점수",
     "scoreHint": "좋은 발표 분포(장르·모국어 보정) 대비 0–100점",
     "metric_wpm": "말하기 속도",
