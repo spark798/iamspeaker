@@ -75,6 +75,37 @@ describe("generateCues", () => {
     expect(cues.some((c) => c.slideIndex === 1 && c.kind === "filler")).toBe(false);
   });
 
+  it("페이스가 거의 일정하면 monotone(덱 전체, slideIndex -1)", () => {
+    // 3 슬라이드 모두 ~150 WPM(범위 작음) → 단조. 페이스 outlier 없음.
+    const transitions = [
+      { slideIndex: 0, atSec: 0 },
+      { slideIndex: 1, atSec: 20 },
+      { slideIndex: 2, atSec: 40 },
+    ];
+    const breakdown = [
+      { slideIndex: 0, durationSec: 20, wordCount: 50 }, // 150
+      { slideIndex: 1, durationSec: 20, wordCount: 51 }, // 153
+      { slideIndex: 2, durationSec: 20, wordCount: 49 }, // 147
+    ];
+    const cues = generateCues({ ...base, transitions, totalDurationSec: 60, breakdown });
+    expect(cues).toContainEqual({ slideIndex: -1, kind: "monotone", value: expect.any(Number) });
+  });
+
+  it("페이스 변화(빠른/느린 슬라이드)가 있으면 monotone 아님", () => {
+    const transitions = [
+      { slideIndex: 0, atSec: 0 },
+      { slideIndex: 1, atSec: 20 },
+      { slideIndex: 2, atSec: 40 },
+    ];
+    const breakdown = [
+      { slideIndex: 0, durationSec: 20, wordCount: 50 }, // 150
+      { slideIndex: 1, durationSec: 10, wordCount: 50 }, // 300 (빠름)
+      { slideIndex: 2, durationSec: 20, wordCount: 50 }, // 150
+    ];
+    const cues = generateCues({ ...base, transitions, totalDurationSec: 60, breakdown });
+    expect(cues.some((c) => c.kind === "monotone")).toBe(false);
+  });
+
   it("최대 cue 수를 6으로 제한", () => {
     const transitions = Array.from({ length: 10 }, (_, i) => ({ slideIndex: i, atSec: i * 100 }));
     const breakdown = transitions.map((t) => ({

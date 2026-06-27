@@ -203,11 +203,13 @@
     "cue_time_long": "슬라이드 {slide}: 예산보다 길었어요 ({value}초) — 핵심만 남기세요",
     "cue_time_short": "슬라이드 {slide}: 너무 빨리 넘어갔어요 ({value}초)",
     "cue_filler": "슬라이드 {slide}: 필러 {value}개 집중 — 여기서 멈칫했어요",
+    "cue_monotone": "전체 페이스가 거의 일정해요 (범위 {value} WPM) — 강조할 곳에서 속도에 변화를",
     "cueTip_pace_fast": "핵심 문장 앞뒤에 의도적 멈춤을 — 빠르기보다 강조",
     "cueTip_pace_slow": "군더더기를 덜어 또렷하게 (신호-잡음비)",
     "cueTip_time_long": "핵심만 남기고 곁가지는 잘라내기",
     "cueTip_time_short": "더 또렷한 전환이나 핵심 한 줄을 추가",
     "cueTip_filler": "표현을 단순화해 한 호흡에 — 군더더기 줄이기",
+    "cueTip_monotone": "핵심에서 늦추고 멈춤을 — 속도 변화가 강조를 만든다",
     "toImprove": "개선 제안 보기 →"
   },
   "qa": {

@@ -24,6 +24,8 @@ function cueInstruction(c: Cue): string {
       return `Slide ${s} was rushed (${v}s): add a clearer transition or a bit more substance.`;
     case "filler":
       return `Slide ${s} had ${v} filler words clustered: simplify the phrasing so it's easier to say fluently.`;
+    case "monotone":
+      return "The pace stayed almost uniform across slides: vary sentence length — mix short, punchy lines with longer ones — to invite natural pace variation and emphasis.";
   }
 }
 

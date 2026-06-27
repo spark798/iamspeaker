@@ -153,7 +153,7 @@ export const PRINCIPLES: Principle[] = [
  * time_short→throughline-early.
  */
 export function cuePrincipleSource(
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler",
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone",
 ): string {
   switch (kind) {
     case "pace_fast":
@@ -166,6 +166,8 @@ export function cuePrincipleSource(
       return "TED Guide";
     case "filler":
       return "Presentation Zen";
+    case "monotone":
+      return "Toastmasters · TED Guide";
   }
 }
 

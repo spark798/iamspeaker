@@ -16,9 +16,10 @@ export interface SlideTimeBreakdown {
 
 /** 처방적 코칭 신호 — 어느 슬라이드에서 무엇을 고칠지(서술적 지표를 행동으로). */
 export interface Cue {
+  /** 슬라이드 인덱스. 덱 전체 신호(monotone)는 -1. */
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
-  /** i18n 보간용 값(슬라이드별 wpm·필러 수 등). */
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone";
+  /** i18n 보간용 값(슬라이드별 wpm·필러 수, monotone=WPM 범위 등). */
   value?: number;
 }
 

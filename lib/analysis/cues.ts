@@ -24,6 +24,9 @@ const TIME_LONG = 1.6;
 const TIME_SHORT = 0.4;
 const FILLER_HOTSPOT = 3;
 const MAX_CUES = 6;
+// 페이스 변화도: 슬라이드 WPM 범위(max−min)가 평균의 이 비율 미만이면 단조(monotone).
+const MONOTONE_REL_SPREAD = 0.12;
+const MIN_SLIDES_FOR_VARIETY = 3;
 
 export function generateCues(input: CueInput): Cue[] {
   const sorted = [...input.transitions].sort((a, b) => a.atSec - b.atSec);
@@ -33,6 +36,7 @@ export function generateCues(input: CueInput): Cue[] {
     input.slideCount > 0 ? input.targetDurationSec / input.slideCount : Number.POSITIVE_INFINITY;
 
   const cues: Cue[] = [];
+  const slideWpms: number[] = []; // 변화도(monotone) 판정용.
   for (let i = 0; i < sorted.length; i++) {
     const t = sorted[i];
     if (!t) continue;
@@ -44,6 +48,7 @@ export function generateCues(input: CueInput): Cue[] {
     // 페이스(슬라이드별 WPM) — 단어가 충분할 때만.
     if (wordCount !== undefined && wordCount >= MIN_WORDS_FOR_PACE && durationSec > 0) {
       const slideWpm = Math.round(wordCount / (durationSec / 60));
+      slideWpms.push(slideWpm);
       if (slideWpm > input.goalWpmMax * PACE_FAST) {
         cues.push({ slideIndex: t.slideIndex, kind: "pace_fast", value: slideWpm });
       } else if (slideWpm < input.goalWpmMin * PACE_SLOW) {
@@ -64,6 +69,17 @@ export function generateCues(input: CueInput): Cue[] {
     const fillerCount = allFillerTs.filter((ts) => ts >= t.atSec && ts < endSec).length;
     if (fillerCount >= FILLER_HOTSPOT) {
       cues.push({ slideIndex: t.slideIndex, kind: "filler", value: fillerCount });
+    }
+  }
+
+  // 페이스 변화도(B): 슬라이드 간 WPM이 거의 일정하면 단조 — 강조 위해 변화를 권함.
+  // 이미 빠름/느림 슬라이드(변화 있음)가 있으면 단조 아님 → 제외.
+  const hasPaceOutlier = cues.some((c) => c.kind === "pace_fast" || c.kind === "pace_slow");
+  if (slideWpms.length >= MIN_SLIDES_FOR_VARIETY && !hasPaceOutlier) {
+    const mean = slideWpms.reduce((a, b) => a + b, 0) / slideWpms.length;
+    const spread = Math.max(...slideWpms) - Math.min(...slideWpms);
+    if (mean > 0 && spread / mean < MONOTONE_REL_SPREAD) {
+      cues.push({ slideIndex: -1, kind: "monotone", value: Math.round(spread) });
     }
   }
 

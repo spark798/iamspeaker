@@ -33,7 +33,7 @@ interface MetricScore {
 }
 interface Cue {
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler";
+  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone";
   value?: number;
 }
 interface Goal {

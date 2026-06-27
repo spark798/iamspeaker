@@ -80,7 +80,7 @@ export function compareCues(a: Cue[], b: Cue[]): CueChange[] {
 
 /** cue 종류 → 카테고리(UI 라벨 그룹). */
 export function cueCategory(kind: Cue["kind"]): "pace" | "time" | "filler" {
-  if (kind === "pace_fast" || kind === "pace_slow") return "pace";
+  if (kind === "pace_fast" || kind === "pace_slow" || kind === "monotone") return "pace";
   if (kind === "time_long" || kind === "time_short") return "time";
   return "filler";
 }

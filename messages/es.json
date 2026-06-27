@@ -203,11 +203,13 @@
     "cue_time_long": "Diapositiva {slide}: se alargó ({value}s) — deja solo lo esencial",
     "cue_time_short": "Diapositiva {slide}: pasaste muy rápido ({value}s)",
     "cue_filler": "Diapositiva {slide}: {value} muletillas juntas — dudaste aquí",
+    "cue_monotone": "Tu ritmo apenas cambia (rango {value} PPM) — varíalo para enfatizar",
     "cueTip_pace_fast": "Pausas deliberadas alrededor de las frases clave — énfasis, no velocidad",
     "cueTip_pace_slow": "Recorta el relleno para mayor claridad (señal-ruido)",
     "cueTip_time_long": "Quédate con lo esencial, corta las divagaciones",
     "cueTip_time_short": "Añade una transición más clara o una frase clave",
     "cueTip_filler": "Simplifica la redacción para que fluya de un tirón",
+    "cueTip_monotone": "Reduce y pausa en los puntos clave — la variación crea énfasis",
     "toImprove": "Ver sugerencias →"
   },
   "qa": {
