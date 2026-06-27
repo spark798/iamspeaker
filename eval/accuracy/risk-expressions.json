@@ -1,0 +1,59 @@
+{
+  "_note": "위험 표현(hedging/모호어/사과) 검출 정확도 정답셋. riskIndices = 사람이 위험 표현으로 표시한 단어 위치(0-based). 필러와 별개 축. clean 샘플은 정밀도(강한 단정 표현 오검출 방지) 측정용.",
+  "samples": [
+    {
+      "id": "hedge-1-ithink",
+      "language": "en",
+      "words": ["I", "think", "we", "can", "grow", "fast"],
+      "riskIndices": [0, 1]
+    },
+    {
+      "id": "hedge-2-maybe-probably",
+      "language": "en",
+      "words": ["maybe", "this", "will", "probably", "work"],
+      "riskIndices": [0, 3]
+    },
+    {
+      "id": "hedge-3-sortof",
+      "language": "en",
+      "words": ["it's", "sort", "of", "a", "big", "market"],
+      "riskIndices": [1, 2]
+    },
+    {
+      "id": "hedge-4-wehope",
+      "language": "en",
+      "words": ["we", "hope", "to", "reach", "a", "lot", "of", "users"],
+      "riskIndices": [0, 1, 4, 5, 6]
+    },
+    {
+      "id": "vague-1-stuff",
+      "language": "en",
+      "words": ["the", "platform", "does", "a", "bunch", "of", "stuff"],
+      "riskIndices": [3, 4, 5, 6]
+    },
+    {
+      "id": "apology-1-notsure",
+      "language": "en",
+      "words": ["I'm", "not", "sure", "but", "sorry", "for", "the", "delay"],
+      "riskIndices": [0, 1, 2, 4]
+    },
+    {
+      "id": "clean-1-strong-claim",
+      "language": "en",
+      "words": ["We", "reduce", "churn", "by", "thirty", "percent"],
+      "riskIndices": []
+    },
+    {
+      "id": "clean-2-evidence",
+      "language": "en",
+      "words": ["Our", "model", "predicts", "churn", "thirty", "days", "early"],
+      "riskIndices": []
+    },
+    {
+      "id": "clean-3-think-as-process",
+      "language": "en",
+      "words": ["customers", "want", "a", "faster", "checkout"],
+      "riskIndices": []
+    }
+  ]
+}
