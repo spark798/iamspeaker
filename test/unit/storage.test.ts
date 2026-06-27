@@ -5,6 +5,8 @@ import {
   recordingPath,
   safeFilename,
   safeResolve,
+  slideImagePath,
+  slidePdfCachePath,
   uploadPath,
 } from "@/lib/storage";
 import { describe, expect, it } from "vitest";
@@ -29,6 +31,14 @@ describe("storage 경로 빌더", () => {
     const p = demoAudioPath("sess-1", 2, 0);
     expect(p.endsWith("/tts/sess-1/v2-0.wav")).toBe(true);
     expect(p.startsWith(dataDir())).toBe(true);
+  });
+
+  it("슬라이드 썸네일·변환 PDF 캐시 경로가 <slides>/<sessionId> 하위에 생성된다", () => {
+    expect(slideImagePath("sess-1", 3).endsWith("/slides/sess-1/3.png")).toBe(true);
+    expect(slidePdfCachePath("sess-1").endsWith("/slides/sess-1/source.pdf")).toBe(true);
+    expect(slideImagePath("sess-1", 0).startsWith(dataDir())).toBe(true);
+    // sessionId 경로 탈출 차단
+    expect(() => slideImagePath("../../etc", 0)).toThrow();
   });
 
   it("경로 탈출(..)·절대경로를 차단한다", () => {

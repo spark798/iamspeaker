@@ -35,6 +35,9 @@ const EnvSchema = z.object({
   WHISPER_BIN: z.string().min(1).default("whisper-cli"),
   WHISPER_MODEL_PATH: z.string().min(1).default("./data/models/whisper/ggml-base.en.bin"),
   FFMPEG_BIN: z.string().min(1).default("ffmpeg"),
+  // 슬라이드 렌더: PPTX→PDF 변환용 LibreOffice 바이너리, PDF→PNG 렌더 배율.
+  LIBREOFFICE_BIN: z.string().min(1).default("soffice"),
+  SLIDE_RENDER_SCALE: z.coerce.number().positive().default(1.5),
 
   // 발음 평가: heuristic(기본, 의존성 0) | wav2vec2(옵션, Python+torch GOP)
   PRONUNCIATION_SCORER: z.enum(["heuristic", "wav2vec2"]).default("heuristic"),

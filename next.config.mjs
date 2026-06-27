@@ -36,7 +36,8 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   // 네이티브 모듈은 서버 번들에 포함하지 않고 외부 의존으로 둔다.
-  serverExternalPackages: ["better-sqlite3", "unpdf"],
+  // @napi-rs/canvas: unpdf가 PDF→PNG 렌더 시 동적 import(슬라이드 썸네일).
+  serverExternalPackages: ["better-sqlite3", "unpdf", "@napi-rs/canvas"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

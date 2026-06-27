@@ -106,7 +106,8 @@
     "voiceMale": "Masculina",
     "empty": "Aún no hay guion. Pulsa 'Generar demo IA' para empezar.",
     "toEditor": "Editar guion →",
-    "audioUnavailable": "Audio no disponible (puede que TTS no esté configurado)"
+    "audioUnavailable": "Audio no disponible (puede que TTS no esté configurado)",
+    "slideViewFull": "Ver a tamaño completo"
   },
   "progress": {
     "title": "Historial de progreso",

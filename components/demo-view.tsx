@@ -29,6 +29,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
   const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
+  const [imgErr, setImgErr] = useState<Set<number>>(new Set());
   // 선택한 음성은 localStorage에 저장 → 다음에도 같은 음성이 기본값(로컬 우선, 서버 불필요).
   // SSR 하이드레이션 불일치 방지를 위해 초기값은 female, 마운트 후 저장된 선호를 적용.
   const [voice, setVoice] = useState<"female" | "male">("female");
@@ -188,40 +189,63 @@ export function DemoView({ sessionId }: { sessionId: string }) {
             key={s.index}
             className="rounded-lg border border-neutral-200 p-4 dark:border-neutral-800"
           >
-            <div className="text-xs font-medium text-neutral-500">
-              {t("slide")} {s.index + 1}
-            </div>
-            <div className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
-              {s.textContent}
-            </div>
-            {scriptByIndex.has(s.index) && (
-              <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-neutral-800">
-                <div className="text-xs font-medium text-brand">{t("script")}</div>
-                <p className="mt-1 text-sm">{scriptByIndex.get(s.index)}</p>
-                {translation?.has(s.index) && (
-                  <p className="mt-1 border-l-2 border-brand/40 pl-2 text-sm text-neutral-500">
-                    {translation.get(s.index)}
-                  </p>
-                )}
-                <div className="mt-2">
-                  <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
-                  {audioErr.has(s.index) ? (
-                    <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
-                  ) : (
-                    <audio
-                      key={voice}
-                      controls
-                      preload="none"
-                      className="h-8 w-full max-w-md"
-                      src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}&voice=${voice}`}
-                      onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
-                    >
-                      <track kind="captions" />
-                    </audio>
-                  )}
+            <div className="flex gap-4">
+              {/* 슬라이드 썸네일(화면 ~1/4 폭). 렌더 실패(LibreOffice 미설치 등)면 숨기고 텍스트로 폴백. */}
+              {!imgErr.has(s.index) && (
+                <a
+                  href={`/api/sessions/${sessionId}/slide-image?slide=${s.index}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-1/4 shrink-0"
+                  title={t("slideViewFull")}
+                >
+                  {/* 동적 세션 PNG(서버 렌더) — next/image 불필요 */}
+                  <img
+                    src={`/api/sessions/${sessionId}/slide-image?slide=${s.index}`}
+                    alt={`${t("slide")} ${s.index + 1}`}
+                    loading="lazy"
+                    className="w-full rounded border border-neutral-200 dark:border-neutral-800"
+                    onError={() => setImgErr((prev) => new Set(prev).add(s.index))}
+                  />
+                </a>
+              )}
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-medium text-neutral-500">
+                  {t("slide")} {s.index + 1}
                 </div>
+                <div className="mt-1 text-sm text-neutral-700 dark:text-neutral-300">
+                  {s.textContent}
+                </div>
+                {scriptByIndex.has(s.index) && (
+                  <div className="mt-3 border-t border-neutral-100 pt-3 dark:border-neutral-800">
+                    <div className="text-xs font-medium text-brand">{t("script")}</div>
+                    <p className="mt-1 text-sm">{scriptByIndex.get(s.index)}</p>
+                    {translation?.has(s.index) && (
+                      <p className="mt-1 border-l-2 border-brand/40 pl-2 text-sm text-neutral-500">
+                        {translation.get(s.index)}
+                      </p>
+                    )}
+                    <div className="mt-2">
+                      <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
+                      {audioErr.has(s.index) ? (
+                        <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
+                      ) : (
+                        <audio
+                          key={voice}
+                          controls
+                          preload="none"
+                          className="h-8 w-full max-w-md"
+                          src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}&voice=${voice}`}
+                          onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
+                        >
+                          <track kind="captions" />
+                        </audio>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </li>
         ))}
       </ol>

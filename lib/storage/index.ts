@@ -14,6 +14,7 @@ export const StorageDirs = {
   uploads: "uploads",
   recordings: "recordings",
   tts: "tts",
+  slides: "slides",
   piperVoices: path.join("models", "piper"),
   whisperModels: path.join("models", "whisper"),
 } as const;
@@ -78,6 +79,21 @@ export function recordingPath(sessionId: string, recordingId: string, ext: strin
 /** 세션별 TTS 캐시 디렉토리. */
 export function ttsDir(sessionId: string): string {
   return safeResolve(BASE, StorageDirs.tts, assertSafeSegment(sessionId));
+}
+
+/** 세션별 슬라이드 이미지·변환 PDF 캐시 디렉토리. */
+export function slidesDir(sessionId: string): string {
+  return safeResolve(BASE, StorageDirs.slides, assertSafeSegment(sessionId));
+}
+
+/** 슬라이드 썸네일 캐시 경로: `<slides>/<sessionId>/<slideIndex>.png`. */
+export function slideImagePath(sessionId: string, slideIndex: number): string {
+  return safeResolve(slidesDir(sessionId), `${assertSafeSegment(String(slideIndex))}.png`);
+}
+
+/** PPTX→PDF 변환 결과 캐시 경로(렌더 소스). PDF 업로드는 원본을 그대로 쓰므로 미사용. */
+export function slidePdfCachePath(sessionId: string): string {
+  return safeResolve(slidesDir(sessionId), "source.pdf");
 }
 
 /** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>[-<voice>].wav` (버전·슬라이드·음성별). */

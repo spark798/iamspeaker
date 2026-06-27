@@ -106,7 +106,8 @@
     "voiceMale": "Male",
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →",
-    "audioUnavailable": "Audio unavailable (TTS may not be set up)"
+    "audioUnavailable": "Audio unavailable (TTS may not be set up)",
+    "slideViewFull": "View full size"
   },
   "progress": {
     "title": "Progress history",

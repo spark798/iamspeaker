@@ -106,7 +106,8 @@
     "voiceMale": "男性",
     "empty": "まだスクリプトがありません。「AIデモ生成」を押して開始してください。",
     "toEditor": "スクリプトを編集 →",
-    "audioUnavailable": "音声を読み込めません（TTS未設定の可能性）"
+    "audioUnavailable": "音声を読み込めません（TTS未設定の可能性）",
+    "slideViewFull": "原寸で表示"
   },
   "progress": {
     "title": "進捗履歴",
