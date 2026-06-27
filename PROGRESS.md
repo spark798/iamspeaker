@@ -18,7 +18,7 @@
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 248 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 250 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md` · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-26** — **세션 삭제(대시보드)**: 프라이버시 도구답게 DB+디스크 모두 정리. `DELETE /api/sessions/[id]`(세션 행→FK cascade로 slides/scripts/recordings/analysis/qa, 비-FK 잡 직접 정리, 세션 스코프 디스크 디렉토리 업로드·녹음·TTS rmSync[assertSafeSegment 검증], 레이트리밋·404 가드) + session-list 행별 삭제 버튼(confirm→DELETE→목록 제거). i18n delete·confirmDelete 5로케일. **라이브(prod)**: 생성→삭제→재삭제 404. 렌더 테스트 +2. CI 그린, 250 단위테스트, build·E2E OK.
 - **2026-06-26** — **세션 목록/대시보드(홈)**: 세션 진입점이 흩어져 있던 것을 홈에서 한눈에 관리. `GET /api/sessions`(최신순 + 회차 수·마지막 연습 시각 집계, 슬라이드 파일명 라벨/(inline)→null), `components/session-list.tsx`(발표별 라벨·장르·회차·마지막연습 + 열기/demo·기록/progress[회차>0]), 홈을 히어로+세션목록+엔진상태로 재구성. i18n dashboard 네임스페이스 5로케일(장르는 uploadForm 재사용). 라이브 GET(32세션 집계 정상)·렌더 테스트. CI 그린, 248 단위테스트, build·E2E OK.
 - **2026-06-25** — **회차 나란히 비교 diff 뷰(Pillar ①)**: 두 연습 회차의 지표·점수를 나란히+델타로("내가 나아졌나" 확인). 점수(0~100, 높을수록 좋음) 비교로 WPM 방향 모호성 제거. `lib/analysis/compare.ts`(순수: compareScores 메트릭 합집합·짝지음·델타, valueDelta), analysis 라우트 durationSec 반환, `components/compare-view.tsx`(헤드라인 발음점수·WPM·필러·길이 + 기준선 점수표, 개선 화살표·색) + `app/(session)/compare` 페이지(?a&b), ProgressView에 회차 선택 2셀렉트(기본 첫↔최신)+비교 버튼. i18n compare 네임스페이스+progress.compare* 5로케일. compareScores 단위 +4·렌더 테스트·/compare 빌드. CI 그린, 246 단위테스트, build·E2E OK.
 - **2026-06-25** — **사용자 지정 목표(Pillar ①·ⓒ "내 코치")**: 목표가 장르 기준선 자동도출이던 것을 사용자가 WPM 구간·필러 상한 직접 설정 가능하게(미설정 시 기준선 폴백). sessions += goal_wpm_min/max·goal_filler_per_min(마이그 0008). `lib/analysis/goal.ts resolveGoal`(순수 단일 진실원: 오버라이드 우선/기준선 폴백+비원어민) — progress·analysis(cues)·improve 3곳 중복 제거. `PATCH /api/sessions/[id]/goals`(zod min≤max·null초기화·레이트리밋). ProgressView 요약 카드에 목표 편집 인라인 폼. i18n 4키 5로케일. **라이브(prod)**: 150-170→120-140/필러3 저장·반영, min>max→400. resolveGoal 단위 +5. CI 그린, 241 단위테스트, build·E2E OK. **다음**: 도그푸드(사람) 또는 cue↔improve 추가 다듬기.
