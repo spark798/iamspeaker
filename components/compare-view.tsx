@@ -1,6 +1,12 @@
 "use client";
 
-import { type CueChange, compareCues, compareScores, cueCategory } from "@/lib/analysis/compare";
+import {
+  type CueChange,
+  compareCues,
+  compareScores,
+  cueCategory,
+  valueDelta,
+} from "@/lib/analysis/compare";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 
@@ -82,10 +88,7 @@ export function CompareView({ a, b }: { a: string; b: string }) {
       <td className="py-2 text-right tabular-nums">{av ?? "–"}</td>
       <td className="py-2 text-right tabular-nums">{bv ?? "–"}</td>
       <td className="py-2 text-right tabular-nums">
-        <Delta
-          delta={av !== null && bv !== null ? Math.round((bv - av) * 10) / 10 : null}
-          lowerBetter={lowerBetter}
-        />
+        <Delta delta={valueDelta(av, bv)} lowerBetter={lowerBetter} />
       </td>
     </tr>
   );

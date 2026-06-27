@@ -11,10 +11,10 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private)**, **CI 그린** |
-| 현재 단계 | **🎉 v0.2.2 출시** — Phase 1·2 완료 + 실사용/a11y/반응형 품질 패스, 부채 0 |
+| 현재 단계 | **v0.2.2+ — "코치" 루프 완성**: 대시보드(관리·검색·삭제)·반복 루프 동기부여·목표 설정·재연습 루프백·처방 코칭 노트(원칙 팁)·회차 비교(점수+cue 변화)·발표 원칙 KB(생성/개선/비평/처방). 도그푸드 전 다듬기 단계. (버전 태그는 미정) |
 | 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적. **비동기 사후 리뷰**("발표용 게임 필름"). ✅완료: ①반복 루프 동기부여 · ④재연습 루프백 · ②처방적 코칭 노트. **폐기**: ③실시간 코칭. **보류**: GOP 자동 승격(②지표 이미 강함)·기능 폭 확장. |
-| 다음 액션 | ✅ⓐ코치→개선 연결(cue 주입) 완료. 후보: ⓑ**도그푸드**(실 발표 3회+ 직접 사용해 루프 검증 — 가장 중요, 사람 필요) ⓒ✅목표 커스터마이즈 완료. |
-| 최근 갱신 | 2026-06-26 |
+| 다음 액션 | **도그푸드**(실 발표 3회+ 직접 사용해 루프 검증 — 가장 중요, 사람·브라우저 필요). 도그푸드 전 다듬기(ja/zh L1 확장·대시보드 검색·점검) 완료. 코드 잔여: README 스크린샷(사람)·버전 태그 결정. |
+| 최근 갱신 | 2026-06-27 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
@@ -110,6 +110,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-27** — **도그푸드 전 다듬기**: ①**ja/zh L1 언어팩 확장**(발음 7→10·표현 5→8 — ja: f·모음 구분·수식어순·불가산·존재문 / zh: 영어 r·장단모음·æ·be동사·존재문·불가산. 라이브로 zh 새 표현이 improve 프롬프트 주입 확인). ②**대시보드 세션 검색**(라벨·장르, 6개 초과 시, i18n 5로케일). ③**점검·다듬기**: `valueDelta` 죽은 코드→compare-view에서 실사용(DRY), README 기능줄을 "코치" 흐름(대시보드·코칭노트·회차비교·원칙·프라이버시)로 현행화, PROGRESS §0 갱신. 렌더 테스트 +1. CI 그린, 264 단위테스트, build·E2E OK.
 - **2026-06-26** — **WPM 일관성 수정(A) + 페이스 변화도(B)**. **A**: WPM 헤드라인 색·힌트·추이 차트 음영이 하드코딩 110–150을 쓰며 장르/목표 기준선을 무시하던 불일치(버그: talk 150–170에서 160이 노란색) → resolved goal로 교체. analysis 라우트가 goal 반환, report-view 힌트 "목표 {min}–{max}", progress 차트 밴드=goal. i18n wpmGoalHint. **B**: 평균 WPM만 보던 것을 슬라이드 간 WPM 분산으로 **단조(monotone) 검출** — 범위/평균<12%이고 빠름/느림 outlier 없으면 플래그(deliberate-pauses 원칙 부합). Cue.kind+=monotone(덱 신호 slideIndex -1), report에 cue+팁, improve엔 "문장 길이 변화" 지시. i18n cue_monotone·cueTip_monotone 5로케일. **WPM 평균치는 재조사 불필요(benchmark.md에 출처 기록 완비) — 대신 일관성+변화도로 한 단계 올림.** 단위 +3. CI 그린, 263 단위테스트, build·E2E OK.
 - **2026-06-26** — **슬라이드 비평에 슬라이드 원칙 주입**: critiqueSlidesPrompt에 `rhetoricGuidance(["slides"])` 주입 — 비평이 명저 기반 디자인 원칙으로 평가. KB 슬라이드 카테고리 5원칙(one-idea-per-slide·slides-support·six-by-six·visual-signal·no-speaker-notes-slide). **라이브(hermes3:8b)**: 텍스트 과다 슬라이드→"one idea per slide 위반·visuals 부재" 직접 지적+"여러 슬라이드 분할·시각자료" 제안. 단위 +1. CI 그린, 260 단위테스트, build OK. **원칙 KB가 이제 4곳에 흐름**: 데모 생성·개선 제안·처방 cue 팁·슬라이드 비평.
 - **2026-06-26** — **처방 cue에 원칙 팁+출처 연결(Pillar ②)**: 코칭 노트 각 cue에 명저 기반 원칙 팁과 출처를 붙여 "왜"의 전문가 근거 제공. `cuePrincipleSource(kind)`(pace→Toastmasters·TED Guide, time_long·filler→Presentation Zen, time_short→TED Guide) + report-view에 cue 아래 로컬라이즈 팁+출처. i18n cueTip_* 5종 5로케일. 단위 +1·렌더 테스트. CI 그린, 259 단위테스트, build·E2E OK.
