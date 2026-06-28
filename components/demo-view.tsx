@@ -18,9 +18,13 @@ interface SlideScript {
 /** 데모 음성 선택 기억용 localStorage 키. */
 const VOICE_PREF_KEY = "iamspeaker.demoVoice";
 
+/** 다국어 출력(번역·SRT) 대상 언어 — 발표 언어(en) 제외 UI 로케일. */
+const TARGET_LANGS = ["ko", "ja", "zh", "es"] as const;
+
 export function DemoView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("demo");
   const te = useTranslations("errors");
+  const tu = useTranslations("uploadForm");
   const [slides, setSlides] = useState<Slide[]>([]);
   const [script, setScript] = useState<SlideScript[]>([]);
   const [progress, setProgress] = useState(0);
@@ -28,6 +32,8 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
+  // 다국어 출력 대상 언어(모국어 기본, 없으면 ko). 번역·SRT 공용.
+  const [transLang, setTransLang] = useState<string>("ko");
   const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
   const [imgErr, setImgErr] = useState<Set<number>>(new Set());
   // 선택한 음성은 localStorage에 저장 → 다음에도 같은 음성이 기본값(로컬 우선, 서버 불필요).
@@ -44,7 +50,15 @@ export function DemoView({ sessionId }: { sessionId: string }) {
       .catch(() => setError(te("loadFailed")));
     fetch(`/api/sessions/${sessionId}/script`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((b: { content: SlideScript[] } | null) => b && setScript(b.content))
+      .then((b: { content: SlideScript[]; language?: string; nativeLanguage?: string } | null) => {
+        if (!b) return;
+        setScript(b.content);
+        // 대상 언어 기본값 = 모국어(발표 언어와 다르고 지원 대상일 때).
+        const n = b.nativeLanguage;
+        if (n && n !== b.language && (TARGET_LANGS as readonly string[]).includes(n)) {
+          setTransLang(n);
+        }
+      })
       .catch(() => {});
   }, [sessionId, te]);
 
@@ -88,28 +102,27 @@ export function DemoView({ sessionId }: { sessionId: string }) {
     }
   }, [sessionId, te]);
 
-  const toggleTranslation = useCallback(async () => {
-    if (translation) {
-      setTranslation(null);
-      return;
-    }
-    setTranslating(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/sessions/${sessionId}/translation`);
-      if (res.status === 204) {
-        setTranslation(new Map()); // 번역 불필요(모국어=발표 언어)
-        return;
+  const loadTranslation = useCallback(
+    async (lang: string) => {
+      setTranslating(true);
+      setError(null);
+      try {
+        const res = await fetch(`/api/sessions/${sessionId}/translation?lang=${lang}`);
+        if (res.status === 204) {
+          setTranslation(new Map()); // 번역 불필요(대상=발표 언어)
+          return;
+        }
+        if (!res.ok) throw new Error(te("loadFailed"));
+        const b = (await res.json()) as { content: SlideScript[] };
+        setTranslation(new Map(b.content.map((c) => [c.slideIndex, c.text])));
+      } catch (e) {
+        setError(e instanceof Error ? e.message : String(e));
+      } finally {
+        setTranslating(false);
       }
-      if (!res.ok) throw new Error(te("loadFailed"));
-      const b = (await res.json()) as { content: SlideScript[] };
-      setTranslation(new Map(b.content.map((c) => [c.slideIndex, c.text])));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setTranslating(false);
-    }
-  }, [sessionId, translation, te]);
+    },
+    [sessionId, te],
+  );
 
   const scriptByIndex = new Map(script.map((s) => [s.slideIndex, s.text]));
   const hasScript = script.length > 0;
@@ -148,9 +161,27 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                 <option value="male">{t("voiceMale")}</option>
               </select>
             </label>
+            <label className="flex items-center gap-1 text-sm font-medium">
+              <span className="text-neutral-500">{t("outputLang")}</span>
+              <select
+                value={transLang}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setTransLang(next);
+                  if (translation) void loadTranslation(next); // 표시 중이면 새 언어로 갱신
+                }}
+                className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+              >
+                {TARGET_LANGS.map((l) => (
+                  <option key={l} value={l}>
+                    {tu(`native${l.charAt(0).toUpperCase()}${l.slice(1)}`)}
+                  </option>
+                ))}
+              </select>
+            </label>
             <button
               type="button"
-              onClick={() => void toggleTranslation()}
+              onClick={() => (translation ? setTranslation(null) : void loadTranslation(transLang))}
               disabled={translating}
               className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
             >
@@ -161,7 +192,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                   : t("showTranslation")}
             </button>
             <a
-              href={`/api/sessions/${sessionId}/subtitle`}
+              href={`/api/sessions/${sessionId}/subtitle?lang=${transLang}`}
               className="text-sm font-medium text-brand hover:underline"
             >
               {t("downloadSrt")}

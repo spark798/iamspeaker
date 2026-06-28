@@ -1,5 +1,5 @@
 import { getDb } from "@/lib/db";
-import { scripts } from "@/lib/db/schema";
+import { scripts, sessions } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { and, desc, eq } from "drizzle-orm";
 
@@ -19,7 +19,15 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
             .get()
         : base.where(eq(scripts.sessionId, id)).orderBy(desc(scripts.version)).get();
     if (!row) throw Errors.notFound("스크립트가 아직 없습니다");
-    return Response.json({ version: row.version, source: row.source, content: row.content });
+    // nativeLanguage: 다국어 출력(번역/SRT) 대상 언어 picker 기본값용.
+    const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
+    return Response.json({
+      version: row.version,
+      source: row.source,
+      content: row.content,
+      language: session?.language ?? "en",
+      nativeLanguage: session?.nativeLanguage ?? null,
+    });
   } catch (err) {
     return errorResponse(err);
   }
