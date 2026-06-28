@@ -1,6 +1,6 @@
 import { EngineStatus } from "@/components/engine-status";
 import { SessionList } from "@/components/session-list";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 
 const STEPS = [
@@ -13,6 +13,8 @@ const WHYS = ["why1", "why2", "why3", "why4"] as const;
 
 export default function HomePage() {
   const t = useTranslations();
+  // 로케일별 썸네일 세트 — 비영어 홈에서도 UI 텍스트가 일치(public/landing/<locale>/).
+  const locale = useLocale();
   return (
     <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-12 px-6 py-12">
       {/* 히어로 — 가치를 즉시(슬라이드 올리면 AI가 먼저 시범 발표). */}
@@ -41,7 +43,11 @@ export default function HomePage() {
             >
               {/* 실제 제품 화면 썸네일(영어 UI). 정적 자산 — next/image 불필요. */}
               <div className="mb-3 flex h-28 items-center justify-center overflow-hidden rounded-md border border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900">
-                <img src={`/landing/${img}`} alt="" className="h-full w-full object-contain" />
+                <img
+                  src={`/landing/${locale}/${img}`}
+                  alt=""
+                  className="h-full w-full object-contain"
+                />
               </div>
               <div className="text-center font-medium">{t(`home.${key}Title`)}</div>
               <p className="mt-1 text-center text-sm text-neutral-500">{t(`home.${key}Desc`)}</p>
