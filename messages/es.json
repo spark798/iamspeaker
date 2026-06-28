@@ -58,6 +58,8 @@
   },
   "uploadForm": {
     "file": "Archivo de diapositivas (PPTX/PDF)",
+    "chooseFile": "Elegir archivo",
+    "noFile": "Ningún archivo seleccionado",
     "targetMinutes": "Tiempo objetivo (minutos)",
     "tone": "Tono",
     "toneFormal": "Formal",

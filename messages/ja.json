@@ -58,6 +58,8 @@
   },
   "uploadForm": {
     "file": "スライドファイル (PPTX/PDF)",
+    "chooseFile": "ファイルを選択",
+    "noFile": "ファイル未選択",
     "targetMinutes": "目標時間（分）",
     "tone": "トーン",
     "toneFormal": "フォーマル",

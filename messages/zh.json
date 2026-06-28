@@ -58,6 +58,8 @@
   },
   "uploadForm": {
     "file": "幻灯片文件 (PPTX/PDF)",
+    "chooseFile": "选择文件",
+    "noFile": "未选择文件",
     "targetMinutes": "目标时间（分钟）",
     "tone": "语气",
     "toneFormal": "正式",

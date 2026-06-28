@@ -21,6 +21,7 @@ export function UploadForm() {
   const [slides, setSlides] = useState<Slide[] | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -91,7 +92,25 @@ export function UploadForm() {
         <label htmlFor="file" className="text-sm font-medium">
           {t("file")}
         </label>
-        <input id="file" name="file" type="file" accept=".pptx,.pdf" required className="text-sm" />
+        <div className="flex items-center gap-3">
+          {/* 네이티브 input은 sr-only로 숨기고 라벨을 버튼처럼 — 클릭 유도 + 로케일 텍스트. */}
+          <label
+            htmlFor="file"
+            className="cursor-pointer rounded-md border border-neutral-300 bg-neutral-50 px-4 py-2 text-sm font-medium hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+          >
+            {t("chooseFile")}
+          </label>
+          <span className="truncate text-sm text-neutral-500">{fileName ?? t("noFile")}</span>
+        </div>
+        <input
+          id="file"
+          name="file"
+          type="file"
+          accept=".pptx,.pdf"
+          required
+          className="sr-only"
+          onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+        />
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -58,6 +58,8 @@
   },
   "uploadForm": {
     "file": "슬라이드 파일 (PPTX/PDF)",
+    "chooseFile": "파일 선택",
+    "noFile": "선택된 파일 없음",
     "targetMinutes": "목표 발표 시간(분)",
     "tone": "톤",
     "toneFormal": "격식",

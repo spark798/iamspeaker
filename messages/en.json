@@ -58,6 +58,8 @@
   },
   "uploadForm": {
     "file": "Slide file (PPTX/PDF)",
+    "chooseFile": "Choose file",
+    "noFile": "No file selected",
     "targetMinutes": "Target time (minutes)",
     "tone": "Tone",
     "toneFormal": "Formal",
