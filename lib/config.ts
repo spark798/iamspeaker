@@ -32,6 +32,9 @@ const EnvSchema = z.object({
   PIPER_VOICE_DIR: z.string().min(1).default("./data/models/piper"),
   PIPER_DEFAULT_VOICE: z.string().min(1).default("en_US-amy-medium"),
   PIPER_MALE_VOICE: z.string().min(1).default("en_US-joe-medium"),
+  // 번역본 TTS용 대상 언어 보이스(Piper는 es/zh만 제공 — ko/ja는 없음). 빈 값이면 미지원.
+  PIPER_VOICE_ES: z.string().default("es_ES-davefx-medium"),
+  PIPER_VOICE_ZH: z.string().default("zh_CN-huayan-medium"),
   WHISPER_BIN: z.string().min(1).default("whisper-cli"),
   WHISPER_MODEL_PATH: z.string().min(1).default("./data/models/whisper/ggml-base.en.bin"),
   FFMPEG_BIN: z.string().min(1).default("ffmpeg"),

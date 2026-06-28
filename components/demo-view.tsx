@@ -18,8 +18,18 @@ interface SlideScript {
 /** 데모 음성 선택 기억용 localStorage 키. */
 const VOICE_PREF_KEY = "iamspeaker.demoVoice";
 
-/** 다국어 출력(번역·SRT) 대상 언어 — 발표 언어(en) 제외 UI 로케일. */
-const TARGET_LANGS = ["ko", "ja", "zh", "es"] as const;
+/** 출력 언어 — 영어 데모(en, 기본) + 번역 대상(ko/ja/zh/es). */
+const OUTPUT_LANGS = ["en", "ko", "ja", "zh", "es"] as const;
+/** Piper 보이스가 있어 데모 음성 재생이 되는 언어(es/zh만 — ko/ja는 Piper 보이스 없음). */
+const VOICE_LANGS = new Set(["en", "es", "zh"]);
+/** 출력 언어 → uploadForm i18n 라벨 키. */
+const LANG_LABEL_KEY: Record<string, string> = {
+  en: "langEnglish",
+  ko: "nativeKo",
+  ja: "nativeJa",
+  zh: "nativeZh",
+  es: "nativeEs",
+};
 
 export function DemoView({ sessionId }: { sessionId: string }) {
   const t = useTranslations("demo");
@@ -32,8 +42,8 @@ export function DemoView({ sessionId }: { sessionId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [translation, setTranslation] = useState<Map<number, string> | null>(null);
   const [translating, setTranslating] = useState(false);
-  // 다국어 출력 대상 언어(모국어 기본, 없으면 ko). 번역·SRT 공용.
-  const [transLang, setTransLang] = useState<string>("ko");
+  // 출력 언어 — 기본 en(영어 데모 음성). 번역·SRT·번역본 음성 공용.
+  const [transLang, setTransLang] = useState<string>("en");
   const [audioErr, setAudioErr] = useState<Set<number>>(new Set());
   const [imgErr, setImgErr] = useState<Set<number>>(new Set());
   // 선택한 음성은 localStorage에 저장 → 다음에도 같은 음성이 기본값(로컬 우선, 서버 불필요).
@@ -50,15 +60,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
       .catch(() => setError(te("loadFailed")));
     fetch(`/api/sessions/${sessionId}/script`)
       .then((r) => (r.ok ? r.json() : null))
-      .then((b: { content: SlideScript[]; language?: string; nativeLanguage?: string } | null) => {
-        if (!b) return;
-        setScript(b.content);
-        // 대상 언어 기본값 = 모국어(발표 언어와 다르고 지원 대상일 때).
-        const n = b.nativeLanguage;
-        if (n && n !== b.language && (TARGET_LANGS as readonly string[]).includes(n)) {
-          setTransLang(n);
-        }
-      })
+      .then((b: { content: SlideScript[] } | null) => b && setScript(b.content))
       .catch(() => {});
   }, [sessionId, te]);
 
@@ -145,22 +147,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
         )}
         {hasScript && !busy && (
           <div className="ml-auto flex items-center gap-3">
-            <label className="flex items-center gap-1 text-sm font-medium">
-              <span className="text-neutral-500">{t("voiceLabel")}</span>
-              <select
-                value={voice}
-                onChange={(e) => {
-                  const next = e.target.value as "female" | "male";
-                  setVoice(next);
-                  window.localStorage.setItem(VOICE_PREF_KEY, next); // 다음 방문의 기본값으로 기억
-                  setAudioErr(new Set()); // 음성 변경 시 이전 실패 상태 초기화
-                }}
-                className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
-              >
-                <option value="female">{t("voiceFemale")}</option>
-                <option value="male">{t("voiceMale")}</option>
-              </select>
-            </label>
+            {/* 출력 언어 — en(영어 데모) 기본 + 번역 대상. 음성/번역/SRT를 함께 구동. */}
             <label className="flex items-center gap-1 text-sm font-medium">
               <span className="text-neutral-500">{t("outputLang")}</span>
               <select
@@ -168,29 +155,55 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                 onChange={(e) => {
                   const next = e.target.value;
                   setTransLang(next);
-                  if (translation) void loadTranslation(next); // 표시 중이면 새 언어로 갱신
+                  setAudioErr(new Set()); // 언어 변경 시 오디오 실패 상태 초기화
+                  if (translation && next !== "en") void loadTranslation(next);
+                  else if (next === "en") setTranslation(null);
                 }}
                 className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
               >
-                {TARGET_LANGS.map((l) => (
+                {OUTPUT_LANGS.map((l) => (
                   <option key={l} value={l}>
-                    {tu(`native${l.charAt(0).toUpperCase()}${l.slice(1)}`)}
+                    {tu(LANG_LABEL_KEY[l] ?? "langEnglish")}
                   </option>
                 ))}
               </select>
             </label>
-            <button
-              type="button"
-              onClick={() => (translation ? setTranslation(null) : void loadTranslation(transLang))}
-              disabled={translating}
-              className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
-            >
-              {translating
-                ? t("translating")
-                : translation
-                  ? t("hideTranslation")
-                  : t("showTranslation")}
-            </button>
+            {/* 영어 데모만 여성/남성 선택(다른 언어는 보이스 1종). */}
+            {transLang === "en" && (
+              <label className="flex items-center gap-1 text-sm font-medium">
+                <span className="text-neutral-500">{t("voiceLabel")}</span>
+                <select
+                  value={voice}
+                  onChange={(e) => {
+                    const next = e.target.value as "female" | "male";
+                    setVoice(next);
+                    window.localStorage.setItem(VOICE_PREF_KEY, next);
+                    setAudioErr(new Set());
+                  }}
+                  className="rounded border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+                >
+                  <option value="female">{t("voiceFemale")}</option>
+                  <option value="male">{t("voiceMale")}</option>
+                </select>
+              </label>
+            )}
+            {/* 비영어 출력일 때만 원문+번역 병기 토글. */}
+            {transLang !== "en" && (
+              <button
+                type="button"
+                onClick={() =>
+                  translation ? setTranslation(null) : void loadTranslation(transLang)
+                }
+                disabled={translating}
+                className="text-sm font-medium text-brand hover:underline disabled:opacity-50"
+              >
+                {translating
+                  ? t("translating")
+                  : translation
+                    ? t("hideTranslation")
+                    : t("showTranslation")}
+              </button>
+            )}
             <a
               href={`/api/sessions/${sessionId}/subtitle?lang=${transLang}`}
               className="text-sm font-medium text-brand hover:underline"
@@ -263,23 +276,26 @@ export function DemoView({ sessionId }: { sessionId: string }) {
                         {translation.get(s.index)}
                       </p>
                     )}
-                    <div className="mt-2">
-                      <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
-                      {audioErr.has(s.index) ? (
-                        <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
-                      ) : (
-                        <audio
-                          key={voice}
-                          controls
-                          preload="none"
-                          className="h-8 w-full max-w-md"
-                          src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}&voice=${voice}`}
-                          onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
-                        >
-                          <track kind="captions" />
-                        </audio>
-                      )}
-                    </div>
+                    {/* 데모 음성 — 보이스 있는 언어만(en/es/zh). ko/ja는 보이스 없어 생략. */}
+                    {VOICE_LANGS.has(transLang) && (
+                      <div className="mt-2">
+                        <div className="mb-1 text-xs text-neutral-500">{t("listen")}</div>
+                        {audioErr.has(s.index) ? (
+                          <p className="text-xs text-amber-600">{t("audioUnavailable")}</p>
+                        ) : (
+                          <audio
+                            key={`${transLang}-${voice}`}
+                            controls
+                            preload="none"
+                            className="h-8 w-full max-w-md"
+                            src={`/api/sessions/${sessionId}/demo-audio?slide=${s.index}&voice=${voice}&lang=${transLang}`}
+                            onError={() => setAudioErr((prev) => new Set(prev).add(s.index))}
+                          >
+                            <track kind="captions" />
+                          </audio>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

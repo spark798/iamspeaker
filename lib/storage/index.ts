@@ -96,17 +96,19 @@ export function slidePdfCachePath(sessionId: string): string {
   return safeResolve(slidesDir(sessionId), "source.pdf");
 }
 
-/** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>[-<voice>].wav` (버전·슬라이드·음성별). */
+/** 데모 음성 캐시 경로: `<tts>/<sessionId>/v<version>-<slideIndex>[-<voice|lang>].wav`. */
 export function demoAudioPath(
   sessionId: string,
   version: number,
   slideIndex: number,
   voice?: "female" | "male",
+  lang?: string,
 ): string {
   const v = assertSafeSegment(String(version));
   const s = assertSafeSegment(String(slideIndex));
-  // female은 기존 캐시 호환을 위해 접미사 없음. male만 `-male` 접미사.
-  const suffix = voice === "male" ? "-male" : "";
+  // 비영어(번역본)는 `-<lang>`. 영어는 female=접미사 없음(기존 캐시 호환)·male=`-male`.
+  const suffix =
+    lang && lang !== "en" ? `-${assertSafeSegment(lang)}` : voice === "male" ? "-male" : "";
   const filename = `v${v}-${s}${suffix}.wav`;
   return safeResolve(ttsDir(sessionId), filename);
 }

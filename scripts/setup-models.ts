@@ -67,8 +67,14 @@ async function downloadVoice(voice: string): Promise<void> {
 const whisperUrl = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin";
 
 await download(whisperUrl, config.WHISPER_MODEL_PATH);
-// 데모 음성: 여성(기본) + 남성. 중복은 동일하면 1회만.
-for (const voice of new Set([config.PIPER_DEFAULT_VOICE, config.PIPER_MALE_VOICE])) {
+// 데모 음성: 영어 여성(기본)+남성 + 번역본 TTS용 es/zh(Piper는 ko/ja 없음). 빈 값/중복은 건너뜀.
+const voices = [
+  config.PIPER_DEFAULT_VOICE,
+  config.PIPER_MALE_VOICE,
+  config.PIPER_VOICE_ES,
+  config.PIPER_VOICE_ZH,
+].filter(Boolean);
+for (const voice of new Set(voices)) {
   await downloadVoice(voice);
 }
 

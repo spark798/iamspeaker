@@ -1,17 +1,20 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { getAdapters } from "@/lib/ai/factory";
+import { hasVoiceForLang } from "@/lib/ai/piper";
 import { getDb } from "@/lib/db";
 import { scripts, sessions } from "@/lib/db/schema";
 import { Errors, errorResponse } from "@/lib/errors";
 import { demoAudioPath } from "@/lib/storage";
+import { isTranslatableLang, loadScriptWithTranslation } from "@/lib/translation";
 import { and, desc, eq } from "drizzle-orm";
 
 export const dynamic = "force-dynamic";
 
 /**
- * SCR-02: 데모 스크립트의 한 슬라이드를 TTS로 합성해 WAV로 스트리밍.
- * `?slide=<index>` 필수, `?version=N` 선택(없으면 최신). 결과는 디스크 캐시(버전·슬라이드별) 후 재사용.
+ * SCR-02/07: 데모 스크립트의 한 슬라이드를 TTS로 합성해 WAV로 스트리밍.
+ * `?slide=<index>` 필수, `?version` 선택. `?voice=female|male`(영어). `?lang=<로케일>`이면 그 언어 번역본을
+ * 해당 언어 보이스로(es/zh만 지원 — 보이스 없으면 404). 결과는 디스크 캐시(버전·슬라이드·음성/언어별) 재사용.
  */
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -30,9 +33,20 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     }
     const voice: "female" | "male" = voiceParam === "male" ? "male" : "female";
 
+    const langParam = url.searchParams.get("lang");
+    if (langParam !== null && !isTranslatableLang(langParam)) {
+      throw Errors.badRequest("지원하지 않는 음성 언어입니다");
+    }
+
     const db = getDb();
     const session = db.select().from(sessions).where(eq(sessions.id, id)).get();
     if (!session) throw Errors.notFound("세션을 찾을 수 없습니다");
+
+    // 출력 언어 = lang(있으면) 아니면 발표 언어. 번역본 음성은 보이스 있는 언어만(es/zh).
+    const outLang = langParam && langParam !== session.language ? langParam : session.language;
+    if (!hasVoiceForLang(outLang)) {
+      throw Errors.notFound(`'${outLang}' 언어용 음성이 없습니다`);
+    }
 
     const versionParam = url.searchParams.get("version");
     const scriptRow =
@@ -55,12 +69,19 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
       throw Errors.notFound("해당 슬라이드의 스크립트가 없습니다");
     }
 
-    const cachePath = demoAudioPath(id, scriptRow.version, slideIndex, voice);
+    // 출력 언어가 발표 언어와 다르면 번역본 텍스트로(없으면 원문 폴백).
+    let text = slideScript.text;
+    if (outLang !== session.language) {
+      const tr = await loadScriptWithTranslation(db, id, outLang);
+      text = tr?.translation?.content.find((c) => c.slideIndex === slideIndex)?.text ?? text;
+    }
+
+    const cachePath = demoAudioPath(id, scriptRow.version, slideIndex, voice, outLang);
     let audio: Uint8Array;
     if (existsSync(cachePath)) {
       audio = new Uint8Array(readFileSync(cachePath));
     } else {
-      const result = await getAdapters().tts.synthesize(slideScript.text, session.language, voice);
+      const result = await getAdapters().tts.synthesize(text, outLang, voice);
       audio = result.audio;
       mkdirSync(dirname(cachePath), { recursive: true });
       writeFileSync(cachePath, audio);
