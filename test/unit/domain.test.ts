@@ -38,6 +38,7 @@ describe("domain 배럴 export", () => {
       ],
       pauseCount: 3,
       riskExpressions: [],
+      prosody: null,
     };
 
     const qa: QAItem = {

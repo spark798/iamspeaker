@@ -32,6 +32,7 @@ const ANALYSIS: AnalysisResult = {
   pronunciationIssues: [],
   pauseCount: 0,
   riskExpressions: [],
+  prosody: null,
 };
 const TRANSCRIPT: TranscriptResult = {
   text: "our solution reduces churn",

@@ -95,6 +95,34 @@ describe("generateCues", () => {
     expect(cues.some((c) => c.kind === "risk")).toBe(false);
   });
 
+  it("피치가 단조로우면 intonation cue(덱 단위)", () => {
+    const cues = generateCues({
+      ...base,
+      prosody: {
+        pitchMedianHz: 130,
+        pitchRangeSemitones: 1.5,
+        monotonePitch: true,
+        dynamicsDb: 6,
+        voicedRatio: 0.7,
+      },
+    });
+    expect(cues.find((c) => c.kind === "intonation")).toMatchObject({ slideIndex: -1, value: 2 });
+  });
+
+  it("피치 변화가 있으면(monotonePitch=false) intonation cue 없음", () => {
+    const cues = generateCues({
+      ...base,
+      prosody: {
+        pitchMedianHz: 130,
+        pitchRangeSemitones: 7,
+        monotonePitch: false,
+        dynamicsDb: 10,
+        voicedRatio: 0.7,
+      },
+    });
+    expect(cues.some((c) => c.kind === "intonation")).toBe(false);
+  });
+
   it("페이스가 거의 일정하면 monotone(덱 전체, slideIndex -1)", () => {
     // 3 슬라이드 모두 ~150 WPM(범위 작음) → 단조. 페이스 outlier 없음.
     const transitions = [

@@ -64,6 +64,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
       targetDurationSec: session?.targetDurationSec ?? 0,
       slideCount: deck.length,
       riskExpressions: row.riskExpressions ?? [],
+      prosody: row.prosody ?? null,
     });
 
     return Response.json({

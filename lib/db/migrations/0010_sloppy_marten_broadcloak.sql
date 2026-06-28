@@ -1,0 +1,1 @@
+ALTER TABLE `analysis_results` ADD `prosody` text;

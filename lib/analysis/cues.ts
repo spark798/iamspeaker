@@ -1,6 +1,7 @@
 import type {
   Cue,
   FillerWordResult,
+  ProsodyResult,
   RiskExpressionResult,
   SlideTimeBreakdown,
   SlideTransition,
@@ -23,6 +24,8 @@ export interface CueInput {
   slideCount: number;
   /** 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 덱 단위 cue로 요약. */
   riskExpressions?: RiskExpressionResult[];
+  /** 억양·강세(프로소디). 피치가 단조로우면 덱 단위 cue. */
+  prosody?: ProsodyResult | null;
 }
 
 const MIN_WORDS_FOR_PACE = 10;
@@ -104,6 +107,15 @@ export function generateCues(input: CueInput): Cue[] {
       .map((r) => r.label)
       .join(", ");
     cues.push({ slideIndex: -1, kind: "risk", value: riskTotal, text: examples });
+  }
+
+  // 억양(덱 단위): 피치가 단조로우면 톤 변화를 권함. value=피치 범위(반음).
+  if (input.prosody?.monotonePitch) {
+    cues.push({
+      slideIndex: -1,
+      kind: "intonation",
+      value: Math.round(input.prosody.pitchRangeSemitones),
+    });
   }
 
   return cues.slice(0, MAX_CUES);

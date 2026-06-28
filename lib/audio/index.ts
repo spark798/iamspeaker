@@ -70,6 +70,32 @@ export function countSilences(
   });
 }
 
+/**
+ * WAV(16-bit PCM mono — normalizeToWav 산출) → Float32 샘플[-1,1] + sampleRate.
+ * fmt 청크에서 sampleRate, data 청크에서 Int16LE 샘플을 읽는다. 프로소디 분석용.
+ */
+export function readWavSamples(wavPath: string): { samples: Float32Array; sampleRate: number } {
+  const buf = readFileSync(wavPath);
+  if (buf.length < 44 || buf.toString("ascii", 0, 4) !== "RIFF") {
+    throw new Error("유효한 WAV 파일이 아닙니다");
+  }
+  const sampleRate = buf.readUInt32LE(24); // fmt 청크 sampleRate
+  let offset = 12;
+  while (offset + 8 <= buf.length) {
+    const id = buf.toString("ascii", offset, offset + 4);
+    const size = buf.readUInt32LE(offset + 4);
+    if (id === "data") {
+      const start = offset + 8;
+      const n = Math.min(size, buf.length - start) >> 1; // Int16 개수
+      const samples = new Float32Array(n);
+      for (let i = 0; i < n; i++) samples[i] = buf.readInt16LE(start + i * 2) / 32768;
+      return { samples, sampleRate };
+    }
+    offset += 8 + size + (size % 2);
+  }
+  return { samples: new Float32Array(0), sampleRate };
+}
+
 /** 캐노니컬 WAV(PCM) 헤더에서 재생 길이(초)를 읽는다. byteRate(offset 28) + data 청크 크기 기반. */
 export function readWavDurationSec(wavPath: string): number {
   const buf = readFileSync(wavPath);

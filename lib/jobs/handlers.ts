@@ -8,8 +8,9 @@ import { loadBaseline } from "@/lib/analysis/baselines";
 import { generateCues } from "@/lib/analysis/cues";
 import { resolveGoal } from "@/lib/analysis/goal";
 import { pronunciationScore } from "@/lib/analysis/pronunciation";
+import { analyzeProsody } from "@/lib/analysis/prosody";
 import { analyzeSpeech } from "@/lib/analysis/speech";
-import { countSilences, normalizeToWav, readWavDurationSec } from "@/lib/audio";
+import { countSilences, normalizeToWav, readWavDurationSec, readWavSamples } from "@/lib/audio";
 import type { Db } from "@/lib/db/client";
 import {
   analysisResults,
@@ -185,6 +186,15 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         pronResult?.score ?? pronunciationScore(transcript.words.map((w) => w.confidence));
       ctx.setProgress(85);
 
+      // 억양·강세(프로소디) — WAV 샘플로 피치/에너지 분석. 실패는 무시(null).
+      let prosody: ReturnType<typeof analyzeProsody> | null = null;
+      try {
+        const { samples, sampleRate } = readWavSamples(wavPath);
+        prosody = analyzeProsody(samples, sampleRate);
+      } catch (err) {
+        logger.warn({ err }, "프로소디 분석 실패 — 생략");
+      }
+
       const result = analyzeSpeech({
         transcript,
         audioDurationSec,
@@ -193,6 +203,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         l1Profile,
         pauseCount,
         pronunciationIssues,
+        prosody,
       });
 
       db.delete(analysisResults).where(eq(analysisResults.recordingId, recordingId)).run();
@@ -207,6 +218,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           pronunciationScore: pronScore,
           pauseCount: result.pauseCount,
           riskExpressions: result.riskExpressions,
+          prosody: result.prosody,
         })
         .run();
       db.update(recordings)
@@ -258,6 +270,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
         targetDurationSec: session.targetDurationSec,
         slideCount: deckCount,
         riskExpressions: analysisRow.riskExpressions ?? [],
+        prosody: analysisRow.prosody ?? null,
       });
       const diff = await adapters.script.improve(
         { version: scriptRow.version, source: scriptRow.source, content: scriptRow.content },
@@ -268,6 +281,7 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           pronunciationIssues: analysisRow.pronunciationIssues,
           pauseCount: analysisRow.pauseCount,
           riskExpressions: analysisRow.riskExpressions ?? [],
+          prosody: analysisRow.prosody ?? null,
         },
         l1,
         cues,

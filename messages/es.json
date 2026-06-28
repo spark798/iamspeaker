@@ -235,6 +235,8 @@
     "cueTip_monotone": "Reduce y pausa en los puntos clave — la variación crea énfasis",
     "cue_risk": "{value} expresiones que restan credibilidad ({text}) — sé firme, concreto y con datos",
     "cueTip_risk": "Cambia vacilaciones, palabras vagas y disculpas por afirmaciones firmes y con datos — genera confianza",
+    "cue_intonation": "Tu entonación fue monótona (rango de {value} semitonos) — varía el tono en los momentos clave",
+    "cueTip_intonation": "Sube el tono en las palabras clave y varía los finales de frase — la monotonía pierde la atención",
     "toImprove": "Ver sugerencias →"
   },
   "qa": {

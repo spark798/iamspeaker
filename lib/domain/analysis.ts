@@ -18,7 +18,15 @@ export interface SlideTimeBreakdown {
 export interface Cue {
   /** 슬라이드 인덱스. 덱 전체 신호(monotone·risk)는 -1. */
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone" | "risk";
+  kind:
+    | "pace_fast"
+    | "pace_slow"
+    | "time_long"
+    | "time_short"
+    | "filler"
+    | "monotone"
+    | "risk"
+    | "intonation";
   /** i18n 보간용 값(슬라이드별 wpm·필러 수, monotone=WPM 범위, risk=위험표현 수 등). */
   value?: number;
   /** 보조 텍스트(risk: 검출된 위험 표현 예시 "I think, maybe"). i18n 보간용. */
@@ -68,4 +76,20 @@ export interface AnalysisResult {
   pauseCount: number;
   /** 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 필러와 별개 축. */
   riskExpressions: RiskExpressionResult[];
+  /** 억양·강세(프로소디) — 녹음에서 피치/에너지 분석. 측정 불가 시 null. */
+  prosody: ProsodyResult | null;
+}
+
+/** 억양·강세(프로소디) 분석 — 녹음 오디오의 피치(F0)·에너지 다이내믹. */
+export interface ProsodyResult {
+  /** 중앙 피치(Hz). */
+  pitchMedianHz: number;
+  /** 피치 변화 폭(반음, p10~p90). 낮을수록 단조. */
+  pitchRangeSemitones: number;
+  /** 피치가 거의 일정(단조로운 억양)인가. */
+  monotonePitch: boolean;
+  /** 에너지 다이내믹 레인지(dB) — 강세 변화 정도. */
+  dynamicsDb: number;
+  /** 유성음 프레임 비율(분석 신뢰도). */
+  voicedRatio: number;
 }

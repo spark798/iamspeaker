@@ -41,7 +41,15 @@ interface MetricScore {
 }
 interface Cue {
   slideIndex: number;
-  kind: "pace_fast" | "pace_slow" | "time_long" | "time_short" | "filler" | "monotone" | "risk";
+  kind:
+    | "pace_fast"
+    | "pace_slow"
+    | "time_long"
+    | "time_short"
+    | "filler"
+    | "monotone"
+    | "risk"
+    | "intonation";
   value?: number;
   text?: string;
 }

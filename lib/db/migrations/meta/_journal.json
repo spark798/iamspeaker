@@ -71,6 +71,13 @@
       "when": 1782589744597,
       "tag": "0009_wealthy_angel",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1782611555047,
+      "tag": "0010_sloppy_marten_broadcloak",
+      "breakpoints": true
     }
   ]
 }

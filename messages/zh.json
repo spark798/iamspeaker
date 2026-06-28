@@ -235,6 +235,8 @@
     "cueTip_monotone": "在关键处放慢并停顿 — 节奏变化制造强调",
     "cue_risk": "削弱可信度的表达 {value} 处 ({text}) — 改用肯定·具体·有据",
     "cueTip_risk": "用有据的肯定句替换模糊推测·含糊词·道歉 — 提升信任",
+    "cue_intonation": "语调偏单调（音高变化 {value} 个半音）— 在关键处升降语调",
+    "cueTip_intonation": "在关键词上提高音高、变化句尾 — 单调会让听众走神",
     "toImprove": "查看改进建议 →"
   },
   "qa": {

@@ -8,6 +8,7 @@ import type {
   JobStatus,
   JobType,
   PronunciationIssue,
+  ProsodyResult,
   QACategory,
   RiskExpressionResult,
   ScriptSource,
@@ -106,6 +107,8 @@ export const analysisResults = sqliteTable("analysis_results", {
   pauseCount: integer("pause_count").notNull().default(0),
   // 신뢰도를 낮추는 위험 표현(hedging/모호어/사과). 기존 행 호환 위해 nullable.
   riskExpressions: text("risk_expressions", { mode: "json" }).$type<RiskExpressionResult[]>(),
+  // 억양·강세(프로소디) — 피치/에너지 분석. nullable(측정 불가/구버전).
+  prosody: text("prosody", { mode: "json" }).$type<ProsodyResult>(),
 });
 
 export const slideCritiques = sqliteTable("slide_critiques", {

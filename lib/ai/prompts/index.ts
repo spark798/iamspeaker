@@ -30,6 +30,8 @@ function cueInstruction(c: Cue): string {
       return "The pace stayed almost uniform across slides: vary sentence length — mix short, punchy lines with longer ones — to invite natural pace variation and emphasis.";
     case "risk":
       return `The script used ${v} credibility-weakening expressions (${c.text ?? ""}): replace hedging ("I think", "maybe", "sort of"), vague words ("stuff", "a lot of"), and apologies with confident, specific, evidence-backed claims.`;
+    case "intonation":
+      return "The delivery was monotone in pitch: vary sentence length and surface emphasis points (short punchy lines, rhetorical questions, contrasts) so the wording invites natural pitch variation.";
   }
 }
 

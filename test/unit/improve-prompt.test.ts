@@ -17,6 +17,7 @@ const analysis: AnalysisResult = {
   pronunciationIssues: [],
   pauseCount: 0,
   riskExpressions: [],
+  prosody: null,
 };
 
 describe("improveScriptPrompt — cue 주입", () => {

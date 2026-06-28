@@ -4,6 +4,7 @@ import type {
   FillerWordResult,
   L1Profile,
   PronunciationIssue,
+  ProsodyResult,
   SlideTimeBreakdown,
   SlideTransition,
   TranscriptResult,
@@ -225,9 +226,11 @@ export interface SpeechAnalysisInput {
   pauseCount?: number;
   /** 발음 이슈(발음 스코어러 어댑터 산출). 없으면 휴리스틱 폴백. */
   pronunciationIssues?: PronunciationIssue[];
+  /** 억양·강세(프로소디) — 핸들러가 WAV 샘플로 산출(analyzeProsody). 없으면 null. */
+  prosody?: ProsodyResult | null;
 }
 
-/** 전사 + 오디오 길이 + 슬라이드 전환 + (선택) L1 프로필/묵음수/발음이슈 → 분석 결과. */
+/** 전사 + 오디오 길이 + 슬라이드 전환 + (선택) L1 프로필/묵음수/발음이슈/프로소디 → 분석 결과. */
 export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
   return {
     wpm: computeWpm(input.transcript.words.length, input.audioDurationSec),
@@ -245,5 +248,6 @@ export function analyzeSpeech(input: SpeechAnalysisInput): AnalysisResult {
       input.transcript.words.map((w) => w.word),
       input.language,
     ),
+    prosody: input.prosody ?? null,
   };
 }

@@ -80,6 +80,7 @@ describe("프롬프트 원칙 주입", () => {
       pronunciationIssues: [],
       pauseCount: 0,
       riskExpressions: [],
+      prosody: null,
     };
     const { prompt } = improveScriptPrompt(script, analysis);
     expect(prompt).toContain("expert public-speaking principles");

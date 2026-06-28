@@ -235,6 +235,8 @@
     "cueTip_monotone": "Slow down and pause at key points — variation creates emphasis",
     "cue_risk": "{value} credibility-weakening expressions ({text}) — be confident, specific, evidence-backed",
     "cueTip_risk": "Swap hedges, vague words, and apologies for confident, evidence-backed claims — it builds trust",
+    "cue_intonation": "Your intonation was monotone ({value}-semitone pitch range) — vary your tone at key moments",
+    "cueTip_intonation": "Lift your pitch on key words and vary your sentence endings — monotony loses attention",
     "toImprove": "View suggestions →"
   },
   "qa": {
