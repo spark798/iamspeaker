@@ -4,7 +4,7 @@
 
 > 슬라이드를 업로드하면 AI가 먼저 시범 발표(데모)를 생성하고, 사용자가 참고해 연습 녹음을 하면 **속도·발음·필러워드**를 분석해 피드백과 개선 스크립트를 제공하는 **오픈소스 발표 연습 웹앱**.
 
-![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
 
 영어로 발표·피칭하는 **누구나** — 백지 상태에서 시작하지 않도록 AI가 먼저 시범 발표를 보여주고, 속도·필러·페이스·발음·단어 선택·억양 등 객관적 데이터로 반복 개선하도록 돕는다. 코치 루프(측정→처방→재연습→추이)는 원어민·비원어민 모두에게 유효하며, **영어가 모국어가 아니면** 모국어(L1) 기반 발음·표현 교정까지 더해진다.
 
@@ -66,7 +66,7 @@ docker compose up --build
 - 다른 LLM 모델: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (품질↑, RAM↑).
 - 데이터(업로드·녹음·DB·모델)는 `./data`에만 저장.
 - 첫 `docker compose up`은 빌드(whisper.cpp 정적 컴파일·LibreOffice)와 모델 다운로드로 시간이 걸리고 용량이 크다. 이후 실행은 빠르다.
-- ✅ macOS(Apple Silicon, colima/Docker Desktop)에서 `docker compose up --build` 전체 루프 검증됨(LLM 생성·Piper TTS·Whisper STT·번역·SRT).
+- **핵심 루프**(LLM 생성·Piper TTS·Whisper STT·번역·SRT)는 이전 릴리스에서 macOS(Apple Silicon, colima/Docker Desktop) `docker compose up --build`로 전체 검증됨. 이후 추가된 기능(슬라이드 렌더 `@napi-rs/canvas`·번역본 TTS·PPTX→PDF LibreOffice·프로소디)은 같은 Docker 빌드에 포함돼 있으나 아직 **컨테이너 재검증 전** — 첫 실행 문제 발견 시 이슈로 알려주세요.
 
 ### 네이티브
 ```bash

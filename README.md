@@ -4,7 +4,7 @@
 
 > An **open-source presentation-practice web app**: upload your slides, the AI gives a demo talk first, then you record your own run and it analyzes your **pace, pronunciation, and filler words** to return feedback and an improved script.
 
-![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
 
 For **anyone** who presents or pitches in English — instead of starting from a blank page, the AI shows a demo talk first, then helps you improve through objective data: pace, fillers, rhythm, pronunciation, word choice, and intonation. The coach loop (measure → prescribe → re-practice → trend) works for native and non-native speakers alike, and **if English isn't your first language**, it adds native-language (L1) pronunciation and phrasing coaching on top.
 
@@ -67,7 +67,7 @@ docker compose up --build
 - Different LLM model: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (higher quality, more RAM).
 - All data (uploads, recordings, DB, models) is stored only under `./data`.
 - The first `docker compose up` takes time and disk (building whisper.cpp statically + LibreOffice, plus model downloads). Subsequent runs are fast.
-- ✅ Verified end-to-end on macOS (Apple Silicon, colima/Docker Desktop) with `docker compose up --build` (LLM generation · Piper TTS · Whisper STT · translation · SRT).
+- The **core loop** (LLM generation · Piper TTS · Whisper STT · translation · SRT) was verified end-to-end on macOS (Apple Silicon, colima/Docker Desktop) with `docker compose up --build` at an earlier release. Newer features (slide rendering via `@napi-rs/canvas`, translated TTS, PPTX→PDF via LibreOffice, prosody) are wired into the same Docker build but haven't been re-verified in a container yet — please open an issue if you hit a first-run problem.
 
 ### Native
 ```bash
