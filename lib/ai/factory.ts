@@ -7,7 +7,11 @@ import {
 import { type ChatJson, claudeChatJson, openaiChatJson } from "@/lib/ai/llm/client";
 import { ollamaChatJson } from "@/lib/ai/ollama/client";
 import { PiperTts } from "@/lib/ai/piper";
-import { HeuristicPronunciationScorer, Wav2Vec2PronunciationScorer } from "@/lib/ai/pronunciation";
+import {
+  AutoPronunciationScorer,
+  HeuristicPronunciationScorer,
+  Wav2Vec2PronunciationScorer,
+} from "@/lib/ai/pronunciation";
 import { StubStt, StubTranslator, StubTts, stubAdapters } from "@/lib/ai/stub";
 import type {
   Adapters,
@@ -69,9 +73,11 @@ export function getStt(): SttAdapter {
 }
 
 export function getPronunciationScorer(): PronunciationScorerAdapter {
-  // 기본 휴리스틱(의존성 0). wav2vec2는 env로 명시 활성(Python+torch GOP).
-  if (config.PRONUNCIATION_SCORER === "wav2vec2") return new Wav2Vec2PronunciationScorer();
-  return new HeuristicPronunciationScorer();
+  // 구성은 cheap(프로브/서브프로세스 없음). auto(기본)는 첫 detect에서 GOP 가용 프로브 후 위임.
+  const mode = config.PRONUNCIATION_SCORER;
+  if (mode === "wav2vec2") return new Wav2Vec2PronunciationScorer();
+  if (mode === "heuristic") return new HeuristicPronunciationScorer();
+  return new AutoPronunciationScorer();
 }
 
 export function getAdapters(): Adapters {

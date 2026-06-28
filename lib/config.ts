@@ -42,8 +42,8 @@ const EnvSchema = z.object({
   LIBREOFFICE_BIN: z.string().min(1).default("soffice"),
   SLIDE_RENDER_SCALE: z.coerce.number().positive().default(1.5),
 
-  // 발음 평가: heuristic(기본, 의존성 0) | wav2vec2(옵션, Python+torch GOP)
-  PRONUNCIATION_SCORER: z.enum(["heuristic", "wav2vec2"]).default("heuristic"),
+  // 발음 평가: auto(기본 — wav2vec2 가용하면 자동, 아니면 휴리스틱) | heuristic(의존성 0) | wav2vec2(강제)
+  PRONUNCIATION_SCORER: z.enum(["auto", "heuristic", "wav2vec2"]).default("auto"),
   PYTHON_BIN: z.string().min(1).default("python3"),
   WAV2VEC2_PHONEME_MODEL: z.string().min(1).default("facebook/wav2vec2-lv-60-espeak-cv-ft"),
   // GOP confidence가 이 값 미만이면 발음 이슈로 플래그(운영 환경별 보정). 0~1.

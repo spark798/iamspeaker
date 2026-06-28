@@ -86,7 +86,8 @@
 - ✅ 기본 Ollama 모델: `llama3.1:8b`(기본·낮은 진입장벽)과 `hermes3:8b`(동계열 drop-in, 라이브 검증)이 호환임을 README에 명시.
 - ✅ **TTS(piper)**: macOS는 `pip install piper-tts`(PIPER_BIN 절대경로), Docker(linux)는 번들 — README 안내. 라이브 동작.
 - 응답 DTO 타입 공유(컴포넌트가 Slide/Critique 인라인 재정의) → `lib/api/dto` 검토(낮음).
-- 큰 미착수 백로그: CEFR 어휘수준 분포 · 다국어 출력(번역+TTS+SRT) 마감 · GOP 자동 승격 · **유통 마찰 제거(원클릭/데스크톱)**. 상세는 전체 리뷰 리스트.
+- ✅ **GOP 자동 승격**: PRONUNCIATION_SCORER=auto(기본)가 첫 detect에서 `gop.py --selftest` 프로브(캐시)로 wav2vec2 스택 가용 시 자동 사용, 아니면 휴리스틱. 구성은 cheap(프로브 지연).
+- 큰 미착수 백로그: **유통 마찰 제거(원클릭/데스크톱)** · 새 기능 E2E · 시각회귀 · ko/ja 클라우드 TTS. 상세는 전체 리뷰 리스트.
 
 ---
 
@@ -115,6 +116,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-27** — **GOP 자동 승격(발음 스코어러 런타임 감지)**. PRONUNCIATION_SCORER에 `auto`(기본) 추가 — wav2vec2 GOP 스택 가용 시 자동 사용, 아니면 휴리스틱(env 수동 불필요). **설계 교정**(테스트가 잡아냄): 프로브를 팩토리 구성 시점에 돌리면 python 서브프로세스로 getAdapters가 느려지고 "구성만 호출없음" 테스트 타임아웃 → **AutoPronunciationScorer 래퍼로 첫 detect()에 지연**(1회 캐시). `gop.py --selftest`(의존성 import만 확인 후 ok), `gopAvailable()`(spawnSync 캐시), `resolvePronunciationScorer`(순수). config enum+auto/.env.example. **라이브**: 이 머신=stack 보유→gopAvailable()=true→wav2vec2 승격 확인(신규 클론은 torch 없음→heuristic). 단위 +3(302 pass). 핸들러의 per-recording 폴백(gop 실패→휴리스틱)과 이중 안전.
 - **2026-06-27** — **억양·강세(프로소디) 분석**. 녹음에서 피치(F0)·에너지를 분석해 **단조로운 억양**을 짚는 축(기존 pace monotone=말속도와 별개=음높이). `lib/analysis/prosody.ts`(자기상관 F0+옥타브 보정[지역최대 중 최소 lag]·프레임 40ms/hop 20ms·피치 범위 p10~p90 반음·에너지 다이내믹 dB·유성비율, 순수 TS **의존성 0**)+`lib/audio.readWavSamples`(16-bit PCM→Float32). domain ProsodyResult+AnalysisResult.prosody, **0010 마이그**(analysis_results.prosody). 핸들러가 WAV 샘플로 analyzeProsody(실패 무시), analyzeSpeech가 결과에 포함. **cue**: monotonePitch면 덱 단위 `intonation`(report·improve·cuePrincipleSource[Toastmasters·TalkLikeTED]·i18n 5로케일). **검증**: 합성(200Hz 사인→단조·스윗150-300→비단조·노이즈→무성, 4단위)+실음성(Piper 5.5반음·비단조)+실녹음(유성0.73·다이내믹15.4). 단위 +6(299 pass). 거친 코칭 신호(정밀 피치추적 아님)임을 명시.
 - **2026-06-27** — **번역본 TTS — 데모를 출력 언어 음성으로**. 출력 언어 셀렉터를 en(영어 데모, 기본)+ko/ja/zh/es로 통일해 **번역·SRT·음성을 한 컨트롤로 구동**. **가용성 발견**: Piper에 es(9)·zh(4) 보이스는 있으나 **ko/ja 없음** → es/zh만 번역본 음성, ko/ja는 폴백(번역·SRT만). `piperVoiceModel(lang,voice?)`(en→female/male, es/zh→설정 보이스, 그외→"")+`hasVoiceForLang`, PiperTts.synthesize가 lang으로 모델 선택. config PIPER_VOICE_ES/ZH, setup:models가 es/zh 다운로드. demo-audio `?lang=`로 번역본 텍스트(loadScriptWithTranslation)를 그 언어 보이스로 합성·언어별 캐시(`-<lang>`). demo-view: 출력 언어 셀렉터(en 기본), en만 female/male, 비en만 번역 토글, 보이스 있는 언어(en/es/zh)만 오디오. i18n 기존 outputLang. **라이브**: es/zh 데모음성 200(882/874KB)·ko 404·UI(es=음성숨김+번역토글+es오디오) 검증, es/zh 직접 합성. 단위 +4(293 pass). 번역 기본은 en로(이전 모국어 기본에서 변경 — 음성 일관).
 - **2026-06-27** — **다국어 출력 마감 — 대상 언어 선택**. 번역·SRT가 모국어로 고정돼 국제 청중용 다국어 자막을 못 내던 것 → **임의 대상 언어(ko/ja/zh/es) 선택**. `loadScriptWithTranslation(...targetLang?)`(인자 우선, 없으면 모국어)+`isTranslatableLang`(미지원 문자열 LLM 번역 차단). translation·subtitle 라우트 `?lang=` 검증·전달, SRT 파일명 `-<lang>` 접미사. `/script`가 nativeLanguage·language 노출(picker 기본값). demo-view: 출력 언어 셀렉터(모국어 기본/없으면 ko, 변경 시 표시 중 번역 갱신), 라벨 "native" 제거. i18n outputLang 5로케일+showTranslation 정정. 캐시는 scriptId+language로 언어별 독립(기존). **라이브(hermes)**: es 번역(`Bienvenidos…`)·SRT 병기·파일명 `-es`·fr→400 검증. 단위 +2(289 pass). **번역본 TTS는 비영어 Piper 보이스 자산 필요 → 별도 슬라이스**.

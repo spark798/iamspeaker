@@ -43,7 +43,12 @@ def log(*a):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="facebook/wav2vec2-lv-60-espeak-cv-ft")
+    # 의존성 가용성 프로브용 — 모든 import가 성공하면(여기 도달) ok 후 종료(자동 승격 감지).
+    ap.add_argument("--selftest", action="store_true")
     args = ap.parse_args()
+    if args.selftest:
+        print("ok")
+        return 0
 
     payload = json.load(sys.stdin)
     wav_path = payload["wav"]
