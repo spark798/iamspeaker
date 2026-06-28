@@ -183,6 +183,13 @@ export function DemoView({ sessionId }: { sessionId: string }) {
       )}
       {!hasScript && !busy && <p className="text-sm text-neutral-500">{t("empty")}</p>}
 
+      {/* 썸네일 렌더 실패(주로 PPTX인데 LibreOffice 미설치) 안내 — 텍스트로 폴백됨. */}
+      {hasScript && imgErr.size > 0 && (
+        <p className="rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-300">
+          {t("slidePreviewHint")}
+        </p>
+      )}
+
       <ol className="space-y-3">
         {slides.map((s) => (
           <li

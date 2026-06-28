@@ -12,7 +12,7 @@
     "step1Title": "1. 上传幻灯片",
     "step1Desc": "上传 PPTX·PDF，我们解析幻灯片。",
     "step2Title": "2. AI 示范演讲",
-    "step2Desc": "用演讲原则打磨的示范脚本 + 语音 + 幻灯片视图。",
+    "step2Desc": "用演讲原则打磨的示范讲稿，与你的幻灯片并排呈现。",
     "step3Title": "3. 录制与分析",
     "step3Desc": "测量语速·发音·填充词，给出处方式反馈与改进建议。",
     "whyTitle": "为什么选 iamspeaker",
@@ -121,7 +121,8 @@
     "empty": "暂无脚本。点击「生成 AI 演示」开始。",
     "toEditor": "编辑脚本 →",
     "audioUnavailable": "无法加载语音（可能未配置 TTS）",
-    "slideViewFull": "查看原图"
+    "slideViewFull": "查看原图",
+    "slidePreviewHint": "看不到幻灯片预览？PPTX 转图片需要 LibreOffice（PDF 不需要）。未安装时以文本显示。"
   },
   "progress": {
     "title": "进度历史",

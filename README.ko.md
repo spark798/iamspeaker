@@ -79,7 +79,7 @@ pnpm dev                   # http://localhost:3000
 macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 `.env`에 `PIPER_BIN`을 절대경로로 지정(`which piper`).
 
 ## LLM 모델 선택 (품질 vs 리소스)
-기본 `OLLAMA_MODEL`은 `llama3.1:8b`(낮은 진입장벽). 더 나은 데모 스크립트 분량·번역 품질을 원하면 `.env`에서 더 큰 모델로 바꾼다.
+기본 `OLLAMA_MODEL`은 `llama3.1:8b`(낮은 진입장벽). `hermes3:8b`는 동계열 drop-in으로 라이브 검증에 사용한다. 더 나은 데모 스크립트 분량·번역 품질을 원하면 `.env`에서 더 큰 모델로 바꾼다.
 
 | 모델 | 크기 | 권장 RAM | 비고 |
 |------|------|---------|------|

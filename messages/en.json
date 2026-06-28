@@ -12,7 +12,7 @@
     "step1Title": "1. Upload slides",
     "step1Desc": "Drop in a PPTX or PDF and we analyze the slides.",
     "step2Title": "2. AI demo talk",
-    "step2Desc": "A demo script refined with speaking principles + voice + slide view.",
+    "step2Desc": "A polished demo script, shown right next to your slide.",
     "step3Title": "3. Record & analyze",
     "step3Desc": "We measure pace, pronunciation, and fillers, then give prescriptive feedback.",
     "whyTitle": "Why iamspeaker",
@@ -121,7 +121,8 @@
     "empty": "No script yet. Click 'Generate AI demo' to start.",
     "toEditor": "Edit script →",
     "audioUnavailable": "Audio unavailable (TTS may not be set up)",
-    "slideViewFull": "View full size"
+    "slideViewFull": "View full size",
+    "slidePreviewHint": "No slide previews? PPTX→image conversion needs LibreOffice (PDF doesn't). Without it, slides show as text."
   },
   "progress": {
     "title": "Progress history",

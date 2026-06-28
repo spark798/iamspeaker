@@ -12,7 +12,7 @@
     "step1Title": "1. 슬라이드 업로드",
     "step1Desc": "PPTX·PDF를 올리면 슬라이드를 분석합니다.",
     "step2Title": "2. AI 시범 발표",
-    "step2Desc": "발표 원칙으로 다듬은 데모 스크립트 + 음성 + 슬라이드 뷰.",
+    "step2Desc": "발표 원칙으로 다듬은 데모 스크립트를 실제 슬라이드와 함께.",
     "step3Title": "3. 녹음·분석",
     "step3Desc": "속도·발음·필러를 측정해 처방적 피드백과 개선안을 제공합니다.",
     "whyTitle": "왜 iamspeaker",
@@ -121,7 +121,8 @@
     "empty": "아직 스크립트가 없습니다. ‘AI 데모 생성’을 눌러 시작하세요.",
     "toEditor": "스크립트 편집 →",
     "audioUnavailable": "음성을 불러올 수 없습니다 (TTS 미설정일 수 있어요)",
-    "slideViewFull": "원본 크기로 보기"
+    "slideViewFull": "원본 크기로 보기",
+    "slidePreviewHint": "슬라이드 미리보기가 안 보이나요? PPTX 이미지 변환에는 LibreOffice가 필요합니다(PDF는 불필요). 미설치 시 텍스트로 표시됩니다."
   },
   "progress": {
     "title": "진행 기록",

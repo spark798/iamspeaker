@@ -12,7 +12,7 @@
     "step1Title": "1. Sube diapositivas",
     "step1Desc": "Sube un PPTX o PDF y analizamos las diapositivas.",
     "step2Title": "2. Charla demo de IA",
-    "step2Desc": "Guion demo pulido con principios de oratoria + voz + vista de diapositivas.",
+    "step2Desc": "Un guion demo pulido con principios de oratoria, junto a tu diapositiva.",
     "step3Title": "3. Graba y analiza",
     "step3Desc": "Medimos ritmo, pronunciación y muletillas, y damos feedback prescriptivo.",
     "whyTitle": "Por qué iamspeaker",
@@ -121,7 +121,8 @@
     "empty": "Aún no hay guion. Pulsa 'Generar demo IA' para empezar.",
     "toEditor": "Editar guion →",
     "audioUnavailable": "Audio no disponible (puede que TTS no esté configurado)",
-    "slideViewFull": "Ver a tamaño completo"
+    "slideViewFull": "Ver a tamaño completo",
+    "slidePreviewHint": "¿No ves miniaturas de diapositivas? La conversión PPTX→imagen necesita LibreOffice (PDF no). Sin él, se muestran como texto."
   },
   "progress": {
     "title": "Historial de progreso",

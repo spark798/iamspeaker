@@ -80,7 +80,7 @@ pnpm dev                   # http://localhost:3000
 On macOS the Piper static binary is flaky → `pip install piper-tts`, then set `PIPER_BIN` in `.env` to an absolute path (`which piper`).
 
 ## Choosing an LLM model (quality vs. resources)
-The default `OLLAMA_MODEL` is `llama3.1:8b` (low barrier to entry). For better demo-script length and translation quality, switch to a larger model in `.env`.
+The default `OLLAMA_MODEL` is `llama3.1:8b` (low barrier to entry); `hermes3:8b` is a same-family drop-in we use in live verification. For better demo-script length and translation quality, switch to a larger model in `.env`.
 
 | Model | Size | Recommended RAM | Notes |
 |------|------|---------|------|

@@ -12,7 +12,7 @@
     "step1Title": "1. スライドをアップロード",
     "step1Desc": "PPTX・PDFを上げるとスライドを解析します。",
     "step2Title": "2. AI手本プレゼン",
-    "step2Desc": "発表の原則で整えたデモ台本 + 音声 + スライド表示。",
+    "step2Desc": "発表の原則で磨いたデモ台本を、実際のスライドと一緒に。",
     "step3Title": "3. 録音・分析",
     "step3Desc": "速度・発音・フィラーを計測し、処方的フィードバックと改善案を提示。",
     "whyTitle": "なぜ iamspeaker",
@@ -121,7 +121,8 @@
     "empty": "まだスクリプトがありません。「AIデモ生成」を押して開始してください。",
     "toEditor": "スクリプトを編集 →",
     "audioUnavailable": "音声を読み込めません（TTS未設定の可能性）",
-    "slideViewFull": "原寸で表示"
+    "slideViewFull": "原寸で表示",
+    "slidePreviewHint": "スライドのプレビューが出ませんか？ PPTXの画像変換にはLibreOfficeが必要です（PDFは不要）。未導入時はテキスト表示になります。"
   },
   "progress": {
     "title": "進捗履歴",

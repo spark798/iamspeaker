@@ -80,10 +80,11 @@
 | D16 | **E2E/CI는 `USE_STUB_ADAPTERS=1`** | 모델 없이 결정적 E2E | 06-15 |
 
 ### 미해결/추후 ❓
-- 기본 Ollama 모델 태그: 코드 기본 `llama3.1:8b` vs 실사용 `hermes3:8b` → README 안내 또는 기본값 재검토.
-- 잡 **재시도(지수 백오프)**: `jobs.attempt` 컬럼 마이그레이션 필요 → 추후.
-- **TTS(piper)**: macOS 릴리스 깨짐 → 소스 빌드 / `say` dev 폴백 / Docker(linux) 중 택1, 추후.
+- ✅ 잡 **재시도(지수 백오프·dead-letter)**: 0006 + `lib/jobs/queue.ts`(maxAttempts·nextRunAt·base×2^n)로 **구현 완료**.
+- ✅ 기본 Ollama 모델: `llama3.1:8b`(기본·낮은 진입장벽)과 `hermes3:8b`(동계열 drop-in, 라이브 검증)이 호환임을 README에 명시.
+- ✅ **TTS(piper)**: macOS는 `pip install piper-tts`(PIPER_BIN 절대경로), Docker(linux)는 번들 — README 안내. 라이브 동작.
 - 응답 DTO 타입 공유(컴포넌트가 Slide/Critique 인라인 재정의) → `lib/api/dto` 검토(낮음).
+- 큰 미착수 백로그: CEFR 어휘수준 분포 · 다국어 출력(번역+TTS+SRT) 마감 · GOP 자동 승격 · **유통 마찰 제거(원클릭/데스크톱)**. 상세는 전체 리뷰 리스트.
 
 ---
 
