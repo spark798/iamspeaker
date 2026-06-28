@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 import { loadL1Profile } from "@/lib/ai/l1-profiles";
 import { generateWithRefinement } from "@/lib/ai/refine";
 import type { Adapters } from "@/lib/ai/types";
@@ -24,6 +25,8 @@ import {
 import type { SlideContent } from "@/lib/domain";
 import { logger } from "@/lib/logger";
 import { parseSlides } from "@/lib/slides";
+import { renderPdfPageToPng } from "@/lib/slides/render";
+import { slideImagePath } from "@/lib/storage";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import type { JobHandlers } from "./worker";
@@ -84,6 +87,23 @@ export function createHandlers(db: Db, adapters: Adapters): JobHandlers {
           .run();
       }
       db.update(sessions).set({ slideFilePath: filePath }).where(eq(sessions.id, sessionId)).run();
+
+      // 슬라이드 썸네일 프리렌더(PDF, best-effort) — 데모 첫 로드 가속. 실패는 무시(라우트가 lazy 폴백).
+      // PPTX는 LibreOffice 변환이 무거워 lazy에 맡긴다.
+      if (filePath.toLowerCase().endsWith(".pdf")) {
+        try {
+          for (let i = 0; i < parsed.length; i++) {
+            const cache = slideImagePath(sessionId, i);
+            if (existsSync(cache)) continue;
+            const png = await renderPdfPageToPng(bytes, i + 1);
+            mkdirSync(dirname(cache), { recursive: true });
+            writeFileSync(cache, png);
+          }
+        } catch (e) {
+          logger.warn({ err: e, sessionId }, "슬라이드 썸네일 프리렌더 실패(lazy 폴백)");
+        }
+        ctx.setProgress(90);
+      }
       return { slides: parsed.length };
     },
 
