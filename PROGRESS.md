@@ -50,6 +50,7 @@
 | **슬라이드 썸네일 뷰어**(SCR-02): PDF=unpdf+@napi-rs/canvas, PPTX=LibreOffice→PDF, lazy 렌더+디스크 캐시, 데모뷰 1/4 썸네일+클릭 확대, 폴백=텍스트 | ✅ (라이브 PDF 렌더 검증) |
 | **리포트 시각화**(SCR-05): 헤드라인 게이지 카드(WPM 범위게이지·발음/전달점수 링, 경량 SVG 의존성 0) | ✅ |
 | **단어 사용 적합성**(SCR-05/06): 위험표현(hedging/모호어/사과) 검출 — 리포트 cue·improve 주입·데모 생성 회피 | ✅ (라이브 데모 위험표현 0건) |
+| **어휘 수준**(SCR-03): CEFR 고급(C1/C2) 단어 검출·평이어 대안 — 에디터 라이브 점검·improve/데모 평이어 가이드·`/vocabulary` API | ✅ (라이브 검출·에디터 패널 검증) |
 | 다국어 출력 · 추가 언어팩(ja/zh) | ✅ (ja/zh L1 확장 완료, 출력은 기존) |
 
 > Phase 2/3 백로그는 `DEVELOPMENT.md` §14. 슬라이드 시각 렌더는 D8대로 구현 완료(서버 사이드 PNG).
@@ -113,6 +114,7 @@
 ---
 
 ## 5. 세션 로그 (요약, 최신 우선)
+- **2026-06-27** — **어휘 수준 적합성(CEFR) — 단어 사용 축 ②**(연구 피드 #2). 청중이 따라가기 어려운 고급(C1/C2) 단어를 짚고 쉬운 대안 제시(발표는 귀로 듣는 것 — 평이어 유리). `lib/analysis/vocabulary.ts`(CEFR starter 사전 ~50: 단어→레벨+평이어, 정밀도 우선·복수형 폴백, analyzeVocabulary 순수)+정답셋 `eval/accuracy/vocabulary.json`. **에디터 라이브 점검**(타이핑 중 advanced 칩=word→simpler+레벨, 클라이언트 순수함수)+**improve/데모 프롬프트에 accessibleVocabGuidance 주입**(사전 동기화 예시)+**`GET /api/sessions/[id]/vocabulary`**(저장 없이 최신 스크립트 분석, 마이그 불필요). i18n vocab* 5로케일. **라이브**: 라우트 검출(innovative→new 등)·에디터 패널 표시 확인. 단위 +9(287 pass). hedging과 동형(검출→예방→가시화). 미연결(추후): 리포트 cue(전사 기반, 저장 필요).
 - **2026-06-27** — **전체 리뷰 후 백로그 burn-down (tractable 일괄 클리어)**. 검증 깨끗(biome0·tsc0·278 pass) 확인 후: ①**quick-win**: PROGRESS §2 현행화(재시도=구현됨 등)·README 모델 drop-in 한 줄·PPTX 썸네일 실패 시 LibreOffice 안내(slidePreviewHint 5로케일)·home step2Desc "voice" 프레이밍 제거. ②**홈 썸네일 i18n**: 영어 고정 → 로케일별 세트(public/landing/<locale>/, 3×5=15장, useLocale 경로) — 비영어 홈 UI 일치. ②썸네일은 회전 안 된 정방향 슬라이드(MIT 강의)로. ③**슬라이드 프리렌더**: parse 잡에서 PDF 썸네일 best-effort 선렌더(데모 첫 로드 가속, 실패 무시). ④**슬라이드 렌더·변환 통합테스트**(+3): render PNG·손상 reject·convert 폴백(@vitest-environment node). ⑤**검증-완료(코드 변경 불필요)**: 모바일(390px 오버플로 0)·접근성(biome a11y ON·라벨·aria)·온보딩(EngineStatus unreachable 가이드). **남은 건 대형/수동/env-gated**: GitHub public·도그푸드(수동), 유통(원클릭/데스크톱)·CEFR 어휘·다국어 출력·GOP 자동승격(대형/별도 라운드), wav2vec2·Docker(환경 필요). CI 그린.
 - **2026-06-27** — **v0.4.0 + 공개(public) 준비 완료**. ①**문서 영어화**: `README`·`CONTRIBUTING`·`docs/storyboard`를 영어 기본 + `.ko.md` 보존(언어 상호링크), `.github`(PR/이슈 템플릿·config)·`CODE_OF_CONDUCT`·`SECURITY` 영어 전환(기여자 대면 표준), 로케일 표기 4→5(ko/en/ja/zh/es) 정정. ②**스크린샷·소셜카드**: Playwright로 실행 중 dev에 연결만 해서 홈·슬라이드뷰어·리포트 한·영 6장 캡처(`docs/img`) + README 연결(영어판=영어 UI 우선/접이식 반대언어), 소셜 프리뷰 1280×640 카드(HTML→Playwright 렌더, 브랜드 #2563eb). ③**안전 점검**: `.env`/`data/`(녹음·키) 전부 git 미추적 확인(공개 시 유출 0), 하드코딩 키 0. ④**메타데이터 정합**: repo 경로 전부 `spark798/iamspeaker`, `package.json` bugs 추가·description 영어화. v0.4.0 태그. **남은 건 GitHub 웹 설정뿐**(private→public·소셜프리뷰 업로드·About·Topics).
 - **2026-06-27** — **홈 화면 카피 고도화(SCR-01)**: "이름+태그라인+개발중" 개발자 툴 화면 → 제품 랜딩. 히어로 헤드라인("슬라이드만 올리면 AI가 먼저 시범 발표")+CTA+신뢰 한 줄, 3단계 작동방식(📤업로드→🎬AI 데모→📊녹음·분석), 신뢰 포인트 4종(프라이버시·무료OSS·로컬·L1). 브랜드명은 전역 헤더로 위임. i18n home.* 5로케일(phase 제거). smoke 테스트=가치 헤드라인으로 갱신. 라이브 홈 200·신규 카피 노출 확인.

@@ -1,5 +1,6 @@
 "use client";
 
+import { analyzeVocabulary } from "@/lib/analysis/vocabulary";
 import { estimateSpeakingSec } from "@/lib/script/estimate";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -51,6 +52,11 @@ export function ScriptEditor({ sessionId }: { sessionId: string }) {
   const mm = Math.floor(estimate / 60);
   const ss = String(estimate % 60).padStart(2, "0");
   const hasDemoRef = Object.keys(demoRef).length > 0;
+  // 어휘 수준 점검(라이브) — 청중이 어려울 수 있는 고급 단어 + 쉬운 대안.
+  const vocab = useMemo(
+    () => analyzeVocabulary(Object.values(texts).join(" ").split(/\s+/)),
+    [texts],
+  );
 
   async function save() {
     setSaving(true);
@@ -114,6 +120,27 @@ export function ScriptEditor({ sessionId }: { sessionId: string }) {
         <p role="alert" className="text-sm text-red-600">
           {error}
         </p>
+      )}
+
+      {/* 어휘 점검 — 청중이 어려울 수 있는 고급(C1/C2) 단어를 쉬운 말로 제안. */}
+      {vocab.advanced.length > 0 && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-900/40 dark:bg-amber-900/15">
+          <div className="font-medium text-amber-800 dark:text-amber-200">{t("vocabTitle")}</div>
+          <p className="mt-0.5 text-xs text-amber-700 dark:text-amber-300">{t("vocabHint")}</p>
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {vocab.advanced.map((a) => (
+              <li
+                key={a.word}
+                className="rounded-full bg-white px-2.5 py-1 text-xs dark:bg-neutral-900"
+              >
+                <span className="font-medium">{a.word}</span>
+                <span className="text-neutral-400"> → </span>
+                <span className="text-brand">{a.simpler}</span>
+                <span className="ml-1 text-[10px] text-neutral-400">{a.level}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <ol className="space-y-4">

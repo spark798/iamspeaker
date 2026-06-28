@@ -65,6 +65,12 @@ describe("프롬프트 원칙 주입", () => {
     expect(prompt).toContain('"i think"'); // 사전 예시 주입
   });
 
+  it("generateScriptPrompt에 평이 어휘 가이드 포함(데모가 어려운 단어를 안 쓰게)", () => {
+    const { prompt } = generateScriptPrompt(slides, opts);
+    expect(prompt).toMatch(/plain, everyday words/i);
+    expect(prompt).toContain('"utilize"→"use"'); // 사전 예시 주입
+  });
+
   it("improveScriptPrompt에 원칙 가이드 포함", () => {
     const script: Script = { version: 1, source: "user", content: [{ slideIndex: 0, text: "x" }] };
     const analysis: AnalysisResult = {

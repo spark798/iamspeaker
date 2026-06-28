@@ -285,6 +285,8 @@
     "noSession": "No hay sesión. Sube primero.",
     "estimatedTime": "Tiempo estimado",
     "showReference": "Mostrar demo IA",
+    "vocabTitle": "Revisión de vocabulario (claridad para el público)",
+    "vocabHint": "Las palabras avanzadas (C1/C2) pueden perder al público — opciones más simples:",
     "reference": "Demo IA (original)",
     "save": "Guardar",
     "saving": "Guardando…",

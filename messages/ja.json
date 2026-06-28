@@ -285,6 +285,8 @@
     "noSession": "セッションがありません。先にアップロードしてください。",
     "estimatedTime": "推定時間",
     "showReference": "AIデモを表示",
+    "vocabTitle": "語彙チェック（聴衆へのわかりやすさ）",
+    "vocabHint": "上級(C1/C2)の語は聴衆が追えないことも — やさしい言い換え案:",
     "reference": "AIデモ（原文）",
     "save": "保存",
     "saving": "保存中…",

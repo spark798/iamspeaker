@@ -285,6 +285,8 @@
     "noSession": "No session. Please upload first.",
     "estimatedTime": "Estimated time",
     "showReference": "Show AI demo",
+    "vocabTitle": "Vocabulary check (audience-friendliness)",
+    "vocabHint": "Advanced (C1/C2) words may lose your audience — plainer options:",
     "reference": "AI demo (original)",
     "save": "Save",
     "saving": "Saving…",

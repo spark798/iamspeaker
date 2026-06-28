@@ -285,6 +285,8 @@
     "noSession": "没有会话。请先上传。",
     "estimatedTime": "预计时间",
     "showReference": "显示 AI 演示",
+    "vocabTitle": "词汇检查（听众友好度）",
+    "vocabHint": "高级(C1/C2)词可能让听众跟不上 — 更通俗的替换：",
     "reference": "AI 演示（原文）",
     "save": "保存",
     "saving": "保存中…",

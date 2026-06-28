@@ -285,6 +285,8 @@
     "noSession": "세션이 없습니다. 먼저 업로드하세요.",
     "estimatedTime": "예상 시간",
     "showReference": "AI 데모 참조",
+    "vocabTitle": "어휘 점검 (청중 친화도)",
+    "vocabHint": "고급(C1/C2) 단어는 청중이 못 따라갈 수 있어요 — 쉬운 말 제안:",
     "reference": "AI 데모 원문",
     "save": "저장",
     "saving": "저장 중…",

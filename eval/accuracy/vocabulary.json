@@ -1,0 +1,35 @@
+{
+  "_note": "어휘 수준 검출 정답셋. advancedWords = 사람이 '고급(C1/C2)이라 청중이 어려울 수 있다'고 표시한 단어(정규화 소문자). clean 샘플은 정밀도(평이어 오검출 방지)용.",
+  "samples": [
+    {
+      "id": "adv-1",
+      "language": "en",
+      "words": ["We", "utilize", "a", "myriad", "of", "tools"],
+      "advancedWords": ["utilize", "myriad"]
+    },
+    {
+      "id": "adv-2-plural",
+      "language": "en",
+      "words": ["new", "paradigms", "facilitate", "growth"],
+      "advancedWords": ["paradigms", "facilitate"]
+    },
+    {
+      "id": "adv-3-academic",
+      "language": "en",
+      "words": ["subsequently", "we", "commence", "the", "endeavor"],
+      "advancedWords": ["subsequently", "commence", "endeavor"]
+    },
+    {
+      "id": "clean-1-plain",
+      "language": "en",
+      "words": ["we", "help", "people", "use", "this", "tool", "every", "day"],
+      "advancedWords": []
+    },
+    {
+      "id": "clean-2-plain",
+      "language": "en",
+      "words": ["our", "team", "makes", "it", "easy", "to", "start", "and", "grow"],
+      "advancedWords": []
+    }
+  ]
+}
