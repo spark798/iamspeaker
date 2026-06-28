@@ -89,6 +89,8 @@ macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 
 
 실측(2026-06-21, M2 Pro 16GB): 5분 피칭 생성 분량 8b 62 → 14b 105 wpm, 번역도 8b의 미번역·깨짐이 14b에서 대부분 해소(숫자 단위 현지화는 잔여 약점). 인프라(어댑터/프롬프트/자가개선 루프)는 모델 무관하게 정상 동작 — 품질은 모델 크기에 비례.
 
+> **모델 교체는 언제든, 코드 변경 0줄.** iamspeaker는 Ollama HTTP API(`OLLAMA_HOST`)만 호출하고 가중치 파일은 건드리지 않는다. 업그레이드는 `ollama pull hermes3:8b` 한 줄, 더 강한 모델로 바꾸려면 `.env` 한 줄(`OLLAMA_MODEL=qwen2.5:14b`)이면 끝 — 리빌드도 대기도 없다. Docker면 `docker compose up`이 pull까지 알아서 한다. 모델 업그레이드를 회사가 결정하는 SaaS 코치(Yoodli/Orai)와 달리, Ollama에 새 모델이 나오면 **다음 날 바로** 쓸 수 있다. 어댑터 패턴의 진짜 payoff.
+
 ## 정밀 발음 평가 (선택)
 기본 발음 분석은 STT confidence + L1 음소 휴리스틱(의존성 0)이다. 더 정밀한 **GOP(wav2vec2 강제정렬)** 평가로 업그레이드할 수 있다(옵션).
 

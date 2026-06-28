@@ -90,6 +90,8 @@ The default `OLLAMA_MODEL` is `llama3.1:8b` (low barrier to entry); `hermes3:8b`
 
 Measured (2026-06-21, M2 Pro 16GB): a 5-minute pitch generated 62 wpm worth on 8b → 105 wpm on 14b; translation's untranslated/garbled spots on 8b were mostly resolved on 14b (localizing number units remains a residual weakness). The infrastructure (adapters / prompts / self-improvement loop) works regardless of model — quality scales with model size.
 
+> **Swap models any time — zero code changes.** iamspeaker only talks to the Ollama HTTP API (`OLLAMA_HOST`); it never touches the weights. Upgrade with `ollama pull hermes3:8b`, or switch to a bigger model with a single `.env` line (`OLLAMA_MODEL=qwen2.5:14b`) — no rebuild, no waiting. With Docker, `docker compose up` even runs the pull for you. Unlike SaaS coaches (Yoodli/Orai) where the vendor decides when models improve, you adopt any new Ollama model the day it lands. This is the payoff of the adapter pattern.
+
 ## Precise pronunciation scoring (optional)
 The default pronunciation analysis is STT confidence + L1 phoneme heuristics (zero dependencies). You can upgrade to more precise **GOP (wav2vec2 forced alignment)** scoring (optional).
 
