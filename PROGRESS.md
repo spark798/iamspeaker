@@ -11,14 +11,14 @@
 |------|-----|
 | 프로젝트 | iamspeaker — 오픈소스 발표 연습 웹앱 (로컬 모델 우선) |
 | 위치 | `/Users/seunghpark/Downloads/iamspeaker` (git main) · GitHub **spark798/iamspeaker (private — 공개 준비 완료, GitHub 설정만 수동)**, **CI 그린** |
-| 현재 단계 | **v0.4.0 — 코치 루프 + 슬라이드 뷰어·리포트 시각화·단어 적합성 + 공개 준비**: (v0.3.0 코치 루프 위에) ①데모 **남성 음성** 옵션(기본 기억) ②**단어 사용 적합성** 축=위험표현/hedging 검출(필러와 별개 — 리포트 cue·improve 주입·데모 생성 회피, 라이브 0건) ③**슬라이드 썸네일 뷰어**(PDF=unpdf+@napi-rs/canvas, PPTX=LibreOffice→PDF, lazy 렌더+캐시 — 핵심 차별점 완성) ④**리포트 게이지 카드**(WPM 범위게이지·발음/전달점수 링, 의존성 0 SVG) ⑤**홈 랜딩**(히어로·3단계·신뢰포인트) ⑥**공개 준비**(README/CONTRIBUTING/storyboard 영어화+.ko 보존·`.github` 영어·한영 스크린샷·소셜카드·메타데이터 정합). |
-| 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적 + **프라이버시(100% 로컬)·무료·OSS**. **비동기 사후 리뷰**. **대상=영어 발표를 연습·개선하려는 누구나(원어민 포함)** — 코치 루프(속도·필러·페이스·처방·원칙·**단어 적합성**)는 보편, **L1 발음/표현 교정은 비원어민 보너스**(앱은 nativeLanguage=en이면 native로 정상 동작). ✅완료: ①동기부여 ④루프백 ②처방 코칭 ⑤슬라이드 뷰어·시각화. **폐기**: 실시간. **보류**: GOP 자동 승격·CEFR 어휘수준(자료 확보). |
-| 다음 액션 | **GitHub public 전환**(수동: private→public, 소셜프리뷰 업로드[`docs/img/social-preview.png`], About·Topics) + **도그푸드**(실 발표 3회+ — 가장 중요, 사람). **대중 확장의 핵심 레버 = 설치 마찰 제거(원클릭 Docker / Tauri·Electron 데스크톱 앱)** — 기능·품질보다 *유통*이 병목. niche(프라이버시·기술가능·비용민감)에선 이미 경쟁력 있음. |
-| 최근 갱신 | 2026-06-27 |
+| 현재 단계 | **v0.5.0 — 코칭 확장(단어·억양·다국어) + 공개 준비 완료**: (v0.4.0 슬라이드 뷰어·게이지 위에) ①**단어 사용 적합성** 2축=위험표현(hedging)+**CEFR 고급 어휘**(에디터 라이브 점검·improve/데모 회피 가이드) ②**억양·강세(프로소디)** 분석(녹음 F0 자기상관 → 단조 피치 cue, 순수 TS 의존성0) ③**다국어 출력 마감**=대상 언어 선택 번역·SRT·**번역본 TTS**(es/zh 보이스) ④**GOP 자동 승격**(런타임 감지→wav2vec2/휴리스틱) ⑤홈 카드 실제 제품 썸네일(로케일별). **공개 준비 완료** — 코드/문서/스크린샷/메타데이터 모두 정합. |
+| 제품 방향 | **"매일 함께 훈련하는 코치"**(vs 범용 AI=일회성 선생님). 해자=연습 이력 축적 + **프라이버시(100% 로컬)·무료·OSS**. **비동기 사후 리뷰**. **대상=영어 발표를 연습·개선하려는 누구나(원어민 포함)** — 코치 루프(속도·필러·페이스·처방·원칙·**단어 적합성·억양**)는 보편, **L1 발음/표현 교정은 비원어민 보너스**. ✅완료: 동기부여·루프백·처방 코칭·슬라이드 뷰어·시각화·단어 적합성·억양·다국어출력·GOP자동. **폐기**: 실시간. |
+| 다음 액션 | **GitHub public 전환**(수동: private→public, 소셜프리뷰 업로드[`docs/img/social-preview.png`], About·Topics) + **도그푸드**(실 발표 3회+ — 가장 중요, 사람). 남은 백로그(환경 필요): **유통(원클릭 Docker/데스크톱)**·새기능 E2E·시각회귀·ko/ja 클라우드 TTS. 대중 확장 핵심 레버=설치 마찰 제거(*유통*이 병목). |
+| 최근 갱신 | 2026-06-28 |
 | 셸 준비 | `export PATH="$HOME/.local/bin:$PATH"; . "$HOME/.nvm/nvm.sh"; nvm use default` (비대화형 셸 필수) |
 | 로컬 도구 | Node 22(nvm)·pnpm 11(corepack) / ffmpeg 6·whisper-cli·cmake·gh → `~/.local/bin` / Ollama `hermes3:8b` / piper 보류 |
 | 스택 | Next 15·React 19·TS 5.9 strict·Tailwind 4·Biome·Vitest+Playwright·Drizzle+better-sqlite3·next-intl·pino·zod |
-| 테스트 | 275 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
+| 테스트 | 302 통과 (+8 live-gated skip) + Playwright E2E. CI(lint/typecheck/test/build/E2E) 그린 |
 | 문서 순서 | `PROGRESS.md` → `CLAUDE.md`(규칙) → `DEVELOPMENT.md`(계획) → `docs/storyboard.md`(EN, +`.ko`) · 공개 문서 영어 기본: `README.md`·`CONTRIBUTING.md`(각 `.ko.md` 보존) · 자동화: `docs/automation.md` |
 | 자동화 | 감독되는 자동화 3종: Driver(정지선 게이트키퍼)·Benchmarker(`docs/benchmark.md` 제안)·Reviewer. 규칙=`docs/automation.md` |
 
