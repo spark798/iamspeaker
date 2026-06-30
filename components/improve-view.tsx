@@ -123,7 +123,11 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
           type="button"
           onClick={() => void generate()}
           disabled={busy}
-          className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
+          className={
+            entries
+              ? "rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 disabled:opacity-50 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+              : "rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
+          }
         >
           {busy ? t("generating") : entries ? t("regenerate") : t("generate")}
         </button>
@@ -132,7 +136,7 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
             type="button"
             onClick={() => void apply()}
             disabled={busy || selected.size === 0}
-            className="rounded-md border border-brand px-4 py-2 text-sm font-medium text-brand hover:bg-brand/10 disabled:opacity-50"
+            className="rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 disabled:opacity-50 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
           >
             {t("apply")} ({selected.size})
           </button>
@@ -152,7 +156,7 @@ export function ImproveView({ recordingId }: { recordingId: string }) {
         {sessionId && (
           <Link
             href={`/qa?session=${sessionId}`}
-            className={`text-sm font-medium text-brand hover:underline ${applied !== null ? "" : "ml-auto"}`}
+            className={`rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900 ${applied !== null ? "" : "ml-auto"}`}
           >
             {t("toQa")}
           </Link>

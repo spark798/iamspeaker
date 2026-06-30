@@ -110,7 +110,7 @@ export function ScriptEditor({ sessionId }: { sessionId: string }) {
         )}
         <Link
           href={`/record?session=${sessionId}`}
-          className="text-sm font-medium text-brand hover:underline"
+          className="rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
         >
           {t("toRecord")}
         </Link>
