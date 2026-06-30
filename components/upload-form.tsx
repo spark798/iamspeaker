@@ -196,21 +196,21 @@ export function UploadForm() {
 
       {slides && (
         <div>
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-medium">
-              {t("done")} — {t("slidesHeading")} ({slides.length})
+              {t("slidesHeading")} ({slides.length})
             </h2>
             {sessionId && (
-              <span className="flex gap-3">
+              <span className="flex flex-wrap gap-2">
                 <Link
                   href={`/critique?session=${sessionId}`}
-                  className="text-sm font-medium text-brand hover:underline"
+                  className="rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
                 >
                   {t("toCritique")}
                 </Link>
                 <Link
                   href={`/demo?session=${sessionId}`}
-                  className="text-sm font-medium text-brand hover:underline"
+                  className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90"
                 >
                   {t("toDemo")}
                 </Link>
