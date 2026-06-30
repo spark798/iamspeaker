@@ -8,7 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 ### Changed
 - **Upload screen polish**: the file picker is now a styled button showing the selected filename (was a bare native input).
 - **Clearer upload wording**: submit "Upload & analyze" → **"Upload slides"**, progress "Analyzing slides…" → "Extracting slides…", and the result heading drops the redundant "Analysis complete —" prefix — the upload step extracts slide text; design *analysis* is the separate slide-review step.
-- **Consistent next-step CTAs**: the "go to next step" actions across the wizard (upload → demo/critique, critique → demo, demo → edit, report → improve) are now buttons with a clear primary (filled) / secondary (tint) hierarchy instead of plain text links.
+- **Consistent CTA hierarchy across the wizard**: every screen now follows one rule — a single **filled** primary button for the action the product recommends next, a **tinted** secondary for re-run/alternate paths, and plain text for utilities (lists keep plain links). Specifically:
+  - Buttonized the previously text-link "next step" CTAs: upload → demo / slide-review, slide-review → demo, demo → edit, edit → record, record → report, report → improve, improve → re-practice / Q&A.
+  - Demoted duplicate filled buttons to the tinted secondary so each screen has exactly one primary: "regenerate" on demo, "re-analyze" on slide-review, and "regenerate" / "apply" / "to Q&A" on improve (the filled primary stays on the recommended next step, e.g. "re-practice" on improve).
+  - Utilities kept as plain text/links: SRT download (demo), PDF export (report); list rows (dashboard, trend) keep per-row text links.
 
 ## [0.5.0] — 2026-06-28 — Expanded coaching + multilingual output
 
