@@ -18,6 +18,9 @@ services:
     restart: "no"
 
   app:
+    # 사전빌드 이미지(GHCR): `docker compose pull`로 빌드 없이 사용.
+    # 직접 빌드하려면 `docker compose up --build` (아래 build 사용).
+    image: ghcr.io/spark798/iamspeaker:latest
     build: .
     ports:
       - "3000:3000"

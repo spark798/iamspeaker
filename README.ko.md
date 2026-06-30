@@ -57,16 +57,25 @@
 
 ### Docker (권장)
 앱 + Ollama + ffmpeg/LibreOffice/Whisper.cpp/Piper를 한 번에 띄운다.
+
+**사전빌드 이미지(가장 빠름 — 로컬 빌드 없음):**
 ```bash
-docker compose up --build
+docker compose pull        # ghcr.io/spark798/iamspeaker를 받음 (whisper.cpp 컴파일·LibreOffice 설치 생략)
+docker compose up -d
 # ollama-pull가 기본 모델(llama3.1:8b, ~4.7GB)을 받고,
-# app 컨테이너가 첫 기동에 Whisper/Piper 모델을 data 볼륨에 받는다(최초 1회, 수 분).
+# app이 첫 기동에 Whisper/Piper 모델을 data 볼륨에 받는다(최초 1회).
 # → http://localhost:3000
 ```
-- 다른 LLM 모델: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (품질↑, RAM↑).
+
+**소스에서 빌드(개발/커스터마이즈용):**
+```bash
+docker compose up --build
+```
+- 다른 LLM 모델: `OLLAMA_MODEL=qwen2.5:14b docker compose up -d` (품질↑, RAM↑).
 - 데이터(업로드·녹음·DB·모델)는 `./data`에만 저장.
-- 첫 `docker compose up`은 빌드(whisper.cpp 정적 컴파일·LibreOffice)와 모델 다운로드로 시간이 걸리고 용량이 크다. 이후 실행은 빠르다.
-- **핵심 루프**(LLM 생성·Piper TTS·Whisper STT·번역·SRT)는 이전 릴리스에서 macOS(Apple Silicon, colima/Docker Desktop) `docker compose up --build`로 전체 검증됨. 이후 추가된 기능(슬라이드 렌더 `@napi-rs/canvas`·번역본 TTS·PPTX→PDF LibreOffice·프로소디)은 같은 Docker 빌드에 포함돼 있으나 아직 **컨테이너 재검증 전** — 첫 실행 문제 발견 시 이슈로 알려주세요.
+- 첫 기동엔 LLM(~4.7GB)·Whisper/Piper 모델을 1회 받는다. 사전빌드 이미지는 느린 빌드(whisper.cpp 정적 컴파일·LibreOffice 설치)만 건너뛴다.
+- macOS(Apple Silicon, colima/Docker Desktop)에서 전체 검증됨: 핵심 루프(LLM 생성·Piper TTS·Whisper STT·번역·SRT) **및 PPTX→PDF 슬라이드 썸네일**(LibreOffice + `@napi-rs/canvas`) 컨테이너 내 동작 확인. 번역본 TTS·프로소디는 같은 이미지에 포함돼 있으나 컨테이너 별도 재검증 전 — 첫 실행 문제 발견 시 이슈로 알려주세요.
+- 사전빌드 이미지는 현재 `linux/amd64` (Apple Silicon에선 에뮬레이션 동작; 네이티브 `arm64`는 예정).
 
 ### 네이티브
 ```bash

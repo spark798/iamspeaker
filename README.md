@@ -57,17 +57,25 @@ See [`docs/storyboard.md`](docs/storyboard.md) for the screen/feature spec and [
 
 ### Docker (recommended)
 Brings up the app + Ollama + ffmpeg/LibreOffice/Whisper.cpp/Piper in one go.
+
+**Prebuilt image (fastest — no local build):**
 ```bash
-docker compose up --build
-# ollama-pull fetches the default model (llama3.1:8b, ~4.7GB), and
-# the app container downloads the Whisper/Piper models into the data volume
-# on first boot (once, a few minutes).
+docker compose pull        # pulls ghcr.io/spark798/iamspeaker (skips compiling whisper.cpp + installing LibreOffice)
+docker compose up -d
+# ollama-pull fetches the default model (llama3.1:8b, ~4.7GB), and the app
+# downloads the Whisper/Piper models into the data volume on first boot (once).
 # → http://localhost:3000
 ```
-- Different LLM model: `OLLAMA_MODEL=qwen2.5:14b docker compose up --build` (higher quality, more RAM).
+
+**Build from source (for development / customization):**
+```bash
+docker compose up --build
+```
+- Different LLM model: `OLLAMA_MODEL=qwen2.5:14b docker compose up -d` (higher quality, more RAM).
 - All data (uploads, recordings, DB, models) is stored only under `./data`.
-- The first `docker compose up` takes time and disk (building whisper.cpp statically + LibreOffice, plus model downloads). Subsequent runs are fast.
-- The **core loop** (LLM generation · Piper TTS · Whisper STT · translation · SRT) was verified end-to-end on macOS (Apple Silicon, colima/Docker Desktop) with `docker compose up --build` at an earlier release. Newer features (slide rendering via `@napi-rs/canvas`, translated TTS, PPTX→PDF via LibreOffice, prosody) are wired into the same Docker build but haven't been re-verified in a container yet — please open an issue if you hit a first-run problem.
+- First boot still downloads the LLM (~4.7GB) and Whisper/Piper models once; the prebuilt image just skips the slow build (compiling whisper.cpp statically + installing LibreOffice).
+- Verified end-to-end on macOS (Apple Silicon, colima/Docker Desktop): the full core loop (LLM generation · Piper TTS · Whisper STT · translation · SRT) **and PPTX→PDF slide thumbnails** (LibreOffice + `@napi-rs/canvas`) in-container. Translated TTS and prosody are wired into the same image but haven't been separately re-verified in a container — please open an issue if you hit a first-run problem.
+- The prebuilt image is currently `linux/amd64` (runs under emulation on Apple Silicon; native `arm64` is planned).
 
 ### Native
 ```bash
