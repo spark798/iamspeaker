@@ -136,7 +136,11 @@ export function DemoView({ sessionId }: { sessionId: string }) {
           type="button"
           onClick={() => void generate()}
           disabled={busy}
-          className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
+          className={
+            hasScript
+              ? "rounded-md border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-medium text-brand hover:bg-blue-100 disabled:opacity-50 dark:border-blue-900 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+              : "rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90 disabled:opacity-50"
+          }
         >
           {busy ? t("generating") : hasScript ? t("regenerate") : t("generate")}
         </button>
