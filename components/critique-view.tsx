@@ -94,7 +94,7 @@ export function CritiqueView({ sessionId }: { sessionId: string }) {
         {hasResult && !busy && (
           <Link
             href={`/demo?session=${sessionId}`}
-            className="ml-auto text-sm font-medium text-brand hover:underline"
+            className="ml-auto rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90"
           >
             {t("toDemo")}
           </Link>

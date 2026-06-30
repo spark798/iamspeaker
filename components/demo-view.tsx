@@ -212,7 +212,7 @@ export function DemoView({ sessionId }: { sessionId: string }) {
             </a>
             <Link
               href={`/editor?session=${sessionId}`}
-              className="text-sm font-medium text-brand hover:underline"
+              className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg hover:opacity-90"
             >
               {t("toEditor")}
             </Link>
