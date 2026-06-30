@@ -3,6 +3,13 @@
 All notable changes to iamspeaker are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+- **Upload screen polish**: the file picker is now a styled button showing the selected filename (was a bare native input).
+- **Clearer upload wording**: submit "Upload & analyze" → **"Upload slides"**, progress "Analyzing slides…" → "Extracting slides…", and the result heading drops the redundant "Analysis complete —" prefix — the upload step extracts slide text; design *analysis* is the separate slide-review step.
+- **Consistent next-step CTAs**: the "go to next step" actions across the wizard (upload → demo/critique, critique → demo, demo → edit, report → improve) are now buttons with a clear primary (filled) / secondary (tint) hierarchy instead of plain text links.
+
 ## [0.5.0] — 2026-06-28 — Expanded coaching + multilingual output
 
 ### Added
@@ -72,6 +79,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/), and this
 - Core loop: upload (PPTX/PDF) → slide critique → AI demo talk (script + voice) → edit → record → analysis report (WPM · fillers · pronunciation · time breakdown, L1-tailored) → improvement suggestions → expected-Q&A prep.
 - Infrastructure: adapter pattern (local/cloud switching) · SQLite job queue + in-process worker + SSE · Zod boundary validation · path-traversal defense · deterministic stub-adapter E2E.
 
+[Unreleased]: https://github.com/spark798/iamspeaker/compare/v0.5.0...HEAD
 [0.5.0]: https://github.com/spark798/iamspeaker/releases/tag/v0.5.0
 [0.4.0]: https://github.com/spark798/iamspeaker/releases/tag/v0.4.0
 [0.3.0]: https://github.com/spark798/iamspeaker/releases/tag/v0.3.0
