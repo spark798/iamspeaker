@@ -47,7 +47,8 @@ const EnvSchema = z.object({
   PYTHON_BIN: z.string().min(1).default("python3"),
   WAV2VEC2_PHONEME_MODEL: z.string().min(1).default("facebook/wav2vec2-lv-60-espeak-cv-ft"),
   // GOP confidence가 이 값 미만이면 발음 이슈로 플래그(운영 환경별 보정). 0~1.
-  WAV2VEC2_GOP_THRESHOLD: z.coerce.number().min(0).max(1).default(0.5),
+  // 0.2 = speechocean762 임계 스윕(2026-07-02)에서 과검출↓(FP 36→14, F1 0.136→0.273, recall 유지). docs/benchmark.md 참고.
+  WAV2VEC2_GOP_THRESHOLD: z.coerce.number().min(0).max(1).default(0.2),
 
   // 선택적 클라우드 어댑터 (미설정 시 로컬 폴백)
   ANTHROPIC_API_KEY: z.string().min(1).optional(),
