@@ -75,7 +75,7 @@ docker compose up --build
 - All data (uploads, recordings, DB, models) is stored only under `./data`.
 - First boot still downloads the LLM (~4.7GB) and Whisper/Piper models once; the prebuilt image just skips the slow build (compiling whisper.cpp statically + installing LibreOffice).
 - Verified end-to-end on macOS (Apple Silicon, colima/Docker Desktop): the full core loop (LLM generation · Piper TTS · Whisper STT · translation · SRT) **and PPTX→PDF slide thumbnails** (LibreOffice + `@napi-rs/canvas`) in-container. Translated TTS and prosody are wired into the same image but haven't been separately re-verified in a container — please open an issue if you hit a first-run problem.
-- The prebuilt image is currently `linux/amd64` (runs under emulation on Apple Silicon; native `arm64` is planned).
+- The prebuilt image is **multi-arch** (`linux/amd64` + `linux/arm64`) — runs natively on Intel/AMD and on Apple Silicon / ARM servers.
 
 ### Native
 ```bash

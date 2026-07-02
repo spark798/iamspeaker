@@ -75,7 +75,7 @@ docker compose up --build
 - 데이터(업로드·녹음·DB·모델)는 `./data`에만 저장.
 - 첫 기동엔 LLM(~4.7GB)·Whisper/Piper 모델을 1회 받는다. 사전빌드 이미지는 느린 빌드(whisper.cpp 정적 컴파일·LibreOffice 설치)만 건너뛴다.
 - macOS(Apple Silicon, colima/Docker Desktop)에서 전체 검증됨: 핵심 루프(LLM 생성·Piper TTS·Whisper STT·번역·SRT) **및 PPTX→PDF 슬라이드 썸네일**(LibreOffice + `@napi-rs/canvas`) 컨테이너 내 동작 확인. 번역본 TTS·프로소디는 같은 이미지에 포함돼 있으나 컨테이너 별도 재검증 전 — 첫 실행 문제 발견 시 이슈로 알려주세요.
-- 사전빌드 이미지는 현재 `linux/amd64` (Apple Silicon에선 에뮬레이션 동작; 네이티브 `arm64`는 예정).
+- 사전빌드 이미지는 **멀티아치**(`linux/amd64` + `linux/arm64`) — Intel/AMD·Apple Silicon/ARM 서버 모두 네이티브 실행.
 
 ### 네이티브
 ```bash
