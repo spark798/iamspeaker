@@ -114,6 +114,8 @@ PRONUNCIATION_SCORER=wav2vec2
 ```
 It force-aligns the script to the audio to compute per-phoneme accuracy (GOP), independent of STT timestamps. Correct pronunciation passes; actual mispronunciations are caught at the phoneme and linked to L1 rules. The phoneme model (~1GB) downloads on first run. Falls back to heuristics on failure.
 
+> **Known limitation (measured).** The phoneme model is multilingual (espeak), so on strongly-accented L2 speech it can **over-flag correctly-pronounced words** — a correct English phoneme loses probability to a same-sounding token from another language (e.g. Mandarin `ɕ i5` for English `ʃ iː`). Measured word-level precision is limited (see [`docs/benchmark.md`](docs/benchmark.md)); the utterance-level score is more reliable. A more robust scorer (phoneme-class posteriors / English-only model) is planned.
+
 ## Cloud adapters (optional)
 You can enable higher-quality cloud engines via environment variables. When set, they take priority; otherwise it falls back to local.
 
