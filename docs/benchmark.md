@@ -102,5 +102,25 @@ TED 코퍼스를 **"좋은 발표"의 분포 기준**으로 내재화해 세 가
 ### 연계
 3-에이전트 구조(Builder/Reviewer/Driver + Benchmarker)의 **Benchmarker 첫 과업**. Benchmarker는 리서치→이 문서 갱신(제안)만, 자동 반영 금지. 사람이 채택 시 §채택 로그 + CLAUDE.md/DEVELOPMENT.md/PROGRESS §4 반영.
 
+## 측정 결과 — 발음 스코어러 절대 정확도 (speechocean762)
+
+**2026-07-01 · 첫 실측** — `pnpm eval:pronunciation`(SPEECHOCEAN762_DIR 게이트).
+- 코퍼스: speechocean762 (OpenSLR 101, L2 영어=Mandarin L1)
+- 스코어러: `PRONUNCIATION_SCORER=wav2vec2` (`facebook/wav2vec2-lv-60-espeak-cv-ft`, decode-compare)
+- 표본: `LIMIT=50` (206 단어) · 머신 M2 Pro 16GB · 소요 ~9분
+
+| 지표 | 값 |
+|---|---|
+| 단어 오발음 검출 precision | **0.077** (tp=3, fp=36) |
+| recall | 0.60 (fn=2) |
+| F1 | 0.136 |
+| 발화 Spearman (우리 1−이슈율 vs 전문가 accuracy) | **0.312** |
+
+**해석(가감 없음)**: GOP가 정상 단어를 오발음으로 **과다 검출**(precision 매우 낮음) — 임계 `WAV2VEC2_GOP_THRESHOLD`가 공격적. recall은 준수(실제 오발음 대부분 포착). 발화 점수는 전문가와 **약한 양의 상관**. → 발음 기능의 **절대 정확도는 아직 약함**(마케팅 전 인지 필요).
+
+**한계/편향**: N=50은 scores.json 앞 50개(무작위 표집 아님·화자 편중 가능), gold 오발음이 5개뿐이라 precision 노이즈 큼. 배치 eval은 발화별 gop.py 모델 재로딩으로 느림 — **실사용(녹음 1건=detect 1회=모델 1로드)은 정상 속도**.
+
+**다음 액션(정확도 개선, ROI순)**: ① `WAV2VEC2_GOP_THRESHOLD` 튜닝으로 과검출 억제(precision↑) ② 무작위/전체 test 표본 재측정 ③ 임계 스윕으로 PR 곡선. 재현: `SPEECHOCEAN762_DIR=/path PRONUNCIATION_SCORER=wav2vec2 LIMIT=N pnpm eval:pronunciation`(원문 미저장·숫자만).
+
 ## 채택 로그
 - **2026-06-21** — B-001 채택. 활용 1(백분위 점수 레이어, 4메트릭) + 장르 선택 UI + 활용 3(회귀 eval) 구현. 활용 2(자가개선 루프)는 후속. eval이 "생성 스크립트가 목표 시간 대비 짧음" 갭 발견 → 활용 2 입력.
