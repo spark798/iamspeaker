@@ -88,7 +88,7 @@ pnpm dev                   # http://localhost:3000
 On macOS the Piper static binary is flaky → `pip install piper-tts`, then set `PIPER_BIN` in `.env` to an absolute path (`which piper`).
 
 ## Choosing an LLM model (quality vs. resources)
-The default `OLLAMA_MODEL` is `llama3.1:8b` (low barrier to entry); `hermes3:8b` is a same-family drop-in we use in live verification. For better demo-script length and translation quality, switch to a larger model in `.env`.
+The shipped default `OLLAMA_MODEL` is `llama3.1:8b` — kept only for a low-barrier first run (fits 8GB, works out-of-box everywhere). **For real use we strongly recommend `qwen2.5:14b`**: noticeably tighter demo scripts and clearly better translation, switched with one `.env` line and no code change (`hermes3:8b` is a same-family 8b drop-in used in live verification).
 
 | Model | Size | Recommended RAM | Notes |
 |------|------|---------|------|
@@ -97,6 +97,10 @@ The default `OLLAMA_MODEL` is `llama3.1:8b` (low barrier to entry); `hermes3:8b`
 | 32B+ / cloud | — | 32GB+ | For long talks (10min+) to fully converge on length, a larger model is recommended |
 
 Measured (2026-06-21, M2 Pro 16GB): a 5-minute pitch generated 62 wpm worth on 8b → 105 wpm on 14b; translation's untranslated/garbled spots on 8b were mostly resolved on 14b (localizing number units remains a residual weakness). The infrastructure (adapters / prompts / self-improvement loop) works regardless of model — quality scales with model size.
+
+Also measured (2026-07-02, native Ollama/Metal): translating a slide script to Korean, 8b garbled the product name and a common idiom while 14b stayed fluent and accurate; on that deck 14b's win was script density/quality rather than raw length.
+
+> **Running 14b under Docker (Apple Silicon / low RAM):** the bundled `ollama` container runs inside the Docker VM (colima defaults to ~8GB), which is too small to load 14b (it needs ~8.5GB) — you'll get an Ollama 500 (out-of-memory). Run Ollama **natively** instead (Metal GPU + full unified memory): `ollama pull qwen2.5:14b`, then add a local `docker-compose.override.yml` pointing the app at it (`OLLAMA_HOST=http://host.docker.internal:11434`, `OLLAMA_MODEL=qwen2.5:14b`). Or give the VM more room: `colima start --memory 12`.
 
 > **Swap models any time — zero code changes.** iamspeaker only talks to the Ollama HTTP API (`OLLAMA_HOST`); it never touches the weights. Upgrade with `ollama pull hermes3:8b`, or switch to a bigger model with a single `.env` line (`OLLAMA_MODEL=qwen2.5:14b`) — no rebuild, no waiting. With Docker, `docker compose up` even runs the pull for you. Unlike SaaS coaches (Yoodli/Orai) where the vendor decides when models improve, you adopt any new Ollama model the day it lands. This is the payoff of the adapter pattern.
 

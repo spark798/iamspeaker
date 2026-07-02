@@ -88,7 +88,7 @@ pnpm dev                   # http://localhost:3000
 macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 `.env`에 `PIPER_BIN`을 절대경로로 지정(`which piper`).
 
 ## LLM 모델 선택 (품질 vs 리소스)
-기본 `OLLAMA_MODEL`은 `llama3.1:8b`(낮은 진입장벽). `hermes3:8b`는 동계열 drop-in으로 라이브 검증에 사용한다. 더 나은 데모 스크립트 분량·번역 품질을 원하면 `.env`에서 더 큰 모델로 바꾼다.
+배포 기본 `OLLAMA_MODEL`은 `llama3.1:8b` — 낮은 진입장벽(8GB에 맞고 어디서나 out-of-box)만을 위한 값이다. **실사용은 `qwen2.5:14b`를 강력 권장**한다: 데모 스크립트가 더 밀도 있고 번역이 뚜렷이 낫다. `.env` 한 줄로 전환(코드 변경 0). (`hermes3:8b`는 라이브 검증에 쓰는 동계열 8b drop-in.)
 
 | 모델 | 크기 | 권장 RAM | 비고 |
 |------|------|---------|------|
@@ -97,6 +97,10 @@ macOS는 Piper 정적 바이너리가 불안정 → `pip install piper-tts` 후 
 | 32B+ / 클라우드 | — | 32GB+ | 긴 발표(10분+) 분량 완전 수렴엔 더 큰 모델 권장 |
 
 실측(2026-06-21, M2 Pro 16GB): 5분 피칭 생성 분량 8b 62 → 14b 105 wpm, 번역도 8b의 미번역·깨짐이 14b에서 대부분 해소(숫자 단위 현지화는 잔여 약점). 인프라(어댑터/프롬프트/자가개선 루프)는 모델 무관하게 정상 동작 — 품질은 모델 크기에 비례.
+
+추가 실측(2026-07-02, 네이티브 Ollama/Metal): 슬라이드 스크립트 한국어 번역에서 8b는 제품명·관용구를 깨뜨렸고 14b는 자연스럽고 정확했다. 이 덱에선 14b의 이점이 분량이 아니라 밀도·품질이었다.
+
+> **14b를 Docker로 돌릴 때(Apple Silicon / 저사양):** 번들된 `ollama` 컨테이너는 Docker VM(colima 기본 ~8GB) 안에서 도는데, 14b 로드에 ~8.5GB가 필요해 **못 올린다**(Ollama 500 = OOM). 대신 Ollama를 **네이티브로**(Metal GPU + 전체 통합메모리) 실행하라: `ollama pull qwen2.5:14b` 후, 로컬 `docker-compose.override.yml`로 앱을 네이티브에 연결(`OLLAMA_HOST=http://host.docker.internal:11434`, `OLLAMA_MODEL=qwen2.5:14b`). 또는 VM 메모리를 키운다: `colima start --memory 12`.
 
 > **모델 교체는 언제든, 코드 변경 0줄.** iamspeaker는 Ollama HTTP API(`OLLAMA_HOST`)만 호출하고 가중치 파일은 건드리지 않는다. 업그레이드는 `ollama pull hermes3:8b` 한 줄, 더 강한 모델로 바꾸려면 `.env` 한 줄(`OLLAMA_MODEL=qwen2.5:14b`)이면 끝 — 리빌드도 대기도 없다. Docker면 `docker compose up`이 pull까지 알아서 한다. 모델 업그레이드를 회사가 결정하는 SaaS 코치(Yoodli/Orai)와 달리, Ollama에 새 모델이 나오면 **다음 날 바로** 쓸 수 있다. 어댑터 패턴의 진짜 payoff.
 

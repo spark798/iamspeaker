@@ -40,3 +40,4 @@ test-results/
 .vscode/*
 !.vscode/extensions.json
 *.swp
+docker-compose.override.yml
