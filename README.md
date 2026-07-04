@@ -4,7 +4,9 @@
 
 > An **open-source presentation-practice web app**: upload your slides, the AI gives a demo talk first, then you record your own run and it analyzes your **pace, pronunciation, and filler words** to return feedback and an improved script.
 
-[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange) [![GitHub stars](https://img.shields.io/github/stars/spark798/iamspeaker?style=social)](https://github.com/spark798/iamspeaker/stargazers)
+
+> ⭐ **If this saves you prep time, a star helps others find it.**
 
 For **anyone** who presents or pitches in English — instead of starting from a blank page, the AI shows a demo talk first, then helps you improve through objective data: pace, fillers, rhythm, pronunciation, word choice, and intonation. The coach loop (measure → prescribe → re-practice → trend) works for native and non-native speakers alike, and **if English isn't your first language**, it adds native-language (L1) pronunciation and phrasing coaching on top.
 

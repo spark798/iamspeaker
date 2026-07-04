@@ -4,7 +4,9 @@
 
 > 슬라이드를 업로드하면 AI가 먼저 시범 발표(데모)를 생성하고, 사용자가 참고해 연습 녹음을 하면 **속도·발음·필러워드**를 분석해 피드백과 개선 스크립트를 제공하는 **오픈소스 발표 연습 웹앱**.
 
-[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange)
+[![CI](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml/badge.svg)](https://github.com/spark798/iamspeaker/actions/workflows/ci.yml) ![license](https://img.shields.io/badge/license-MIT-blue) ![status](https://img.shields.io/badge/release-v0.5.0-green) ![local-first](https://img.shields.io/badge/models-local--first-orange) [![GitHub stars](https://img.shields.io/github/stars/spark798/iamspeaker?style=social)](https://github.com/spark798/iamspeaker/stargazers)
+
+> ⭐ **준비 시간을 아꼈다면, 스타 하나가 다른 사람들에게도 도움이 됩니다.**
 
 영어로 발표·피칭하는 **누구나** — 백지 상태에서 시작하지 않도록 AI가 먼저 시범 발표를 보여주고, 속도·필러·페이스·발음·단어 선택·억양 등 객관적 데이터로 반복 개선하도록 돕는다. 코치 루프(측정→처방→재연습→추이)는 원어민·비원어민 모두에게 유효하며, **영어가 모국어가 아니면** 모국어(L1) 기반 발음·표현 교정까지 더해진다.
 
