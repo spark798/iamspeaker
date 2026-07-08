@@ -5,10 +5,10 @@
 ## 문서 맵
 | 문서 | 역할 |
 |------|------|
-| [`PROGRESS.md`](PROGRESS.md) | **세션 시작 시 먼저 읽기** — 현재 상태·결정 로그·다음 할 일 (중단 시 catch-up) |
+| [`PROGRESS.md`](docs/PROGRESS.md) | **세션 시작 시 먼저 읽기** — 현재 상태·결정 로그·다음 할 일 (중단 시 catch-up) |
 | `CLAUDE.md` (본 문서) | 에이전트 작업 규칙 · 핵심 설계 원칙 · 어댑터 규약 · 데이터 모델 · 작업 체크리스트 |
 | [`docs/storyboard.md`](docs/storyboard.md) | 제품/화면 명세 (SCR-01~08), Epic 0~7 백로그 |
-| [`DEVELOPMENT.md`](DEVELOPMENT.md) | 상세 엔지니어링 계획 (스택 결정·디렉토리·Job Queue·오디오 파이프라인·테스트·보안·로드맵) |
+| [`DEVELOPMENT.md`](docs/DEVELOPMENT.md) | 상세 엔지니어링 계획 (스택 결정·디렉토리·Job Queue·오디오 파이프라인·테스트·보안·로드맵) |
 | `.env.example` | 환경변수 (필수/선택 구분) |
 
 화면 ID(SCR-XX)·Epic 번호는 코드/이슈/PR에서 동일 참조: `feat(SCR-04): 녹음 컨트롤`, `feat(epic-7): Q&A 예상질문 생성`.

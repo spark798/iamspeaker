@@ -50,4 +50,4 @@ pnpm build
 Native-language (L1) pronunciation/phrasing packs extend by adding JSON: `lib/ai/l1-profiles/<lang>.json` (see ko/ja/zh). Just register it in the loader and add a `loadL1Profile` test.
 
 ## Bugs & suggestions
-Please use the [issue templates](.github/ISSUE_TEMPLATE). For security vulnerabilities, see [`SECURITY.md`](SECURITY.md) (no public issues).
+Please use the [issue templates](ISSUE_TEMPLATE). For security vulnerabilities, see [`SECURITY.md`](SECURITY.md) (no public issues).

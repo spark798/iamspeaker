@@ -1,6 +1,6 @@
 # iamspeaker — 개발 계획 (DEVELOPMENT)
 
-> 이 문서는 **상세 엔지니어링 계획**이다. 제품/화면 명세는 [`docs/storyboard.md`](docs/storyboard.md), AI 에이전트 작업 규칙은 [`CLAUDE.md`](CLAUDE.md)를 본다.
+> 이 문서는 **상세 엔지니어링 계획**이다. 제품/화면 명세는 [`docs/storyboard.md`](storyboard.md), AI 에이전트 작업 규칙은 [`CLAUDE.md`](../CLAUDE.md)를 본다.
 > 기술 결정은 §2에 확정 사유와 함께 기록한다(경량 ADR 역할). 결정을 바꿀 땐 이 표를 먼저 수정한다.
 
 ---

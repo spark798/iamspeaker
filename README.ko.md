@@ -12,7 +12,7 @@
 
 영어로 발표·피칭하는 **누구나** — 백지 상태에서 시작하지 않도록 AI가 먼저 시범 발표를 보여주고, 속도·필러·페이스·발음·단어 선택·억양 등 객관적 데이터로 반복 개선하도록 돕는다. 코치 루프(측정→처방→재연습→추이)는 원어민·비원어민 모두에게 유효하며, **영어가 모국어가 아니면** 모국어(L1) 기반 발음·표현 교정까지 더해진다.
 
-> **상태: v0.5.0 — 코칭 확장 + 다국어 출력.** v0.4.0 슬라이드 뷰어·게이지 위에 **단어 사용 코칭**(신뢰도를 낮추는 hedging + CEFR 고급 어휘), **억양 분석**(녹음에서 단조 피치 검출), **다국어 출력**(발표를 대상 언어로 번역+자막+음성), **GOP 자동 승격**(wav2vec2 가용 시 자동, 아니면 휴리스틱) 추가. 로컬 모델만으로 전체 루프 완주 가능. 릴리스 노트는 [`CHANGELOG.md`](CHANGELOG.md), 개발 기록은 [`PROGRESS.md`](PROGRESS.md), 기여는 [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> **상태: v0.5.0 — 코칭 확장 + 다국어 출력.** v0.4.0 슬라이드 뷰어·게이지 위에 **단어 사용 코칭**(신뢰도를 낮추는 hedging + CEFR 고급 어휘), **억양 분석**(녹음에서 단조 피치 검출), **다국어 출력**(발표를 대상 언어로 번역+자막+음성), **GOP 자동 승격**(wav2vec2 가용 시 자동, 아니면 휴리스틱) 추가. 로컬 모델만으로 전체 루프 완주 가능. 릴리스 노트는 [`CHANGELOG.md`](CHANGELOG.md), 개발 기록은 [`PROGRESS.md`](docs/PROGRESS.md), 기여는 [`CONTRIBUTING.md`](.github/CONTRIBUTING.md).
 
 ## 핵심 원칙
 - **오픈소스 / 셀프호스팅 우선** — 누구나 클론해서 띄울 수 있다.
@@ -26,7 +26,7 @@
 
 발표 특화 지표(속도·페이스 변화·필러·침묵·발음 GOP)는 로컬에서 동작하고, 연습 이력은 100% 내 기기에만 저장됩니다. UI 5개 언어(ko/en/ja/zh/es), L1 발음 교정 4개 언어(ko/ja/zh/es).
 
-화면·기능 명세는 [`docs/storyboard.md`](docs/storyboard.md), 설계는 [`DEVELOPMENT.md`](DEVELOPMENT.md) 참고.
+화면·기능 명세는 [`docs/storyboard.md`](docs/storyboard.md), 설계는 [`DEVELOPMENT.md`](docs/DEVELOPMENT.md) 참고.
 
 ## 스크린샷
 

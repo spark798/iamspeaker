@@ -41,3 +41,6 @@ test-results/
 !.vscode/extensions.json
 *.swp
 docker-compose.override.yml
+
+# local launch drafts (not for publish)
+LAUNCH_POSTS.md

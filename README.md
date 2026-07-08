@@ -12,7 +12,7 @@
 
 For **anyone** who presents or pitches in English — instead of starting from a blank page, the AI shows a demo talk first, then helps you improve through objective data: pace, fillers, rhythm, pronunciation, word choice, and intonation. The coach loop (measure → prescribe → re-practice → trend) works for native and non-native speakers alike, and **if English isn't your first language**, it adds native-language (L1) pronunciation and phrasing coaching on top.
 
-> **Status: v0.5.0 — expanded coaching + multilingual output.** On top of the v0.4.0 slide viewer & gauges: **word-usage coaching** (credibility-weakening hedging + CEFR-level advanced vocabulary), **intonation analysis** (monotone-pitch detection from your recording), **multilingual output** (translate the talk + subtitles + voice into your target language), and **auto-promoted GOP pronunciation** (uses wav2vec2 when available, falls back to heuristics). The whole loop runs on local models alone. Release notes in [`CHANGELOG.md`](CHANGELOG.md), dev log in [`PROGRESS.md`](PROGRESS.md), contributing in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+> **Status: v0.5.0 — expanded coaching + multilingual output.** On top of the v0.4.0 slide viewer & gauges: **word-usage coaching** (credibility-weakening hedging + CEFR-level advanced vocabulary), **intonation analysis** (monotone-pitch detection from your recording), **multilingual output** (translate the talk + subtitles + voice into your target language), and **auto-promoted GOP pronunciation** (uses wav2vec2 when available, falls back to heuristics). The whole loop runs on local models alone. Release notes in [`CHANGELOG.md`](CHANGELOG.md), dev log in [`PROGRESS.md`](docs/PROGRESS.md), contributing in [`CONTRIBUTING.md`](.github/CONTRIBUTING.md).
 
 ## Core principles
 - **Open source / self-host first** — anyone can clone and run it.
@@ -26,7 +26,7 @@ For **anyone** who presents or pitches in English — instead of starting from a
 
 Presentation-specific metrics (pace, pace variation, fillers, silence, pronunciation GOP) run locally, and your practice history stays 100% on your own device. UI in 5 languages (ko/en/ja/zh/es), L1 pronunciation coaching in 4 (ko/ja/zh/es).
 
-See [`docs/storyboard.md`](docs/storyboard.md) for the screen/feature spec and [`DEVELOPMENT.md`](DEVELOPMENT.md) for the design.
+See [`docs/storyboard.md`](docs/storyboard.md) for the screen/feature spec and [`DEVELOPMENT.md`](docs/DEVELOPMENT.md) for the design.
 
 ## Screenshots
 

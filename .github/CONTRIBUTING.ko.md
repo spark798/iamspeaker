@@ -50,4 +50,4 @@ pnpm build
 모국어(L1) 발음/표현 교정 팩은 JSON 추가로 확장됩니다: `lib/ai/l1-profiles/<lang>.json` (ko/ja/zh 참고). 로더 등록 + `loadL1Profile` 테스트만 추가하면 됩니다.
 
 ## 버그·제안
-[이슈 템플릿](.github/ISSUE_TEMPLATE)을 사용해주세요. 보안 취약점은 [`SECURITY.md`](SECURITY.md) 참고(공개 이슈 금지).
+[이슈 템플릿](ISSUE_TEMPLATE)을 사용해주세요. 보안 취약점은 [`SECURITY.md`](SECURITY.md) 참고(공개 이슈 금지).
